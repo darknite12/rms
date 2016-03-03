@@ -1,4 +1,4 @@
-package model;
+package org.rms.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
