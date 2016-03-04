@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `receipt` (
   `number_of_tickets` INT(11) NULL DEFAULT NULL,
   `first_of_year` INT(11) NULL DEFAULT NULL,
   `info` LONGTEXT NULL DEFAULT NULL,
+  UNIQUE KEY`uc_receipt_number`(receipt_number),
   PRIMARY KEY (`receipt_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
