@@ -210,6 +210,7 @@ CREATE TABLE IF NOT EXISTS `table` (
   `table_id` INT(11) NOT NULL AUTO_INCREMENT,
   `table_name` VARCHAR(255) NULL DEFAULT NULL,
   `table_number` INT(11) NULL DEFAULT NULL,
+  `year` INT(11) NULL DEFAULT NULL,
   `people_per_table` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`table_id`))
 ENGINE = InnoDB
