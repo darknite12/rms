@@ -8,6 +8,7 @@
 	<properties>
 		<maven_compiler_source>1.7</maven_compiler_source>
 		<maven_compiler_target>1.7</maven_compiler_target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
 		<plugins>
@@ -23,11 +24,11 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- <dependency> -->
-		<!-- <groupId>net.sourceforge.jtds</groupId> -->
-		<!-- <artifactId>jtds</artifactId> -->
-		<!-- <version>1.3.1</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>1.9.4.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
