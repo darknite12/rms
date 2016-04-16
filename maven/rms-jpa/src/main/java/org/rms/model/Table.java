@@ -2,7 +2,6 @@ package org.rms.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import java.util.List;
 
 
 /**
@@ -28,9 +27,7 @@ public class Table implements Serializable {
 	@Column(name="table_number")
 	private int tableNumber;
 
-	//bi-directional many-to-one association to Ticket
-	@OneToMany(mappedBy="table")
-	private List<Ticket> tickets;
+	private int year;
 
 	public Table() {
 	}
@@ -67,26 +64,12 @@ public class Table implements Serializable {
 		this.tableNumber = tableNumber;
 	}
 
-	public List<Ticket> getTickets() {
-		return this.tickets;
+	public int getYear() {
+		return this.year;
 	}
 
-	public void setTickets(List<Ticket> tickets) {
-		this.tickets = tickets;
-	}
-
-	public Ticket addTicket(Ticket ticket) {
-		getTickets().add(ticket);
-		ticket.setTable(this);
-
-		return ticket;
-	}
-
-	public Ticket removeTicket(Ticket ticket) {
-		getTickets().remove(ticket);
-		ticket.setTable(null);
-
-		return ticket;
+	public void setYear(int year) {
+		this.year = year;
 	}
 
 }
