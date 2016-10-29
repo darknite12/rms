@@ -12,10 +12,12 @@
 		<class>org.rms.model.Ticket</class>
 		<class>org.rms.model.TicketPrice</class>
 		<properties>
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/rmsdb"/>
-			<property name="javax.persistence.jdbc.user" value="root"/>
-			<property name="javax.persistence.jdbc.password" value="mysql"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://s01:3306/rmsdb"/>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+			<property name="javax.persistence.jdbc.user" value="rms-user"/>
+			<property name="javax.persistence.jdbc.password" value="mysql"/>
+			<property name="javax.persistence.schema-generation.database.action" value="create"/>
+			<property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
 		</properties>
 	</persistence-unit>
 </persistence>
