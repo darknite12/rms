@@ -8,11 +8,11 @@
 		<class>org.rms.model.Person</class>
 		<class>org.rms.model.PersonAddress</class>
 		<class>org.rms.model.Receipt</class>
-		<class>org.rms.model.Table</class>
+		<class>org.rms.model.SittingTable</class>
 		<class>org.rms.model.Ticket</class>
 		<class>org.rms.model.TicketPrice</class>
 		<properties>
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://s01:3306/rmsdb"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://s01:3306/rmsdb?serverTimezone=UTC"/>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
 			<property name="javax.persistence.jdbc.user" value="rms-user"/>
 			<property name="javax.persistence.jdbc.password" value="mysql"/>

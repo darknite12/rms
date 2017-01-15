@@ -202,17 +202,17 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `table`
+-- Table `sitting_table`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `table` ;
+DROP TABLE IF EXISTS `sitting_table` ;
 
-CREATE TABLE IF NOT EXISTS `table` (
-  `table_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `table_name` VARCHAR(255) NULL DEFAULT NULL,
-  `table_number` INT(11) NULL DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `sitting_table` (
+  `sitting_table_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `sitting_table_name` VARCHAR(255) NULL DEFAULT NULL,
+  `sitting_table_number` INT(11) NULL DEFAULT NULL,
   `year` INT(11) NULL DEFAULT NULL,
   `people_per_table` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`table_id`))
+  PRIMARY KEY (`sitting_table_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
@@ -231,26 +231,26 @@ CREATE TABLE IF NOT EXISTS `ticket` (
   `ticket_number` VARCHAR(20) NOT NULL,
   `year` INT(11) NOT NULL,
   `sold_by` VARCHAR(255) NULL DEFAULT NULL,
-  `table_id` INT(11) NULL,
+  `sitting_table_id` INT(11) NULL,
   PRIMARY KEY (`ticket_id`),
   INDEX `fk_ticket_receipt1_idx` (`receipt_id` ASC),
   INDEX `fk_ticket_person1_idx` (`person_id` ASC),
-  INDEX `fk_ticket_table1_idx` (`table_id` ASC),
+  INDEX `fk_ticket_sitting_table1_idx` (`sitting_table_id` ASC),
   INDEX `fk_ticket_price_of_ticket1_idx` (`price_of_ticket_id` ASC),
   INDEX `fk_ticket_organization1_idx` (`organization_id` ASC),
   CONSTRAINT `fk_ticket_receipt1`
     FOREIGN KEY (`receipt_id`)
     REFERENCES `receipt` (`receipt_id`)
-    ON DELETE NO ACTION
+    ON DELETE NO ACTION  
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ticket_person1`
     FOREIGN KEY (`person_id`)
     REFERENCES `person` (`person_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ticket_table1`
-    FOREIGN KEY (`table_id`)
-    REFERENCES `table` (`table_id`)
+  CONSTRAINT `fk_ticket_sitting_table1`
+    FOREIGN KEY (`sitting_table_id`)
+    REFERENCES `sitting_table` (`sitting_table_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_ticket_price_of_ticket1`

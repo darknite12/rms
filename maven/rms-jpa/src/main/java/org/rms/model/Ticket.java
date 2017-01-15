@@ -48,8 +48,8 @@ public class Ticket implements Serializable {
 
 	//bi-directional many-to-one association to Table
 	@ManyToOne
-	@JoinColumn(name="table_id")
-	private Table table;
+	@JoinColumn(name="sitting_table_id")
+	private SittingTable sittingTable;
 
 	public Ticket() {
 	}
@@ -118,12 +118,12 @@ public class Ticket implements Serializable {
 		this.receipt = receipt;
 	}
 
-	public Table getTable() {
-		return this.table;
+	public SittingTable getSittingTable() {
+		return sittingTable;
 	}
 
-	public void setTable(Table table) {
-		this.table = table;
+	public void setSittingTable(SittingTable sittingTable) {
+		this.sittingTable = sittingTable;
 	}
 
 }
