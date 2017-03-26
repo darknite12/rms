@@ -67,32 +67,32 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `person` ;
 
-CREATE TABLE IF NOT EXISTS `person` (
-  `person_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` INT(11) NULL,
-  `title` VARCHAR(20) NULL DEFAULT NULL,
-  `first_name` VARCHAR(255) NOT NULL,
-  `last_name` VARCHAR(255) NOT NULL,
-  `spouse` VARCHAR(255) NULL DEFAULT NULL,
-  `contact_person` VARCHAR(255) NULL,
-  `home_phone_number` VARCHAR(20) NULL DEFAULT NULL,
-  `cell_phone_number` VARCHAR(20) NULL DEFAULT NULL,
-  `work_phone_number` VARCHAR(20) NULL,
-  `fax_phone_number` VARCHAR(20) NULL DEFAULT NULL,
-  `email` VARCHAR(255) NULL DEFAULT NULL,
-  `language` VARCHAR(255) NULL DEFAULT NULL,
-  `parish` VARCHAR(255) NULL DEFAULT NULL,
-  `community` VARCHAR(255) NULL DEFAULT NULL,
-  `benefactor_status` VARCHAR(255) NULL DEFAULT NULL,
-  `info` LONGTEXT NULL DEFAULT NULL,
+CREATE TABLE `person` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `organization_id` int(11) DEFAULT NULL,
+  `title` varchar(20) DEFAULT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `spouse` varchar(255) DEFAULT NULL,
+  `contact_person` varchar(255) DEFAULT NULL,
+  `home_phone_number` varchar(20) DEFAULT NULL,
+  `cell_phone_number` varchar(20) DEFAULT NULL,
+  `work_phone_number` varchar(20) DEFAULT NULL,
+  `fax_phone_number` varchar(20) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `parish` varchar(255) DEFAULT NULL,
+  `community` varchar(255) DEFAULT NULL,
+  `benefactor_status` varchar(255) DEFAULT NULL,
+  `info` longtext,
   PRIMARY KEY (`person_id`),
-  INDEX `fk_person_organization1_idx` (`organization_id` ASC),
+  KEY `person_organization_id_idx` (`organization_id`),
   CONSTRAINT `fk_person_organization1`
     FOREIGN KEY (`organization_id`)
-    REFERENCES `organization` (`organization_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
+	REFERENCES `organization` (`organization_id`)
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION)
+ENGINE=InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
