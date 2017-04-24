@@ -69,7 +69,6 @@ DROP TABLE IF EXISTS `person` ;
 
 CREATE TABLE `person` (
   `person_id` int(11) NOT NULL AUTO_INCREMENT,
-  `organization_id` int(11) DEFAULT NULL,
   `title` varchar(20) DEFAULT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
@@ -85,15 +84,37 @@ CREATE TABLE `person` (
   `community` varchar(255) DEFAULT NULL,
   `benefactor_status` varchar(255) DEFAULT NULL,
   `info` longtext,
-  PRIMARY KEY (`person_id`),
-  KEY `person_organization_id_idx` (`organization_id`),
-  CONSTRAINT `fk_person_organization1`
-    FOREIGN KEY (`organization_id`)
-	REFERENCES `organization` (`organization_id`)
-	ON DELETE NO ACTION
-	ON UPDATE NO ACTION)
+  PRIMARY KEY (`person_id`))
 ENGINE=InnoDB
 DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `person_organization`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `person_organization` ;
+
+CREATE TABLE IF NOT EXISTS `person_organization` (
+  `person_organization_id` int(11) NOT NULL AUTO_INCREMENT,
+  `person_id` int(11) NOT NULL,
+  `organization_id` int(11) NOT NULL,
+  PRIMARY KEY (`person_organization_id`),
+  INDEX `fk_person_organization_person_idx` (`person_id` ASC),
+  INDEX `fk_person_organization_organization_idx` (`organization_id` ASC),
+  CONSTRAINT `fk_person_organization_person`
+    FOREIGN KEY (person_id) 
+    REFERENCES `person` (`person_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_person_organization_organization` 
+    FOREIGN KEY (`organization_id`) 
+    REFERENCES `organization` (`organization_id`)
+	ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
 
 
 -- -----------------------------------------------------
