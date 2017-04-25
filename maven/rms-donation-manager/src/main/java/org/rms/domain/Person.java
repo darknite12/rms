@@ -62,14 +62,13 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy="person")
 	private List<Donation> donations;
 
-	//bi-directional many-to-one association to Organization
-	@ManyToOne
-	@JoinColumn(name="organization_id")
-	private Organization organization;
-
 	//bi-directional many-to-one association to PersonAddress
 	@OneToMany(mappedBy="person")
 	private List<PersonAddress> personAddresses;
+
+	//bi-directional many-to-one association to PersonOrganization
+	@OneToMany(mappedBy="person")
+	private List<PersonOrganization> personOrganizations;
 
 	//bi-directional many-to-one association to Ticket
 	@OneToMany(mappedBy="person")
@@ -228,14 +227,6 @@ public class Person implements Serializable {
 		return donation;
 	}
 
-	public Organization getOrganization() {
-		return this.organization;
-	}
-
-	public void setOrganization(Organization organization) {
-		this.organization = organization;
-	}
-
 	public List<PersonAddress> getPersonAddresses() {
 		return this.personAddresses;
 	}
@@ -256,6 +247,28 @@ public class Person implements Serializable {
 		personAddress.setPerson(null);
 
 		return personAddress;
+	}
+
+	public List<PersonOrganization> getPersonOrganizations() {
+		return this.personOrganizations;
+	}
+
+	public void setPersonOrganizations(List<PersonOrganization> personOrganizations) {
+		this.personOrganizations = personOrganizations;
+	}
+
+	public PersonOrganization addPersonOrganization(PersonOrganization personOrganization) {
+		getPersonOrganizations().add(personOrganization);
+		personOrganization.setPerson(this);
+
+		return personOrganization;
+	}
+
+	public PersonOrganization removePersonOrganization(PersonOrganization personOrganization) {
+		getPersonOrganizations().remove(personOrganization);
+		personOrganization.setPerson(null);
+
+		return personOrganization;
 	}
 
 	public List<Ticket> getTickets() {

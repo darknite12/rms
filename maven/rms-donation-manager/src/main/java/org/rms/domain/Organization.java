@@ -29,9 +29,9 @@ public class Organization implements Serializable {
 	@OneToMany(mappedBy="organization")
 	private List<OrganizationAddress> organizationAddresses;
 
-	//bi-directional many-to-one association to Person
+	//bi-directional many-to-one association to PersonOrganization
 	@OneToMany(mappedBy="organization")
-	private List<Person> persons;
+	private List<PersonOrganization> personOrganizations;
 
 	//bi-directional many-to-one association to Ticket
 	@OneToMany(mappedBy="organization")
@@ -100,26 +100,26 @@ public class Organization implements Serializable {
 		return organizationAddress;
 	}
 
-	public List<Person> getPersons() {
-		return this.persons;
+	public List<PersonOrganization> getPersonOrganizations() {
+		return this.personOrganizations;
 	}
 
-	public void setPersons(List<Person> persons) {
-		this.persons = persons;
+	public void setPersonOrganizations(List<PersonOrganization> personOrganizations) {
+		this.personOrganizations = personOrganizations;
 	}
 
-	public Person addPerson(Person person) {
-		getPersons().add(person);
-		person.setOrganization(this);
+	public PersonOrganization addPersonOrganization(PersonOrganization personOrganization) {
+		getPersonOrganizations().add(personOrganization);
+		personOrganization.setOrganization(this);
 
-		return person;
+		return personOrganization;
 	}
 
-	public Person removePerson(Person person) {
-		getPersons().remove(person);
-		person.setOrganization(null);
+	public PersonOrganization removePersonOrganization(PersonOrganization personOrganization) {
+		getPersonOrganizations().remove(personOrganization);
+		personOrganization.setOrganization(null);
 
-		return person;
+		return personOrganization;
 	}
 
 	public List<Ticket> getTickets() {

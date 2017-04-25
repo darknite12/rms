@@ -10,7 +10,7 @@ import java.util.List;
  * 
  */
 @Entity
-@javax.persistence.Table(name="ticket_price")
+@Table(name="ticket_price")
 @NamedQuery(name="TicketPrice.findAll", query="SELECT t FROM TicketPrice t")
 public class TicketPrice implements Serializable {
 	private static final long serialVersionUID = 1L;

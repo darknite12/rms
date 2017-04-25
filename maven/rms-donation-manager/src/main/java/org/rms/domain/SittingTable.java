@@ -2,14 +2,16 @@ package org.rms.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
- * The persistent class for the table database table.
+ * The persistent class for the sitting_table database table.
  * 
  */
 @Entity
-@NamedQuery(name="SittingTable.findAll", query="SELECT t FROM SittingTable t")
+@Table(name="sitting_table")
+@NamedQuery(name="SittingTable.findAll", query="SELECT s FROM SittingTable s")
 public class SittingTable implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,11 +31,15 @@ public class SittingTable implements Serializable {
 
 	private int year;
 
+	//bi-directional many-to-one association to Ticket
+	@OneToMany(mappedBy="sittingTable")
+	private List<Ticket> tickets;
+
 	public SittingTable() {
 	}
 
 	public int getSittingTableId() {
-		return sittingTableId;
+		return this.sittingTableId;
 	}
 
 	public void setSittingTableId(int sittingTableId) {
@@ -49,7 +55,7 @@ public class SittingTable implements Serializable {
 	}
 
 	public String getSittingTableName() {
-		return sittingTableName;
+		return this.sittingTableName;
 	}
 
 	public void setSittingTableName(String sittingTableName) {
@@ -57,7 +63,7 @@ public class SittingTable implements Serializable {
 	}
 
 	public int getSittingTableNumber() {
-		return sittingTableNumber;
+		return this.sittingTableNumber;
 	}
 
 	public void setSittingTableNumber(int sittingTableNumber) {
@@ -70,6 +76,28 @@ public class SittingTable implements Serializable {
 
 	public void setYear(int year) {
 		this.year = year;
+	}
+
+	public List<Ticket> getTickets() {
+		return this.tickets;
+	}
+
+	public void setTickets(List<Ticket> tickets) {
+		this.tickets = tickets;
+	}
+
+	public Ticket addTicket(Ticket ticket) {
+		getTickets().add(ticket);
+		ticket.setSittingTable(this);
+
+		return ticket;
+	}
+
+	public Ticket removeTicket(Ticket ticket) {
+		getTickets().remove(ticket);
+		ticket.setSittingTable(null);
+
+		return ticket;
 	}
 
 }

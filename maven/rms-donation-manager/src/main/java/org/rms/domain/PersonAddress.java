@@ -9,7 +9,7 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@javax.persistence.Table(name="person_address")
+@Table(name="person_address")
 @NamedQuery(name="PersonAddress.findAll", query="SELECT p FROM PersonAddress p")
 public class PersonAddress implements Serializable {
 	private static final long serialVersionUID = 1L;
