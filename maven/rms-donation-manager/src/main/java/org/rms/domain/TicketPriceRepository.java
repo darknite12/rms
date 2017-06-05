@@ -1,7 +1,7 @@
 package org.rms.domain;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface TicketPriceRepository extends CrudRepository<TicketPrice, Integer> {
+public interface TicketPriceRepository extends PagingAndSortingRepository<TicketPrice, Integer> {
 
 }

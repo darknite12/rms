@@ -1,10 +1,9 @@
 package org.rms.domain;
 
-import org.rms.domain.Receipt;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface ReceiptRepository extends CrudRepository<Receipt, Integer> {
-	
+public interface ReceiptRepository extends PagingAndSortingRepository<Receipt, Integer> {
+
 	Receipt findByReceiptNumber(String receiptNumber);
 
 }

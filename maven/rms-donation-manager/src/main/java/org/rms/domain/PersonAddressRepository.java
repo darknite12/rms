@@ -1,7 +1,7 @@
 package org.rms.domain;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PersonAddressRepository extends CrudRepository<PersonAddress, Integer> {
+public interface PersonAddressRepository extends PagingAndSortingRepository<PersonAddress, Integer> {
 
 }
