@@ -25,5 +25,6 @@ mainApp.config(['$routeProvider',
 		}).
 		otherwise({
 			redirectTo: 'viewPerson'/*The reference to the main or default view  goes here*/
-			})
-}]);
+			});
+	}
+]);
