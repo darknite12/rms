@@ -9,19 +9,19 @@ mainApp.config(['$routeProvider',
 		$routeProvider.
 		when('/viewPerson', {
 			templateUrl: 'viewPerson.htlm',
-			controller: 'viewPersonControler'
+			controller: 'ViewPersonControler'
 		}).
 		when('/createPerson', {
 			templateUrl: 'createPerson.htlm',
-			controller: 'createPersonControler'
+			controller: 'CreatePersonControler'
 		}).
 		when('/modifyPerson', {
 			templateUrl: 'modifyPerson.htlm',
-			controller: 'modifyPersonControler'
+			controller: 'ModifyPersonControler'
 		}).
 		when('/removePerson', {
 			templateUrl: 'removePerson.htlm',
-			controller: 'removePersonControler'
+			controller: 'RemovePersonControler'
 		}).
 		otherwise({
 			redirectTo: 'viewPerson'/*The reference to the main or default view  goes here*/

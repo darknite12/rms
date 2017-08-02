@@ -5,18 +5,39 @@
 		<title>RMMS Toronto</title>
 		
 		<!--Review the URLs for the libraries -->
-		<script src="/resources/angular.min.js"></script>
-		<script src="/resources/angular-route.min.js"></script>
+		<script src="resources/angular.min.js"></script>
+		<script src="resources/angular-route.min.js"></script>
 	</head>
 	<body>
 		<div ng-app="mainApp">
-			<div ng-view>
-				<script type="text/ng-template" id="viewPerson.html" src="viewPerson.js"></script>
-				<script type="text/ng-template" id="createPerson.html" src="createPerson.js"></script>
-				<script type="text/ng-template" id="modifyPerson.html" src="modifyPerson.js"></script>
-				<script type="text/ng-template" id="removePerson.html" src="removePerson.js"></script>
-			</div>
+		
+			<!-- Testing the view functioning (instead of these there will be buttons)-->
+			<p><a href="#viewPerson">View Person</a></p>
+			<p><a href="#createPerson">Create Person</a></p>
+			<p><a href="#modifyPerson">Modify Person</a></p>
+			<p><a href="#removePerson">Remove Person</a></p>
+			<!-- end of test -->
+
+			<!-- The different views will be shown here -->
+			<div ng-view></div>
+			
+			<!-- These are the references to the different java script files,
+			which contain the different templates of the views -->
+			<script type="text/ng-template" id="viewPerson.html" src="viewPerson.js"></script>
+			<script type="text/ng-template" id="createPerson.html" src="createPerson.js"></script>
+			<script type="text/ng-template" id="modifyPerson.html" src="modifyPerson.js"></script>
+			<script type="text/ng-template" id="removePerson.html" src="removePerson.js"></script>
+			
+			<script type="text/ng-template" id="removePerson.html" src="removePerson.js"></script>
+			
 		</div>
+		<!-- This is the reference to the file that contains the configuration
+		of the functioning of the views -->
+		<script src="viewsRouter.js"></script>
+		<script src="ViewPersonController.js"></script>
+		<script src="CreatePersonController.js"></script>
+		<script src="ModifyPersonController.js"></script>
+		<script src="RemovePersonController.js"></script>
 	</body>
 </html>
 <!--I am trying to commit and push this file. Can anybody else see it? -->
