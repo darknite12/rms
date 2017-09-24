@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="rms-jpa" transaction-type="RESOURCE_LOCAL">
+		<class>org.rms.domain.Address</class>
+		<class>org.rms.domain.Donation</class>
+		<class>org.rms.domain.Organization</class>
+		<class>org.rms.domain.OrganizationAddress</class>
+		<class>org.rms.domain.Person</class>
+		<class>org.rms.domain.PersonAddress</class>
+		<class>org.rms.domain.PersonOrganization</class>
+		<class>org.rms.domain.Receipt</class>
+		<class>org.rms.domain.SittingTable</class>
+		<class>org.rms.domain.Ticket</class>
+		<class>org.rms.domain.TicketPrice</class>
+		<properties>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/rmsdb?serverTimezone=UTC"/>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+			<property name="javax.persistence.jdbc.user" value="rms-user"/>
+			<property name="javax.persistence.jdbc.password" value="mysql"/>
+			<property name="javax.persistence.schema-generation.database.action" value="create"/>
+			<property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+			<property name="spring.jpa.properties.javax.persistence.schema-generation.create-source" value="metadata"/>
+			<property name="spring.jpa.properties.javax.persistence.schema-generation.scripts.action" value="create"/>
+			<property name="spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target" value="create.sql"/>
+		</properties>
+	</persistence-unit>
+</persistence>
