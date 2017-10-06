@@ -4,10 +4,7 @@
 		<class>org.rms.domain.Address</class>
 		<class>org.rms.domain.Donation</class>
 		<class>org.rms.domain.Organization</class>
-		<class>org.rms.domain.OrganizationAddress</class>
 		<class>org.rms.domain.Person</class>
-		<class>org.rms.domain.PersonAddress</class>
-		<class>org.rms.domain.PersonOrganization</class>
 		<class>org.rms.domain.Receipt</class>
 		<class>org.rms.domain.SittingTable</class>
 		<class>org.rms.domain.Ticket</class>
