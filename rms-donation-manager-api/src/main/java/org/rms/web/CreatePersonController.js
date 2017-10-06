@@ -78,7 +78,7 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 			"community" : personObj.community,
 			"benefactorStatus" : personObj.status,
 			"info" : personObj.information
-		}).success(function (serverAnswer){
+		}).then(function (serverAnswer){
 			cosole.log(serverAnswer);
 			personsPostAnswer = serverAnswer;
 		});
@@ -91,7 +91,7 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 			"city" : personObj.address.city,
 			"provice" : personObj.address.province,
 			"postalCode" : personObj.address.postalCode
-		}).success(function (serverAnswer){
+		}).then(function (serverAnswer){
 			cosole.log(serverAnswer);
 			personAddrPostAnswer = serverAnswer;
 		});
@@ -99,7 +99,7 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 		//Sending information to organizations table
 		$http.post("http://localhost:8080/organizations", {
 			"name" : personObj.organization.name
-		}).success(function (serverAnswer){
+		}).then(function (serverAnswer){
 			cosole.log(serverAnswer);
 			organizationsPostAnswer = serverAnswer;
 		});
@@ -112,7 +112,7 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 				"city" : personObj.organization.address.city,
 				"provice" : personObj.organization.address.province,
 				"postalCode" : personObj.organization.address.postalCode
-			}).success(function (serverAnswer){
+			}).then(function (serverAnswer){
 				cosole.log(serverAnswer);
 				organizationAddrPostAnswer = serverAnswer;
 			});
