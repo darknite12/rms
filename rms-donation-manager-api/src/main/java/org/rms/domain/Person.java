@@ -2,6 +2,7 @@ package org.rms.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -62,17 +63,35 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy="person")
 	private List<Donation> donations;
 
-	//bi-directional many-to-one association to PersonAddress
-	@OneToMany(mappedBy="person")
-	private List<PersonAddress> personAddresses;
-
-	//bi-directional many-to-one association to PersonOrganization
-	@OneToMany(mappedBy="person")
-	private List<PersonOrganization> personOrganizations;
-
 	//bi-directional many-to-one association to Ticket
 	@OneToMany(mappedBy="person")
 	private List<Ticket> tickets;
+	
+	//bi-directional many-to-many association to Address
+	@ManyToMany
+	@JoinTable(
+		name="person_address"
+		, joinColumns={
+			@JoinColumn(name="person_id")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="address_id")
+			}
+		)
+	private List<Address> addresses;
+
+	//bi-directional many-to-many association to Organization
+	@ManyToMany
+	@JoinTable(
+		name="person_organization"
+		, joinColumns={
+			@JoinColumn(name="person_id")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="organization_id")
+			}
+		)
+	private List<Organization> organizations;
 
 	public Person() {
 	}
@@ -227,50 +246,6 @@ public class Person implements Serializable {
 		return donation;
 	}
 
-	public List<PersonAddress> getPersonAddresses() {
-		return this.personAddresses;
-	}
-
-	public void setPersonAddresses(List<PersonAddress> personAddresses) {
-		this.personAddresses = personAddresses;
-	}
-
-	public PersonAddress addPersonAddress(PersonAddress personAddress) {
-		getPersonAddresses().add(personAddress);
-		personAddress.setPerson(this);
-
-		return personAddress;
-	}
-
-	public PersonAddress removePersonAddress(PersonAddress personAddress) {
-		getPersonAddresses().remove(personAddress);
-		personAddress.setPerson(null);
-
-		return personAddress;
-	}
-
-	public List<PersonOrganization> getPersonOrganizations() {
-		return this.personOrganizations;
-	}
-
-	public void setPersonOrganizations(List<PersonOrganization> personOrganizations) {
-		this.personOrganizations = personOrganizations;
-	}
-
-	public PersonOrganization addPersonOrganization(PersonOrganization personOrganization) {
-		getPersonOrganizations().add(personOrganization);
-		personOrganization.setPerson(this);
-
-		return personOrganization;
-	}
-
-	public PersonOrganization removePersonOrganization(PersonOrganization personOrganization) {
-		getPersonOrganizations().remove(personOrganization);
-		personOrganization.setPerson(null);
-
-		return personOrganization;
-	}
-
 	public List<Ticket> getTickets() {
 		return this.tickets;
 	}
@@ -291,6 +266,22 @@ public class Person implements Serializable {
 		ticket.setPerson(null);
 
 		return ticket;
+	}
+
+	public List<Address> getAddresses() {
+		return this.addresses;
+	}
+
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
+	}
+
+	public List<Organization> getOrganizations() {
+		return this.organizations;
+	}
+
+	public void setOrganizations(List<Organization> organizations) {
+		this.organizations = organizations;
 	}
 
 }

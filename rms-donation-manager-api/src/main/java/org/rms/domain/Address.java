@@ -2,6 +2,7 @@ package org.rms.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -33,13 +34,13 @@ public class Address implements Serializable {
 
 	private String province;
 
-	//bi-directional many-to-one association to OrganizationAddress
-	@OneToMany(mappedBy="address")
-	private List<OrganizationAddress> organizationAddresses;
+	//bi-directional many-to-many association to Person
+	@ManyToMany(mappedBy="addresses")
+	private List<Person> persons;
 
-	//bi-directional many-to-one association to PersonAddress
-	@OneToMany(mappedBy="address")
-	private List<PersonAddress> personAddresses;
+	//bi-directional many-to-many association to Organization
+	@ManyToMany(mappedBy="addresses")
+	private List<Organization> organizations;
 
 	public Address() {
 	}
@@ -100,48 +101,20 @@ public class Address implements Serializable {
 		this.province = province;
 	}
 
-	public List<OrganizationAddress> getOrganizationAddresses() {
-		return this.organizationAddresses;
+	public List<Person> getPersons() {
+		return this.persons;
 	}
 
-	public void setOrganizationAddresses(List<OrganizationAddress> organizationAddresses) {
-		this.organizationAddresses = organizationAddresses;
+	public void setPersons(List<Person> persons) {
+		this.persons = persons;
 	}
 
-	public OrganizationAddress addOrganizationAddress(OrganizationAddress organizationAddress) {
-		getOrganizationAddresses().add(organizationAddress);
-		organizationAddress.setAddress(this);
-
-		return organizationAddress;
+	public List<Organization> getOrganizations() {
+		return this.organizations;
 	}
 
-	public OrganizationAddress removeOrganizationAddress(OrganizationAddress organizationAddress) {
-		getOrganizationAddresses().remove(organizationAddress);
-		organizationAddress.setAddress(null);
-
-		return organizationAddress;
-	}
-
-	public List<PersonAddress> getPersonAddresses() {
-		return this.personAddresses;
-	}
-
-	public void setPersonAddresses(List<PersonAddress> personAddresses) {
-		this.personAddresses = personAddresses;
-	}
-
-	public PersonAddress addPersonAddress(PersonAddress personAddress) {
-		getPersonAddresses().add(personAddress);
-		personAddress.setAddress(this);
-
-		return personAddress;
-	}
-
-	public PersonAddress removePersonAddress(PersonAddress personAddress) {
-		getPersonAddresses().remove(personAddress);
-		personAddress.setAddress(null);
-
-		return personAddress;
+	public void setOrganizations(List<Organization> organizations) {
+		this.organizations = organizations;
 	}
 
 }
