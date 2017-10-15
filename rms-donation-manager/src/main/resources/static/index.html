@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html ng-app="rmsdmgui">
+<head>
+<title>RMS Donation Manager</title>
+<script src="scripts/angular.min.js"></script>
+<script src="scripts/angular-route.js"></script>
+<script src="scripts/rms.dm.app.js"></script>
+<script src="scripts/person.controller.js"></script>
+<script src="scripts/person.services.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+</head>
+<body>
+	<ul class="menu">
+		<li><a href="#!/persons">persons</a></li>
+		<li><a href="#!/persons/1">persons/1</a></li>
+		<li><a href="user-creation">people-creation</a></li>
+	</ul>
+	<div class="container" ng-view=""></div>
+</body>
+</html>
