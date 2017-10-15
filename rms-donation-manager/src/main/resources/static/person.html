@@ -1,54 +1,89 @@
-<!DOCTYPE html>
-
-<html ng-app="dmgui">
-<head>
-<title>RMS Donation Manager</title>
-<script src="scripts/angular.min.js"></script>
-<script src="scripts/person.controller.js"></script>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-</head>
-<body ng-controller="PersonController">
-	<div class="container-fluid">
-		<h1>User Center</h1>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Search</h3>
-			</div>
-			<div class="panel-body">
-				<form name="personSearch">
-					<div class="form-group col-sm-6">
-						<label for="search" class="control-label">Search:</label> <input
-							type="text" class="form-control" ng-model="searchKeyword" />
-					</div>
-				</form>
-			</div>
+<div class="container-fluid">
+	<h1>User Details</h1>
+	
+	<form class="form-horizontal" name="personDetails" role="form">
+		<div class="form-group col-sm-6">
+			<label class="control-label" for="firstName">First name:</label>
+			<input type="text" id="firstName" ng-model="person.firstName" />
+	
+			<label class="control-label" for="lastName">Last name:</label>
+			<input type="text" id="lastName" ng-model="person.lastName" />
+			
+			<label class="control-label" for="benefactorStatus">Benefactor Status:</label>
+			<input type="text" id="benefactorStatus" ng-model="person.benefactorStatus" />
+			
+			<label class="control-label" for="cellPhoneNumber">Cell Phone:</label>
+			<input type="text" id="cellPhoneNumber" ng-model="person.cellPhoneNumber" />
+				
+			<label class="control-label" for="homePhoneNumber">Home Phone:</label>
+			<input type="text" id="homePhoneNumber" ng-model="person.homePhoneNumber" />
+			
+			<label class="control-label" for="workPhoneNumber">Work Phone:</label>
+			<input type="text" id="workPhoneNumber" ng-model="person.workPhoneNumber" />
+			
+			<label class="control-label" for="faxPhoneNumber">Fax:</label>
+			<input type="text" id="faxPhoneNumber" ng-model="person.faxPhoneNumber" />
+			
+			<label class="control-label" for="email">Email:</label>
+			<input type="text" id="email" ng-model="person.email" />
+			
+			
+			<label class="control-label" for="cellPhoneNumber">Cell Phone:</label>
+			<input type="text" id="cellPhoneNumber" ng-model="person.cellPhoneNumber" />
+			<label class="control-label" for="cellPhoneNumber">Cell Phone:</label>
+			<input type="text" id="cellPhoneNumber" ng-model="person.cellPhoneNumber" />
+			
+			<label class="control-label" for="community">Last name:</label>
+			<input type="text" id="community" ng-model="person.community" />
 		</div>
 
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>Name</a></th>
-					<th>Parish</th>
-					<th>Language</th>
-					<th>Phone Number</th>
-					<th>Email</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr
-					ng-repeat="p in persons._embedded.persons | filter: searchKeyword ">
-					<td><input type="text" ng-model="per.url" value="{{p._links.self.href}}"></td>
-					<td><a ng-click="getPerson(per.url)">{{p.title}} {{
-							p.firstName }} {{p.lastName}}</a>
-					<td>{{p.parish}}</td>
-					<td>{{p.language}}</td>
-					<td>h:{{p.homePhoneNumber}}, c:{{p.cellPhoneNumber}},
-						w:{{workPhoneNumber}}</td>
-					<td>{{p.email}}</td>
 
-				</tr>
-			</tbody>
-		</table>
-		<p>{{persons._embedded}}</p>
-</body>
-</html>
+<!-- 	private String contactPerson; -->
+
+<!-- 	@Lob -->
+<!-- 	private String info; -->
+
+<!-- 	private String language; -->
+<!-- 	private String parish; -->
+<!-- 	private String spouse; -->
+<!-- 	private String title; -->
+
+<!-- 	//bi-directional many-to-one association to Donation -->
+<!-- 	@OneToMany(mappedBy="person") -->
+<!-- 	private List<Donation> donations; -->
+
+<!-- 	//bi-directional many-to-one association to Ticket -->
+<!-- 	@OneToMany(mappedBy="person") -->
+<!-- 	private List<Ticket> tickets; -->
+	
+<!-- 	//bi-directional many-to-many association to Address -->
+<!-- 	@ManyToMany -->
+<!-- 	@JoinTable( -->
+<!-- 		name="person_address" -->
+<!-- 		, joinColumns={ -->
+<!-- 			@JoinColumn(name="person_id") -->
+<!-- 			} -->
+<!-- 		, inverseJoinColumns={ -->
+<!-- 			@JoinColumn(name="address_id") -->
+<!-- 			} -->
+<!-- 		) -->
+<!-- 	private List<Address> addresses; -->
+
+<!-- 	//bi-directional many-to-many association to Organization -->
+<!-- 	@ManyToMany -->
+<!-- 	@JoinTable( -->
+<!-- 		name="person_organization" -->
+<!-- 		, joinColumns={ -->
+<!-- 			@JoinColumn(name="person_id") -->
+<!-- 			} -->
+<!-- 		, inverseJoinColumns={ -->
+<!-- 			@JoinColumn(name="organization_id") -->
+<!-- 			} -->
+<!-- 		) -->
+<!-- 	private List<Organization> organizations; -->
+			
+		 <a ng-click="cancel()" class="btn btn-small">cancel</a>
+		 <a ng-click="updateUser()" class="btn btn-small btn-primary">update user</a>
+
+	</form>
+</div>

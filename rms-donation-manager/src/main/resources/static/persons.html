@@ -1,56 +1,42 @@
-<!DOCTYPE html>
-
-<html ng-app="dmgui">
-<head>
-<title>RMS Donation Manager</title>
-<script src="scripts/angular.min.js"></script>
-<script src="scripts/persons.js"></script>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-</head>
-
-
-<body ng-controller="Persons">
-	<div class="container-fluid">
-		<h1>User Center</h1>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Search</h3>
-			</div>
-			<div class="panel-body">
-				<form name="personSearch">
-					<div class="form-group col-sm-6">
-						<label for="search" class="control-label">Search:</label> <input
-							type="text" class="form-control" ng-model="searchKeyword" />
-					</div>
-				</form>
-			</div>
+<div class="container-fluid">
+	<h1>User Center</h1>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Search</h3>
 		</div>
-
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>Name</a></th>
-					<th>Parish</th>
-					<th>Language</th>
-					<th>Phone Number</th>
-					<th>Email</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr
-					ng-repeat="p in persons._embedded.persons | filter: searchKeyword ">
-					<td><a href="{{p._links.self.href}}">{{p.title}} {{
-							p.firstName }} {{p.lastName}}</a></td>
-					<td>{{p.parish}}</td>
-					<td>{{p.language}}</td>
-					<td>h:{{p.homePhoneNumber}}, c:{{p.cellPhoneNumber}},
-						w:{{workPhoneNumber}}</td>
-					<td>{{p.email}}</td>
-
-				</tr>
-			</tbody>
-		</table>
-		<p>{{persons._embedded}}</p>
+		<div class="panel-body">
+			<form name="personSearch">
+				<div class="form-group col-sm-6">
+					<label for="search" class="control-label">Search:</label> <input
+						type="text" class="form-control" ng-model="searchKeyword" />
+				</div>
+			</form>
+		</div>
 	</div>
-</body>
-</html>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Name</a></th>
+				<th>Parish</th>
+				<th>Language</th>
+				<th>Phone Number</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr
+				ng-repeat="p in persons._embedded.persons | filter: searchKeyword ">
+				<td><a ng-click="modifyPerson(p._links.self.href)">{{p.title}}
+						{{ p.firstName }} {{p.lastName}}</a>
+				<td>{{p.parish}}</td>
+				<td>{{p.language}}</td>
+				<td>h:{{p.homePhoneNumber}}, c:{{p.cellPhoneNumber}},
+					w:{{workPhoneNumber}}</td>
+				<td>{{p.email}}</td>
+
+			</tr>
+		</tbody>
+	</table>
+	<p>{{persons._embedded}}</p>
+</div>
