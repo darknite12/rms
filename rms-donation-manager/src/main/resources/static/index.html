@@ -11,11 +11,36 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 </head>
 <body>
-	<ul class="menu">
-		<li><a href="#!/persons">persons</a></li>
-		<li><a href="#!/persons/1">persons/1</a></li>
-		<li><a href="user-creation">people-creation</a></li>
-	</ul>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">RMS Donation Manager</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#!/persons">People</a></li>
+					<li><a href="#!/organizations">Organizations</a></li>
+					<li><a href="#!/address">Addresses</a></li>
+					<li><a href="#!/donations">Donations</a></li>
+					<li><a href="#!/tickets">Tickets</a></li>
+					<li><a href="#!/receipts">Receipts</a></li>
+					<li><a href="#!/tables">Sitting Tables</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><span class="glyphicon glyphicon-user"></span>
+							Sign Up</a></li>
+					<li><a href="#"><span class="glyphicon glyphicon-log-in"></span>
+							Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 	<div class="container" ng-view=""></div>
 </body>
 </html>
