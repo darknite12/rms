@@ -15,4 +15,11 @@ app.service('PersonService', [ '$http', function($http) {
         });
 	}
 	
+	this.getPersonAddress = function getPersonAddress(id) {
+		return $http({
+			method: 'GET',
+			url: 'http://localhost:8080/persons/' + id.id +'/addresses' 
+		})
+	}
+	
 }]);

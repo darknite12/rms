@@ -30,8 +30,18 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 		$scope.errorMessage = 'Error getting person!';
 	});
 	
+	$scope.personAddress = PersonService.getPersonAddress({id: $routeParams.id})
+	.then(function success(response) {
+		$scope.personAddress = response.data;
+		$scope.message='';
+		$scope.errorMessage = '';
+	}, function error (response) {
+		$scope.message='';
+		$scope.errorMessage = 'Error getting person address!';
+	});
+	
 	$scope.updateUser = function () {
-		$location.path('/user-list');
+		$location.path('/persons');
 	};
 
 	$scope.cancel = function () {

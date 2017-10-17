@@ -1,89 +1,124 @@
 <div class="container-fluid">
-	<h1>User Details</h1>
-	
-	<form class="form-horizontal" name="personDetails" role="form">
-		<div class="form-group col-sm-6">
-			<label class="control-label" for="firstName">First name:</label>
-			<input type="text" id="firstName" ng-model="person.firstName" />
-	
-			<label class="control-label" for="lastName">Last name:</label>
-			<input type="text" id="lastName" ng-model="person.lastName" />
-			
-			<label class="control-label" for="benefactorStatus">Benefactor Status:</label>
-			<input type="text" id="benefactorStatus" ng-model="person.benefactorStatus" />
-			
-			<label class="control-label" for="cellPhoneNumber">Cell Phone:</label>
-			<input type="text" id="cellPhoneNumber" ng-model="person.cellPhoneNumber" />
-				
-			<label class="control-label" for="homePhoneNumber">Home Phone:</label>
-			<input type="text" id="homePhoneNumber" ng-model="person.homePhoneNumber" />
-			
-			<label class="control-label" for="workPhoneNumber">Work Phone:</label>
-			<input type="text" id="workPhoneNumber" ng-model="person.workPhoneNumber" />
-			
-			<label class="control-label" for="faxPhoneNumber">Fax:</label>
-			<input type="text" id="faxPhoneNumber" ng-model="person.faxPhoneNumber" />
-			
-			<label class="control-label" for="email">Email:</label>
-			<input type="text" id="email" ng-model="person.email" />
-			
-			
-			<label class="control-label" for="cellPhoneNumber">Cell Phone:</label>
-			<input type="text" id="cellPhoneNumber" ng-model="person.cellPhoneNumber" />
-			<label class="control-label" for="cellPhoneNumber">Cell Phone:</label>
-			<input type="text" id="cellPhoneNumber" ng-model="person.cellPhoneNumber" />
-			
-			<label class="control-label" for="community">Last name:</label>
-			<input type="text" id="community" ng-model="person.community" />
+	<h1>Person Details</h1>
+	<div class="panel panel-default">
+		<div class='well'>
+			<form name="personForm">
+				<div class='row'>
+					<div class='col-sm-4'>
+						<div class='form-group'>
+							<label for="title">Title</label>
+							<input type="text" id="title" class='form-control' ng-model="person.title" placeholder="Title" required"/>
+						</div>
+						<div class='form-group'>
+							<label for="contactPerson">Contact Person</label>
+							<input type="text" id="contactPerson" class='form-control' ng-model="person.contactPerson" placeholder="Contact Person" />
+						</div>
+						<div class='form-group'>
+							<label for="homePhoneNumber">Home Phone</label>
+							<input type="text" id="homePhoneNumber" class='form-control' ng-model="person.homePhoneNumber" placeholder="Home Phone Number" />
+						</div>
+						<div class='form-group'>
+							<label for="faxPhoneNumber">Fax</label>
+							<input type="text" id="faxPhoneNumber" class='form-control' ng-model="person.faxPhoneNumber" placeholder="Fax Number" />
+						</div>
+						<div class='form-group'>
+							<label for="parish">Parish</label>
+							<input type="text" id="parish" class='form-control' ng-model="person.parish" placeholder="Parish" />
+						</div>
+						<div class='form-group'>
+						    <label for="benefactorStatus">Benefactor Status</label>
+						    <input type="text" id="benefactorStatus" class='form-control' ng-model="person.benefactorStatus" placeholder="Benefactor Status" />
+						</div>
+					</div>
+					<div class='col-sm-4'>
+						<div class='form-group'>
+							<label for="firstName">First Name</label>
+							<input type="text" id="firstName" class='form-control' ng-model="person.firstName" placeholder="First Name" required"/>
+						</div>
+						<div class='form-group'>
+							<label for="spouse">Spouse</label>
+							<input type="text" id="spouse" class='form-control' ng-model="person.spouse" placeholder="Spouse" />
+						</div>
+						<div class='form-group'>
+							<label for="cellPhoneNumber">Cell Phone</label>
+							<input type="text" id="cellPhoneNumber" class='form-control' ng-model="person.cellPhoneNumber" placeholder="Cell Phone Number" />
+						</div>
+						<div class='form-group'>
+							<label for="email">Email</label>
+							<input type="text" id="email" class='form-control' ng-model="person.email" placeholder="Email" />
+						</div>
+						<div class='form-group'>
+							<label for="community">Community</label>
+							<input type="text" id="community" class='form-control' ng-model="person.community" placeholder="Community" />
+						</div>
+					</div>
+					<div class='col-sm-4'>
+						<div class='form-group'>
+							<label for="lastName">Last Name</label>
+							<input type="text" id="lastName" class='form-control' ng-model="person.lastName" placeholder="Last Name" />
+						</div>
+						<div class='form-group'>
+							<br><br><br>
+						</div>
+						<div class='form-group'>
+							<label for="workPhoneNumber">Work Phone</label>
+							<input type="text" id="workPhoneNumber" class='form-control'  ng-model="person.workPhoneNumber" placeholder="Work Phone Number" />
+						</div>
+						<div class='form-group'>
+							<br><br><br>
+						</div>
+						<div class='form-group'>
+							<label for="language">Language</label>
+							<input type="text" id="language" class='form-control' ng-model="person.language" placeholder="Language" />
+						</div>
+					</div>
+					<div class='col-sm-8'>
+						<div class='form-group'>
+							<label for='info'>Information</label>
+							<textarea class='form-control' name='info' ng-model="person.info" placeholder="Extra information" rows='5'></textarea>
+						</div>
+						<div class='text-right'>
+							<input type='submit' class='btn btn-primary' value='Submit' />
+							<a ng-click="cancel()" class="btn btn-small">cancel</a>
+							<a ng-click="updateUser()" class="btn btn-small btn-primary">update user</a>
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
-
-
-<!-- 	private String contactPerson; -->
-
-<!-- 	@Lob -->
-<!-- 	private String info; -->
-
-<!-- 	private String language; -->
-<!-- 	private String parish; -->
-<!-- 	private String spouse; -->
-<!-- 	private String title; -->
-
-<!-- 	//bi-directional many-to-one association to Donation -->
-<!-- 	@OneToMany(mappedBy="person") -->
+		<form name="personAddressesForm">
+			<div class='col-sm-16'>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Address</a></th>
+							<th>Address2</th>
+							<th>City</th>
+							<th>Province</th>
+							<th>Postal Code</th>
+							<th>P.O. Box</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="form-group" ng-repeat="pa in personAddress._embedded.addresses">
+							<ng-form name="personAddresForm">
+								<td><input type="text" id="address" class='form-control' ng-model="pa.address" /></td>
+								<td><input type="text" id="address2" class='form-control' ng-model="pa.address2" /></td>
+								<td><input type="text" id="city" class='form-control' ng-model="pa.city" /></td>
+								<td><input type="text" id="province" class='form-control' ng-model="pa.province" /></td>
+								<td><input type="text" id="postalCode" class='form-control' ng-model="pa.postalCode" /></td>
+								<td><input type="text" id="poBox" class='form-control' ng-model="pa.poBox" /></td>
+							</ng-form>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</form>
+	</div>
+	<p>{{ personAddress }}</p>
+        
 <!-- 	private List<Donation> donations; -->
-
-<!-- 	//bi-directional many-to-one association to Ticket -->
-<!-- 	@OneToMany(mappedBy="person") -->
 <!-- 	private List<Ticket> tickets; -->
-	
-<!-- 	//bi-directional many-to-many association to Address -->
-<!-- 	@ManyToMany -->
-<!-- 	@JoinTable( -->
-<!-- 		name="person_address" -->
-<!-- 		, joinColumns={ -->
-<!-- 			@JoinColumn(name="person_id") -->
-<!-- 			} -->
-<!-- 		, inverseJoinColumns={ -->
-<!-- 			@JoinColumn(name="address_id") -->
-<!-- 			} -->
-<!-- 		) -->
 <!-- 	private List<Address> addresses; -->
-
-<!-- 	//bi-directional many-to-many association to Organization -->
-<!-- 	@ManyToMany -->
-<!-- 	@JoinTable( -->
-<!-- 		name="person_organization" -->
-<!-- 		, joinColumns={ -->
-<!-- 			@JoinColumn(name="person_id") -->
-<!-- 			} -->
-<!-- 		, inverseJoinColumns={ -->
-<!-- 			@JoinColumn(name="organization_id") -->
-<!-- 			} -->
-<!-- 		) -->
 <!-- 	private List<Organization> organizations; -->
-			
-		 <a ng-click="cancel()" class="btn btn-small">cancel</a>
-		 <a ng-click="updateUser()" class="btn btn-small btn-primary">update user</a>
-
-	</form>
 </div>
