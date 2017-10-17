@@ -1,48 +1,68 @@
 <div class="container-fluid">
-	<h1>Person Details</h1>
+	<h1>{{person.title}} {{person.firstName}} {{person.lastName}}</h1>
 	<div class="panel panel-default">
 		<div class='well'>
 			<form name="personForm">
 				<div class='row'>
-					<div class='col-sm-4'>
+					<div class='col-sm-2'>
 						<div class='form-group'>
 							<label for="title">Title</label>
 							<input type="text" id="title" class='form-control' ng-model="person.title" placeholder="Title" required"/>
-						</div>
-						<div class='form-group'>
-							<label for="contactPerson">Contact Person</label>
-							<input type="text" id="contactPerson" class='form-control' ng-model="person.contactPerson" placeholder="Contact Person" />
 						</div>
 						<div class='form-group'>
 							<label for="homePhoneNumber">Home Phone</label>
 							<input type="text" id="homePhoneNumber" class='form-control' ng-model="person.homePhoneNumber" placeholder="Home Phone Number" />
 						</div>
 						<div class='form-group'>
-							<label for="faxPhoneNumber">Fax</label>
-							<input type="text" id="faxPhoneNumber" class='form-control' ng-model="person.faxPhoneNumber" placeholder="Fax Number" />
+							<label for="language">Language</label>
+							<input type="text" id="language" class='form-control' ng-model="person.language" placeholder="Language" />
+						</div>
+					</div>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<label for="firstName">First Name</label>
+							<input type="text" id="firstName" class='form-control' ng-model="person.firstName" placeholder="First Name" required"/>
 						</div>
 						<div class='form-group'>
-							<label for="parish">Parish</label>
-							<input type="text" id="parish" class='form-control' ng-model="person.parish" placeholder="Parish" />
+							<label for="cellPhoneNumber">Cell Phone</label>
+							<input type="text" id="cellPhoneNumber" class='form-control' ng-model="person.cellPhoneNumber" placeholder="Cell Phone Number" />
 						</div>
 						<div class='form-group'>
 						    <label for="benefactorStatus">Benefactor Status</label>
 						    <input type="text" id="benefactorStatus" class='form-control' ng-model="person.benefactorStatus" placeholder="Benefactor Status" />
 						</div>
 					</div>
-					<div class='col-sm-4'>
+					<div class='col-sm-2'>
 						<div class='form-group'>
-							<label for="firstName">First Name</label>
-							<input type="text" id="firstName" class='form-control' ng-model="person.firstName" placeholder="First Name" required"/>
+							<label for="lastName">Last Name</label>
+							<input type="text" id="lastName" class='form-control' ng-model="person.lastName" placeholder="Last Name" />
 						</div>
+						<div class='form-group'>
+							<label for="workPhoneNumber">Work Phone</label>
+							<input type="text" id="workPhoneNumber" class='form-control'  ng-model="person.workPhoneNumber" placeholder="Work Phone Number" />
+						</div>
+					</div>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<label for="contactPerson">Contact Person</label>
+							<input type="text" id="contactPerson" class='form-control' ng-model="person.contactPerson" placeholder="Contact Person" />
+						</div>
+						<div class='form-group'>
+							<label for="faxPhoneNumber">Fax</label>
+							<input type="text" id="faxPhoneNumber" class='form-control' ng-model="person.faxPhoneNumber" placeholder="Fax Number" />
+						</div>
+					</div>
+					<div class='col-sm-2'>
 						<div class='form-group'>
 							<label for="spouse">Spouse</label>
 							<input type="text" id="spouse" class='form-control' ng-model="person.spouse" placeholder="Spouse" />
 						</div>
 						<div class='form-group'>
-							<label for="cellPhoneNumber">Cell Phone</label>
-							<input type="text" id="cellPhoneNumber" class='form-control' ng-model="person.cellPhoneNumber" placeholder="Cell Phone Number" />
+							<label for="parish">Parish</label>
+							<input type="text" id="parish" class='form-control' ng-model="person.parish" placeholder="Parish" />
 						</div>
+					</div>
+					<div class='col-sm-2'>
 						<div class='form-group'>
 							<label for="email">Email</label>
 							<input type="text" id="email" class='form-control' ng-model="person.email" placeholder="Email" />
@@ -52,42 +72,21 @@
 							<input type="text" id="community" class='form-control' ng-model="person.community" placeholder="Community" />
 						</div>
 					</div>
-					<div class='col-sm-4'>
-						<div class='form-group'>
-							<label for="lastName">Last Name</label>
-							<input type="text" id="lastName" class='form-control' ng-model="person.lastName" placeholder="Last Name" />
-						</div>
-						<div class='form-group'>
-							<br><br><br>
-						</div>
-						<div class='form-group'>
-							<label for="workPhoneNumber">Work Phone</label>
-							<input type="text" id="workPhoneNumber" class='form-control'  ng-model="person.workPhoneNumber" placeholder="Work Phone Number" />
-						</div>
-						<div class='form-group'>
-							<br><br><br>
-						</div>
-						<div class='form-group'>
-							<label for="language">Language</label>
-							<input type="text" id="language" class='form-control' ng-model="person.language" placeholder="Language" />
-						</div>
-					</div>
 					<div class='col-sm-8'>
 						<div class='form-group'>
 							<label for='info'>Information</label>
-							<textarea class='form-control' name='info' ng-model="person.info" placeholder="Extra information" rows='5'></textarea>
+							<textarea class='form-control' name='info' ng-model="person.info" placeholder="Extra information" rows='2'></textarea>
 						</div>
 						<div class='text-right'>
-							<input type='submit' class='btn btn-primary' value='Submit' />
 							<a ng-click="cancel()" class="btn btn-small">cancel</a>
-							<a ng-click="updateUser()" class="btn btn-small btn-primary">update user</a>
+							<a ng-click="updatePerson()" class="btn btn-small btn-primary">update</a>
 						</div>
 					</div>
 				</div>
 			</form>
 		</div>
 		<form name="personAddressesForm">
-			<div class='col-sm-16'>
+			<div class='col-sm-14'>
 				<table class="table table-striped">
 					<thead>
 						<tr>
