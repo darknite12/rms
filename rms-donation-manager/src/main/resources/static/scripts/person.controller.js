@@ -37,14 +37,24 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 		$scope.errorMessage = '';
 	}, function error (response) {
 		$scope.message='';
-		$scope.errorMessage = 'Error getting person address!';
+		$scope.errorMessage = 'Error getting person addresses!';
 	});
 	
-	$scope.updateUser = function () {
+	$scope.personOrganization = PersonService.getPersonOrganization({id: $routeParams.id})
+	.then(function success(response) {
+		$scope.personOrganization = response.data;
+		$scope.message='';
+		$scope.errorMessage = '';
+	}, function error (response) {
+		$scope.message='';
+		$scope.errorMessage = 'Error getting person Organizations!';
+	});
+	
+	$scope.updatePerson = function () {
 		$location.path('/persons');
 	};
 
 	$scope.cancel = function () {
-		$location.path('/user-list');
+		$location.path('/persons');
 	};
 }]);

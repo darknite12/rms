@@ -22,4 +22,11 @@ app.service('PersonService', [ '$http', function($http) {
 		})
 	}
 	
+	this.getPersonOrganization = function getPersonOrganization(id) {
+		return $http({
+			method: 'GET',
+			url: 'http://localhost:8080/persons/' + id.id +'/organizations'
+		})
+	}
+	
 }]);
