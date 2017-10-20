@@ -29,4 +29,30 @@ app.service('PersonService', [ '$http', function($http) {
 		})
 	}
 	
+	this.updatePerson = function updateUser(id, title, firstName, lastName, contactPerson, 
+			spouse, email, homePhoneNumber, cellPhoneNumber, workPhoneNumber, 
+			faxPhoneNumber, parish, community, language, benefactorStatus, info) {
+	    return $http({
+	        method : 'PATCH',
+	        url : 'http://localhost:8080/persons/' + id.id,
+	        data : {
+	        	title : title,
+	        	firstName : firstName,
+	        	lastName : lastName,
+	        	contactPerson : contactPerson,
+	        	spouse : spouse,
+				email : email,
+				homePhoneNumber : homePhoneNumber,
+				cellPhoneNumber : cellPhoneNumber,
+				workPhoneNumber : workPhoneNumber,
+				faxPhoneNumber : faxPhoneNumber,
+				parish : parish,
+				community : community,
+				language : language,
+				benefactorStatus : benefactorStatus,
+				info : info
+	        }
+	    });
+	}
+	
 }]);

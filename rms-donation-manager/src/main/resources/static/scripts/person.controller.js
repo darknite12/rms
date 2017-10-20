@@ -51,8 +51,31 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 	});
 	
 	$scope.updatePerson = function () {
-		$location.path('/persons');
-	};
+		PersonService.updatePerson({id: $routeParams.id}, 
+			$scope.person.title, 
+			$scope.person.firstName, 
+			$scope.person.lastName, 
+			$scope.person.contactPerson,
+			$scope.person.spouse,
+			$scope.person.email,
+			$scope.person.homePhoneNumber,
+			$scope.person.cellPhoneNumber,
+			$scope.person.workPhoneNumber,
+			$scope.person.faxPhoneNumber,
+			$scope.person.parish,
+			$scope.person.community,
+			$scope.person.language,
+			$scope.person.benefactorStatus,
+			$scope.person.info
+		).then(function success(response) {
+			$scope.message = 'Person data updated!';
+			$scope.errorMessage = '';
+		},
+		function error(response) {
+			$scope.errorMessage = 'Error updating person!';
+			$scope.message = '';
+		});
+	}
 
 	$scope.cancel = function () {
 		$location.path('/persons');
