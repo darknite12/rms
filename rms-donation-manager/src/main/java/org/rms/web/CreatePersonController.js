@@ -26,6 +26,7 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 			address : {
 				street : "",
 				number : "",
+				address2 : "",
 				city : "",
 				province : "",
 				postalCode : "",
@@ -39,6 +40,7 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 				address : {
 					street : "",
 					number : "",
+					address2 : "",
 					city : "",
 					province : "",
 					postalCode : "",
@@ -86,10 +88,10 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 		//Sending information to addresses table
 		$http.post("http://localhost:8080/addresses", {
 			"address" : personObj.address.number + " " + personObj.address.street,
-			"address2" : null,
+			"address2" : personObj.address.address2,
 			"poBox" : personObj.address.poBox,
 			"city" : personObj.address.city,
-			"provice" : personObj.address.province,
+			"province" : personObj.address.province,
 			"postalCode" : personObj.address.postalCode
 		}).then(function (serverAnswer){
 			cosole.log(serverAnswer);
@@ -107,10 +109,10 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 		if(!personObj.organization.sameAddress){
 			$http.post("http://localhost:8080/addresses", {
 				"address" : personObj.organization.address.number + " " + personObj.organization.address.street,
-				"address2" : null,
+				"address2" : personObj.organization.address.address2,
 				"poBox" : personObj.organization.address.poBox,
 				"city" : personObj.organization.address.city,
-				"provice" : personObj.organization.address.province,
+				"province" : personObj.organization.address.province,
 				"postalCode" : personObj.organization.address.postalCode
 			}).then(function (serverAnswer){
 				cosole.log(serverAnswer);
@@ -122,7 +124,9 @@ mainApp.controller('CreatePersonController', function($scope, $http) {
 		
 		/*Now here we have to create the relations
 		 *between the table using the variables
-		 *with the answers from the server*/
+		 *with the answers from the server
+		 *The information about this is in the line 12180 of angular.js
+		 **/
 	}
 	
 });
