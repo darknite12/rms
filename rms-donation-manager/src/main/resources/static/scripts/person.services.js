@@ -55,10 +55,10 @@ app.service('PersonService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.updatePersonAddress = function updatePersonAddress(id, address, address2, city, province, postalCode, poBox) {
+	this.updatePersonAddress = function updatePersonAddress(address, address2, city, province, postalCode, poBox, addressUrl) {
 		return $http({
 			method : 'PATCH',
-			url : 'http://localhost:8080/persons/' + id.id +'/addresses',
+			url : addressUrl,
 			data : {
 				address : address,
 				address2 : address2,
