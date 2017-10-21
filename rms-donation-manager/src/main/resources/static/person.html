@@ -135,7 +135,7 @@
 							<tr class="form-group" ng-repeat="po in personOrganization._embedded.organizations">
 								<ng-form name="personOrganizationForm">
 									<td><input type="text" id="name" class='form-control' ng-model="po.name" /></td>
-									<td><a ng-click="updatePersonOrganization()" class="btn btn-small btn-primary">update</a></td>
+									<td><a ng-click="updatePersonOrganization(po)" class="btn btn-small btn-primary">update</a></td>
 								</ng-form>
 							</tr>
 						</tbody>

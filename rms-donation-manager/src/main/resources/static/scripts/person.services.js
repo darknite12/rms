@@ -55,7 +55,7 @@ app.service('PersonService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.updatePersonAddress = function updatePersonAddress(address, address2, city, province, postalCode, poBox, addressUrl) {
+	this.updatePersonAddress = function updatePersonAddress(address, address2, city, province, postalCode, poBox, country, addressUrl) {
 		return $http({
 			method : 'PATCH',
 			url : addressUrl,
@@ -65,10 +65,20 @@ app.service('PersonService', [ '$http', function($http) {
 				city : city,
 				province : province,
 				postalCode : postalCode,
-				poBox : poBox
+				poBox : poBox,
+				country : country
 			}
 		});
 	}
 	
+	this.updatePersonOrganization = function updatePersonOrganization(name ,organizationUrl) {
+		return $http({
+			method : 'PATCH',
+			url : organizationUrl,
+			data : {
+				name : name
+			}
+		});
+	}
 	
 }]);

@@ -85,6 +85,7 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 			address.province,
 			address.postalCode,
 			address.poBox,
+			address.country,
 			address._links.self.href
 		).then(function success(response) {
 			$scope.message = 'Persons address data updated!';
@@ -95,8 +96,24 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 			$scope.message = '';
 		});
 	}
-
+	
+	$scope.updatePersonOrganization = function (organization) {
+		PersonService.updatePersonOrganization(
+				organization.name,
+				organization._links.self.href
+		).then(function success(response) {
+			alert('Persons organization data updated!');
+			$scope.message = 'Persons organization data updated!';
+			$scope.errorMessage = '';
+		},
+		function error(response) {
+			$scope.errorMessage = 'Error updating persons address!';
+			$scope.message = '';
+		});
+	}
+	
 	$scope.cancel = function () {
 		$location.path('/persons');
 	};
+	
 }]);
