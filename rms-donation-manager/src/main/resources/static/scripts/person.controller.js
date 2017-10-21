@@ -77,14 +77,14 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 		});
 	}
 	
-	$scope.updatePersonAddress = function () {
+	$scope.updatePersonAddress = function (address) {
 		PersonService.updatePersonAddress({id: $routeParams.id},
-			$scope.personAddressForm.address,
-			$scope.personAddressForm.address2,
-			$scope.personAddressForm.city,
-			$scope.personAddressForm.province,
-			$scope.personAddressForm.postalCode,
-			$scope.personAddressForm.poBox
+			address.address,
+			address.address2,
+			address.city,
+			address.province,
+			address.postalCode,
+			address.poBox
 		).then(function success(response) {
 			$scope.message = 'Persons address data updated!';
 			$scope.errorMessage = '';
