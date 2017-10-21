@@ -78,13 +78,14 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 	}
 	
 	$scope.updatePersonAddress = function (address) {
-		PersonService.updatePersonAddress({id: $routeParams.id},
+		PersonService.updatePersonAddress(
 			address.address,
 			address.address2,
 			address.city,
 			address.province,
 			address.postalCode,
-			address.poBox
+			address.poBox,
+			address._links.self.href
 		).then(function success(response) {
 			$scope.message = 'Persons address data updated!';
 			$scope.errorMessage = '';
