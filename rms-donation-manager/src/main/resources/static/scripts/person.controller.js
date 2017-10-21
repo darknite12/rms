@@ -76,6 +76,24 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 			$scope.message = '';
 		});
 	}
+	
+	$scope.updatePersonAddress = function () {
+		PersonService.updatePersonAddress({id: $routeParams.id},
+			$scope.personAddressForm.address,
+			$scope.personAddressForm.address2,
+			$scope.personAddressForm.city,
+			$scope.personAddressForm.province,
+			$scope.personAddressForm.postalCode,
+			$scope.personAddressForm.poBox
+		).then(function success(response) {
+			$scope.message = 'Persons address data updated!';
+			$scope.errorMessage = '';
+		},
+		function error(response) {
+			$scope.errorMessage = 'Error updating persons address!';
+			$scope.message = '';
+		});
+	}
 
 	$scope.cancel = function () {
 		$location.path('/persons');

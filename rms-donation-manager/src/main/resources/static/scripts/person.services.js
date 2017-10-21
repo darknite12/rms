@@ -29,7 +29,7 @@ app.service('PersonService', [ '$http', function($http) {
 		})
 	}
 	
-	this.updatePerson = function updateUser(id, title, firstName, lastName, contactPerson, 
+	this.updatePerson = function updatePerson(id, title, firstName, lastName, contactPerson, 
 			spouse, email, homePhoneNumber, cellPhoneNumber, workPhoneNumber, 
 			faxPhoneNumber, parish, community, language, benefactorStatus, info) {
 	    return $http({
@@ -54,5 +54,21 @@ app.service('PersonService', [ '$http', function($http) {
 	        }
 	    });
 	}
+	
+	this.updatePersonAddress = function updatePersonAddress(id, address, address2, city, province, postalCode, poBox) {
+		return $http({
+			method : 'PATCH',
+			url : 'http://localhost:8080/persons/' + id.id +'/addresses',
+			data : {
+				address : address,
+				address2 : address2,
+				city : city,
+				province : province,
+				postalCode : postalCode,
+				poBox : poBox
+			}
+		});
+	}
+	
 	
 }]);

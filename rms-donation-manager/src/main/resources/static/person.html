@@ -102,8 +102,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr class="form-group" ng-repeat="pa in personAddress._embedded.addresses">
-								<ng-form name="personAddresForm">
+							<tr class="form-group" ng-form="personAddresForm" ng-repeat="pa in personAddress._embedded.addresses">
+								<ng-form name="personAddressForm">
 									<td><input type="text" id="address" class='form-control' ng-model="pa.address" /></td>
 									<td><input type="text" id="address2" class='form-control' ng-model="pa.address2" /></td>
 									<td><input type="text" id="city" class='form-control' ng-model="pa.city" /></td>
