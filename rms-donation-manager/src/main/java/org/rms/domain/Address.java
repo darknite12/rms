@@ -25,6 +25,8 @@ public class Address implements Serializable {
 	private String address2;
 
 	private String city;
+	
+	private String country;
 
 	@Column(name="po_box")
 	private String poBox;
@@ -75,6 +77,14 @@ public class Address implements Serializable {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+	
+	public String getCountry() {
+		return this.country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	public String getPoBox() {
