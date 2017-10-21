@@ -112,6 +112,22 @@ app.controller('PersonController', ['$scope', 'PersonService', '$location', '$ro
 		});
 	}
 	
+	$scope.deletePersonAddress = function (address) {
+		PersonService.deletePersonAddress({id: $routeParams.id},
+				address._links.self.href.split("http://localhost:8080/addresses/")[1]
+			).then(function success(response) {
+				$scope.message = 'Persons address data deleted!';
+				$scope.errorMessage = '';
+			},
+			function error(response) {
+				$scope.errorMessage = 'Error deleting persons address!';
+				$scope.message = '';
+			});
+		PersonService.deleteAddress(address._links.self.href.split);
+		
+		$location.path('/persons');
+	}
+	
 	$scope.cancel = function () {
 		$location.path('/persons');
 	};
