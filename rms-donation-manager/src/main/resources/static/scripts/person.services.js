@@ -55,19 +55,11 @@ app.service('PersonService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.updatePersonAddress = function updatePersonAddress(address, address2, city, province, postalCode, poBox, country, addressUrl) {
+	this.updatePersonAddress = function updatePersonAddress(address) {
 		return $http({
 			method : 'PATCH',
-			url : addressUrl,
-			data : {
-				address : address,
-				address2 : address2,
-				city : city,
-				province : province,
-				postalCode : postalCode,
-				poBox : poBox,
-				country : country
-			}
+			url : address._links.self.href,
+			data : address
 		});
 	}
 	
@@ -81,6 +73,24 @@ app.service('PersonService', [ '$http', function($http) {
 		});
 	}
 	
+	this.addPersonAddress = function addPersonAddress(id, addressUrl){
+		return $http({
+			method : 'POST',
+			url : 'http://localhost:8080/persons/' + id.id + "/addresses",
+			headers: {'Content-Type': 'text/uri-list'},
+			data : addressUrl
+		});
+	}
+	
+	this.addPersonOrganization = function addPersonOrganization(id, organizationUrl) {
+		return $http({
+			method : 'POST',
+			url : 'http://localhost:8080/persons/' + id.id + "/organizations",
+			headers: {'Content-Type': 'text/uri-list'},
+			data : organizationUrl
+		});
+	}
+	
 	this.deletePersonAddress = function deletePersonAddress(id, addressId) {
 		return $http({
 			method: 'DELETE',
@@ -88,10 +98,10 @@ app.service('PersonService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.deleteAddress = function deleteAddress(addressUrl){
+	this.deletePersonOrganization = function (id, organizationId) {
 		return $http({
 			method: 'DELETE',
-	        url: addressUrl
+	        url: 'http://localhost:8080/persons/' + id.id + "/organizations/" + organizationId
 	    });
 	}
 	
