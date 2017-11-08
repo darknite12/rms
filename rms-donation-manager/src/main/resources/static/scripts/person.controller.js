@@ -23,8 +23,10 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	
 	var addressExists = false;
 	var organizationExists = false;
+	$scope.personAddress = [];
+	$scope.personOrganization = [];
 	
-	$scope.person = PersonService.getPerson({id: $routeParams.id})
+	$scope.person = PersonService.getPerson($routeParams.id)
 	.then(function success(response) {
 		$scope.person = response.data;
 		$scope.message='';
@@ -35,9 +37,9 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	});
 	
 	refreshPersonAddress = function () {
-		$scope.personAddress = PersonService.getPersonAddress({id: $routeParams.id})
+		$scope.personAddress = PersonService.getPersonAddress($routeParams.id)
 		.then(function success(response) {
-			$scope.personAddress = response.data;
+			$scope.personAddress = response.data._embedded;
 			$scope.message='';
 			$scope.errorMessage = '';
 		}, function error (response) {
@@ -49,9 +51,9 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	refreshPersonAddress();
 	
 	refreshPersonOrganization = function(){
-		$scope.personOrganization = PersonService.getPersonOrganization({id: $routeParams.id})
+		$scope.personOrganization = PersonService.getPersonOrganization($routeParams.id)
 		.then(function success(response) {
-			$scope.personOrganization = response.data;
+			$scope.personOrganization = response.data._embedded;
 			$scope.message='';
 			$scope.errorMessage = '';
 		}, function error (response) {
@@ -64,22 +66,8 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	
 	
 	$scope.updatePerson = function () {
-		PersonService.updatePerson({id: $routeParams.id}, 
-			$scope.person.title, 
-			$scope.person.firstName, 
-			$scope.person.lastName, 
-			$scope.person.contactPerson,
-			$scope.person.spouse,
-			$scope.person.email,
-			$scope.person.homePhoneNumber,
-			$scope.person.cellPhoneNumber,
-			$scope.person.workPhoneNumber,
-			$scope.person.faxPhoneNumber,
-			$scope.person.parish,
-			$scope.person.community,
-			$scope.person.language,
-			$scope.person.benefactorStatus,
-			$scope.person.info
+		PersonService.updatePerson($routeParams.id, 
+			$scope.person
 		).then(function success(response) {
 			$scope.message = 'Person data updated!';
 			$scope.errorMessage = '';
@@ -107,7 +95,6 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 				organization.name,
 				organization._links.self.href
 		).then(function success(response) {
-			alert('Persons organization data updated!');
 			$scope.message = 'Persons organization data updated!';
 			$scope.errorMessage = '';
 		},
@@ -118,7 +105,7 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.deletePersonAddress = function (addressUrl,itemIndex) {
-		PersonService.deletePersonAddress({id: $routeParams.id},
+		PersonService.deletePersonAddress($routeParams.id,
 				addressUrl.split("http://localhost:8080/addresses/")[1])
 			.then(function success(response) {
 				AddressService.deleteAddress(addressUrl)
@@ -139,7 +126,7 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.deletePersonOrganization = function (organizationUrl) {
-		PersonService.deletePersonOrganization({id: $routeParams.id},
+		PersonService.deletePersonOrganization($routeParams.id,
 			organizationUrl.split("http://localhost:8080/organizations/")[1])
 		.then(function success(response) {
 			OrganizationService.deleteOrganization(organizationUrl)
@@ -154,48 +141,6 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 			
 		}
 		);
-	}
-	
-	$scope.getAddresses = function () {
-		$scope.addPersonAddressElem = true;
-		
-		$scope.newPersonAddress = {
-			address : "",
-			address2 : "",
-			city : "",
-			poBox : "",
-			postalCode : "",
-			province : "",
-			country : ""
-		};
-		
-		AddressService.getAllAddresses()
-		.then(function success(response) {
-			$scope.addresses = response.data;
-			$scope.message='Good';
-			$scope.errorMessage = '';
-		}, function error (response) {
-			$scope.message='';
-			$scope.errorMessage = 'Error getting addresses!';
-		});
-	}
-	
-	$scope.getOrganizations = function () {
-		$scope.addPersonOrganizationElem = true;
-		
-		$scope.newPersonOrganization = {
-			name : ""	
-		};
-		
-		OrganizationService.getAllOrganizations()
-		.then(function success(response) {
-			$scope.organizations = response.data;
-			$scope.message='Good';
-			$scope.errorMessage = '';
-		}, function error(response){
-			$scope.message='';
-			$scope.errorMessage = 'Error getting organizations!';
-		});
 	}
 	
 	$scope.setPersonAddress = function (address) {
@@ -213,9 +158,10 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 		if(!addressExists){
 			AddressService.addAddress($scope.newPersonAddress)
 			.then(function success(response) {
-				PersonService.addPersonAddress({id: $routeParams.id}, response.data._links.self.href)
+				PersonService.addPersonAddress($routeParams.id, response.data._links.self.href)
 				.then(function success(response) {
 					refreshPersonAddress();
+					//$scope.personAddress.push(response.data._embedded);
 				});
 				$scope.message='';
 				$scope.errorMessage = '';
@@ -224,9 +170,10 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 				$scope.errorMessage = 'Error adding address!';
 			});
 		} else if (addressExists) {
-			PersonService.addPersonAddress({id: $routeParams.id}, $scope.newPersonAddress._links.self.href)
+			PersonService.addPersonAddress($routeParams.id, $scope.newPersonAddress._links.self.href)
 			.then(function success(response) {
 				refreshPersonAddress();
+				//$scope.personAddress.push(response.data._embedded);
 			});
 		}
 		
@@ -239,9 +186,10 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 		if(!organizationExists){
 			OrganizationService.addOrganization($scope.newPersonOrganization)
 			.then(function success(response){
-				PersonService.addPersonOrganization({id: $routeParams.id}, response.data._links.self.href)
+				PersonService.addPersonOrganization($routeParams.id, response.data._links.self.href)
 				.then(function success(response){
 					refreshPersonOrganization();
+					//$scope.personOrganization.push(response.data._embedded);
 				});
 				$scope.message='';
 				$scope.errorMessage = '';
@@ -250,14 +198,47 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 				$scope.errorMessage = 'Error adding organization!';
 			});
 		}else if(organizationExists){
-			PersonService.addPersonOrganization({id: $routeParams.id}, $scope.newPersonOrganization._links.self.href)
+			PersonService.addPersonOrganization($routeParams.id, $scope.newPersonOrganization._links.self.href)
 			.then(function success(response){
 				refreshPersonOrganization();
+				//$scope.personOrganization.push(response.data._embedded);
 			});
 		}
 		
 		organizationExists = false;
 		$scope.addPersonOrganizationElem = false;
+	}
+	
+	$scope.getAddresses = function () {
+		$scope.addPersonAddressElem = true;
+		
+		$scope.newPersonAddress = {};
+		
+		AddressService.getAllAddresses()
+		.then(function success(response) {
+			$scope.addresses = response.data;
+			$scope.message='Good';
+			$scope.errorMessage = '';
+		}, function error (response) {
+			$scope.message='';
+			$scope.errorMessage = 'Error getting addresses!';
+		});
+	}
+	
+	$scope.getOrganizations = function () {
+		$scope.addPersonOrganizationElem = true;
+		
+		$scope.newPersonOrganization = {};
+		
+		OrganizationService.getAllOrganizations()
+		.then(function success(response) {
+			$scope.organizations = response.data;
+			$scope.message='Good';
+			$scope.errorMessage = '';
+		}, function error(response){
+			$scope.message='';
+			$scope.errorMessage = 'Error getting organizations!';
+		});
 	}
 	
 	$scope.cancel = function () {
