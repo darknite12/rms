@@ -1,0 +1,123 @@
+<div class="container-fluid">
+	<h1 ng-hide="newTicketView">{{ticket.number}}</h1>
+	<div class="panel panel-default">
+		<div class='well'>
+			<form name="ticketForm">
+				<div class='row'>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<label for="title">Number</label>
+							<input type="text" id="title" class='form-control' ng-model="person.title" placeholder="Title" required"/>
+						</div>
+						<div class='form-group'>
+							<label for="homePhoneNumber">Sold By</label>
+							<input type="text" id="homePhoneNumber" class='form-control' ng-model="person.homePhoneNumber" placeholder="Home Phone Number" />
+						</div>
+						<div class='form-group'>
+							<label for="language">Year</label>
+							<input type="text" id="language" class='form-control' ng-model="person.language" placeholder="Language" />
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class='well'>
+			<h2>Bought By</h2>
+			<form name="ticketPersonForm">
+				<!--I stopped here -->
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Address</a></th>
+								<th>Address2</th>
+								<th>City</th>
+								<th>P.O. Box</th>
+								<th>Postal Code</th>
+								<th>Province</th>
+								<th>Country</th>
+								<th><a ng-hide="addPersonAddressElem" ng-click="getAddresses()">+ Address</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="personAddresForm" ng-repeat="pa in personAddress.addresses">
+								<ng-form name="personAddressForm">
+									<td><input type="text" id="address" class='form-control' ng-model="pa.address" /></td>
+									<td><input type="text" id="address2" class='form-control' ng-model="pa.address2" /></td>
+									<td><input type="text" id="city" class='form-control' ng-model="pa.city" /></td>
+									<td><input type="text" id="poBox" class='form-control' ng-model="pa.poBox" /></td>
+									<td><input type="text" id="postalCode" class='form-control' ng-model="pa.postalCode" /></td>
+									<td><input type="text" id="province" class='form-control' ng-model="pa.province" /></td>
+									<td><input type="text" id="country" class='form-control' ng-model="pa.country" /></td>
+									<td><a ng-click="updatePersonAddress(pa, $index)" class="btn btn-small btn-primary">update</a></td>
+									<td><a ng-click="deletePersonAddress(pa._links.self.href,$index)" ng-hide="newPersonView" class="btn btn-small btn-primary">delete</a></td>
+								</ng-form>
+							</tr>
+							<tr ng-show="addPersonAddressElem">
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.address"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.address2"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.city"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.poBox"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.postalCode"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.province"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.country"/></th>
+								<th><a ng-click="addPersonAddress()" class="btn btn-small btn-primary">add</a></th>
+								<th><a ng-click="addPersonAddressElem=false" class="btn btn-small btn-primary">cancel</a></th>
+							</tr>
+							<tr ng-show="addPersonAddressElem" ng-repeat="a in addresses._embedded.addresses | filter: newPersonAddress.address">
+								<td><a ng-click="setPersonAddress(a)">{{a.address}}</a></td>
+								<td>{{a.address2}}</td>
+								<td>{{a.city}}</td>
+								<td>{{a.poBox}}</td>
+								<td>{{a.postalCode}}</td>
+								<td>{{a.province}}</td>
+								<td>{{a.country}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</form>
+		</div>
+		<div class='well'>
+			<h2>Organizations</h2>
+			<form name="personOrganizationsForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Name</a></th>
+								<th><a ng-hide="addPersonOrganizationElem" ng-click="getOrganizations()">+ Organization</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-repeat="po in personOrganization.organizations">
+								<ng-form name="personOrganizationForm">
+									<td><input type="text" id="name" class='form-control' ng-model="po.name" /></td>
+									<td><a ng-click="updatePersonOrganization(po)" class="btn btn-small btn-primary">update</a></td>
+									<td><a ng-click="deletePersonOrganization(po._links.self.href,$index)" ng-hide="newPersonView" class="btn btn-small btn-primary">delete</a></td>
+								</ng-form>
+							</tr>
+							<tr ng-show="addPersonOrganizationElem">
+								<td><input type="text" class='form-control' ng-model="newPersonOrganization.name"/></td>
+								<td><a ng-click="addPersonOrganization()" class="btn btn-small btn-primary">add</a></td>
+								<td><a ng-click="addPersonOrganizationElem=false" class="btn btn-small btn-primary">cancel</a></td>
+							</tr>
+							<tr ng-show="addPersonOrganizationElem" ng-repeat="o in organizations._embedded.organizations | filter: newPersonOrganization.name">
+								<td><a ng-click="setPersonOrganization(o)">{{o.name}}</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</form>
+			<div ng-show="newPersonView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="addPerson()" class="btn btn-small btn-primary">Add</a>
+			</div>
+		</div>
+	</div>
+
+        
+<!-- 	private List<Donation> donations; -->
+<!-- 	private List<Ticket> tickets; -->
+
+</div>

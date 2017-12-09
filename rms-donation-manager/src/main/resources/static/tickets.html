@@ -1,0 +1,37 @@
+<div class="container-fluid">
+	<h1>Tickets Finder</h1>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Search</h3>
+		</div>
+		<div class="panel-body">
+			<form name="ticketSearch">
+				<div class="form-group col-sm-6">
+					<label for="search" class="control-label">Search:</label> <input
+						type="text" class="form-control" ng-model="searchKeyword" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Number</a></th>
+				<th>Person</th>
+				<th>Sold By</th>
+				<th><a href="#!/newticket">+ Ticket</a></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr
+				ng-repeat="t in tickets._embedded.tickets | filter: searchKeyword ">
+				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a>
+				<td>{{t.personId}}</td>
+				<td>{{t.soldBy}}</td>
+
+			</tr>
+		</tbody>
+	</table>
+	
+</div>
