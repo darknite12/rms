@@ -10,6 +10,10 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema rmsdb
 -- -----------------------------------------------------
+CREATE DATABASE rmsdb;
+USE rmsdb;
+ALTER DATABASE rmsdb CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+
 
 -- -----------------------------------------------------
 -- Table `address`
@@ -24,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `address` (
   `city` VARCHAR(255) NULL DEFAULT NULL,
   `province` VARCHAR(255) NULL DEFAULT NULL,
   `postal_code` VARCHAR(20) NULL DEFAULT NULL,
-  `country` VARCHAR(255) NULL DEFAULT NULL;
+  `country` VARCHAR(255) NULL DEFAULT null,
   PRIMARY KEY (`address_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
