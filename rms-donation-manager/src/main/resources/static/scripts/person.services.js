@@ -1,10 +1,16 @@
 var app = angular.module('rmsdmgui.person.services', []);
 
 app.service('PersonService', [ '$http', function($http) {
+	this.getPaginatedPerson = function (size, number) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/persons?size=' + size + '&page=' + number + '&sort=firstName&lastName'
+		});
+	}
 	this.getAllPersons = function getAllPersons() {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/persons/'
+			url : 'http://localhost:8080/persons'
 		});
 	}
 	

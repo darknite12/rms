@@ -24,7 +24,7 @@ app.controller('NewTicketController', ['$scope', '$location', 'PersonService', '
 		$scope.addBuyerElem = true;
 		$scope.addOrganizationElem = false;
 		$scope.buyer = {};
-		PersonService.getAllPersons()
+		PersonService.getPaginatedPerson(15, 0)
 		.then(function success(response) {
 			$scope.buyers = response.data._embedded.persons;
 		}, function error(response){

@@ -1,7 +1,7 @@
 var app = angular.module('rmsdmgui.person.controllers', []);
 
 app.controller('PersonsController', ['$scope','PersonService', '$location', function ($scope, PersonService, $location) {
-	PersonService.getAllPersons()
+	PersonService.getPaginatedPerson(15, 0)
 	.then(function success(response) {
 		$scope.persons = response.data;
 		$scope.message='';
