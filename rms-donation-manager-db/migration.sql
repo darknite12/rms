@@ -29,7 +29,7 @@ begin
 	declare cur cursor for 	select	p.title, p.`FIRST NAME`, p.`LAST NAME`, p.spouse, CONCAT(p.`CONTACT 1`, ", ", p.`CONTACT 2`), 
 									p.homephone, p.cellphone, p.workphone, p.faxno, p.`E-MAIL`, p.`Language lookup`, p.parish,
 									p.community, p.benstatutes, p.info, CONCAT(p.street_no, " ", s.street), CONCAT(p.`APT NO`, p.unit), p.`P O BOX`, p.postal, s.city, s.prov, s.country
-							from people p left join streets s on p.streets_id=s.id
+							from rmsdbaccess.people p left join rmsdbaccess.streets s on p.streets_id=s.id
 							where p.`FIRST NAME` is not null
 							and p.`FIRST NAME` != ''
 							and p.`LAST NAME` is not null
