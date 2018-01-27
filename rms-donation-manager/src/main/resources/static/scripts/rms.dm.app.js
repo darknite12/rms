@@ -4,7 +4,8 @@ angular.module('rmsdmgui', ['ngRoute',
 	'rmsdmgui.address.services',
 	'rmsdmgui.ticket.controllers',
 	'rmsdmgui.ticket.services',
-	'rmsdmgui.organization.services'])
+	'rmsdmgui.organization.services',
+	'rmsdmgui.table.services'])
 .config(function($routeProvider, $httpProvider) {
     $routeProvider.when('/persons', {
       templateUrl : '../persons.html',

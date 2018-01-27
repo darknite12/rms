@@ -18,16 +18,16 @@
 		<thead>
 			<tr>
 				<th>Number</a></th>
-				<th>Person</th>
+				<th>Bought By</th>
 				<th>Sold By</th>
 				<th><a href="#!/newticket">+ Ticket</a></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr
-				ng-repeat="t in tickets._embedded.tickets | filter: searchKeyword ">
+				ng-repeat="t in tickets | filter: searchKeyword ">
 				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a>
-				<td>{{t.personId}}</td>
+				<td>{{t.buyer}}</td>
 				<td>{{t.soldBy}}</td>
 
 			</tr>
