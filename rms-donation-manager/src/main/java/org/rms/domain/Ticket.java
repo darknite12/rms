@@ -1,55 +1,68 @@
 package org.rms.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 /**
  * The persistent class for the ticket database table.
  * 
  */
 @Entity
-@NamedQuery(name="Ticket.findAll", query="SELECT t FROM Ticket t")
+@NamedQuery(name = "Ticket.findAll", query = "SELECT t FROM Ticket t")
 public class Ticket implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="ticket_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ticket_id")
 	private int ticketId;
 
-	@Column(name="sold_by")
+	@Column(name = "sold_by")
 	private String soldBy;
 
-	@Column(name="ticket_number")
+	@Column(name = "ticket_number")
 	private String ticketNumber;
 
 	private int year;
 
-	//bi-directional many-to-one association to Organization
+	// bi-directional many-to-one association to Organization
 	@ManyToOne
-	@JoinColumn(name="organization_id")
+	@JoinColumn(name = "organization_id")
 	private Organization organization;
 
-	//bi-directional many-to-one association to Person
+	// bi-directional many-to-one association to Person
 	@ManyToOne
-	@JoinColumn(name="person_id")
+	@JoinColumn(name = "person_id")
 	private Person person;
 
-	//bi-directional many-to-one association to TicketPrice
+	// bi-directional many-to-one association to TicketPrice
 	@ManyToOne
-	@JoinColumn(name="price_of_ticket_id")
+	@JoinColumn(name = "price_of_ticket_id")
 	private TicketPrice ticketPrice;
 
-	//bi-directional many-to-one association to Receipt
+	// bi-directional many-to-one association to Receipt
 	@ManyToOne
-	@JoinColumn(name="receipt_id")
+	@JoinColumn(name = "receipt_id")
 	private Receipt receipt;
 
-	//bi-directional many-to-one association to SittingTable
+	// bi-directional many-to-one association to SittingTable
 	@ManyToOne
-	@JoinColumn(name="sitting_table_id")
+	@JoinColumn(name = "sitting_table_id")
 	private SittingTable sittingTable;
+
+	@Column(name = "form_of_payment")
+	private String formOfPayment;
+
+	@Column(name = "is_paid")
+	private boolean isPaid;
 
 	public Ticket() {
 	}
@@ -124,6 +137,22 @@ public class Ticket implements Serializable {
 
 	public void setSittingTable(SittingTable sittingTable) {
 		this.sittingTable = sittingTable;
+	}
+
+	public String getFormOfPayment() {
+		return formOfPayment;
+	}
+
+	public void setFormOfPayment(String formOfPayment) {
+		this.formOfPayment = formOfPayment;
+	}
+
+	public boolean isPaid() {
+		return isPaid;
+	}
+
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
 	}
 
 }

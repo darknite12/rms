@@ -258,6 +258,8 @@ CREATE TABLE IF NOT EXISTS `ticket` (
   `year` INT(11) NOT NULL,
   `sold_by` VARCHAR(255) NULL DEFAULT NULL,
   `sitting_table_id` INT(11) NULL,
+  `form_of_payment` VARCHAR(50) NULL DEFAULT NULL,
+  `is_paid` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`ticket_id`),
   INDEX `fk_ticket_receipt1_idx` (`receipt_id` ASC),
   INDEX `fk_ticket_person1_idx` (`person_id` ASC),
