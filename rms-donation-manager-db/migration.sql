@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`localhost` PROCEDURE `rmsdbaccess`.`copypeopleaddress`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `rmsdb`.`copypeopleaddress`()
 begin
 	declare done INT default false;
 	declare title varchar(20);
@@ -23,12 +23,14 @@ begin
 	declare province varchar(255);
 	declare postal_code varchar(20);
 	declare country varchar(255);
+	declare business_name varchar(255);
 	declare persson_id int(11);
 	declare address_id int(11);
 	
-	declare cur cursor for 	select	p.title, p.`FIRST NAME`, p.`LAST NAME`, p.spouse, CONCAT(p.`CONTACT 1`, ", ", p.`CONTACT 2`), 
+	declare cur cursor for select	p.title, p.`FIRST NAME`, p.`LAST NAME`, p.spouse, CONCAT(p.`CONTACT 1`, ", ", p.`CONTACT 2`), 
 									p.homephone, p.cellphone, p.workphone, p.faxno, p.`E-MAIL`, p.`Language lookup`, p.parish,
-									p.community, p.benstatutes, p.info, CONCAT(p.street_no, " ", s.street), CONCAT(p.`APT NO`, p.unit), p.`P O BOX`, p.postal, s.city, s.prov, s.country
+									p.community, p.benstatutes, p.info, CONCAT(p.street_no, " ", s.street), CONCAT(p.`APT NO`, p.unit), 
+									p.`P O BOX`, p.postal, s.city, s.prov, s.country, p.`BUSINESS/PARISH`
 							from rmsdbaccess.people p left join rmsdbaccess.streets s on p.streets_id=s.id
 							where p.`FIRST NAME` is not null
 							and p.`FIRST NAME` != ''
@@ -41,16 +43,22 @@ begin
 
 	open cur;
 		read_loop: loop
-			fetch cur INTO title, first_name, last_name, spouse, contact_person, home_phone_number, cell_phone_number, work_phone_number, fax_phone_number, email, lang, parish, community, benefactor_status, info, address, address2, po_box, postal_code, city, province, country;
+			fetch cur INTO title, first_name, last_name, spouse, contact_person, home_phone_number, cell_phone_number, work_phone_number, fax_phone_number, email, lang, parish, community, benefactor_status, info, address, address2, po_box, postal_code, city, province, country, business_name;
 			if done then
 				leave read_loop;
 			end if;
-			-- select title, first_name, last_name;
 			 insert into rmsdb.person (title, first_name, last_name, spouse, contact_person, home_phone_number, cell_phone_number, work_phone_number, fax_phone_number, email, `language`, parish, community, benefactor_status) values (title, first_name, last_name, spouse, contact_person, home_phone_number, cell_phone_number, work_phone_number, fax_phone_number, email, lang, parish, community, benefactor_status);
 			 SET @person_id_var = LAST_INSERT_ID();
 			 insert into rmsdb.address (address, address2, po_box, postal_code, city, province, country) values (address, address2, po_box, postal_code, city, province, country);
 			 SET @address_id_var = LAST_INSERT_ID();
-			 insert into rmsdb.person_address(person_id, address_id) values (@person_id_var, @address_id_var);
+			 insert into rmsdb.person_address (person_id, address_id) values (@person_id_var, @address_id_var);
+			 
+			 if (business_name is not null and business_name != '') then
+			 	insert into rmsdb.organization (name) values (business_name);
+				set @organization_id_var = LAST_INSERT_ID();
+				insert into rmsdb.person_organization (person_id, organization_id) values (@person_id_var, @organization_id_var);
+			end if;
 		end loop;
 	close cur;
-end
+
+END
