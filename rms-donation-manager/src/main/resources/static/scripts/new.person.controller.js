@@ -67,14 +67,10 @@ app.controller('NewPersonController', ['$scope', '$location', 'PersonService', '
 					});
 				}
 			}
-			
-			
-			//add for-loop to add Organizations
 		}, function error (response) {
 			alert("Try again");
 		});
 		$location.path('/persons');
-		//Do not forget to make the relations with address and organization
 	}
 	
 	$scope.addPersonAddress = function (){

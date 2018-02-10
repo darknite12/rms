@@ -12,8 +12,7 @@ app.controller('PersonsController', ['$scope','PersonService', '$location', func
 	});
 	
 	$scope.modifyPerson = function (personUrl) {
-		$location.path(personUrl.split(location.host)[1]);
-		
+		$location.path(personUrl.split(location.host)[1]);		
 	}
 	
 }]);

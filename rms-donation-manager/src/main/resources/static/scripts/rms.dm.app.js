@@ -5,6 +5,7 @@ angular.module('rmsdmgui', ['ngRoute',
 	'rmsdmgui.ticket.controllers',
 	'rmsdmgui.ticket.services',
 	'rmsdmgui.organization.services',
+	'rmsdmgui.general.services',
 	'rmsdmgui.table.services'])
 .config(function($routeProvider, $httpProvider) {
     $routeProvider.when('/persons', {
