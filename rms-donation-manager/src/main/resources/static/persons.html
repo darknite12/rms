@@ -6,8 +6,21 @@
 		</div>
 		<div class="panel-body">
 			<form name="personSearch">
+				<div class="row">
 				<div class="form-group col-sm-6">
-					<label for="search" class="control-label">Search:</label> <input
+					<label for="search" class="control-label">Search:</label> 
+					<input type="text" class="form-control" ng-model="searchValue" />
+				</div>
+				<div class="form-group col-sm-6">
+					<a ng-click="setPage(1)" class="btn btn-small btn-primary">Search</a>
+				</div>
+				</div>
+			</form>
+		</div>
+		<div class="panel-body">
+			<form name="personFilter">
+				<div class="form-group col-sm-4">
+					<label for="search" class="control-label">Filter:</label> <input
 						type="text" class="form-control" ng-model="searchKeyword" />
 				</div>
 			</form>

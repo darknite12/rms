@@ -1,12 +1,14 @@
 var app = angular.module('rmsdmgui.person.services', []);
 
 app.service('PersonService', [ '$http', function($http) {
+	
 	this.getPaginatedPerson = function (size, number) {
 		return $http({
 			method : 'GET',
 			url : 'http://localhost:8080/persons?size=' + size + '&page=' + number + '&sort=firstName&lastName'
 		});
 	}
+	
 	this.getAllPersons = function getAllPersons() {
 		return $http({
 			method : 'GET',
@@ -51,6 +53,20 @@ app.service('PersonService', [ '$http', function($http) {
 	    });
 	}
 	
+	this.deletePerson = function(personUrl) {
+		return $http({
+			method: 'DELETE',
+	        url: personUrl
+	    });
+	}
+	
+	this.searchPerson = function(searchValue, size, number) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/persons/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + number + '&sort=firstName&lastName'
+		});
+	}
+	
 	this.updatePersonAddress = function updatePersonAddress(address) {
 		return $http({
 			method : 'PATCH',
@@ -85,13 +101,6 @@ app.service('PersonService', [ '$http', function($http) {
 			headers: {'Content-Type': 'text/uri-list'},
 			data : organizationUrl
 		});
-	}
-	
-	this.deletePerson = function(personUrl) {
-		return $http({
-			method: 'DELETE',
-	        url: personUrl
-	    });
 	}
 	
 	this.deletePersonAddress = function deletePersonAddress(id, addressId) {

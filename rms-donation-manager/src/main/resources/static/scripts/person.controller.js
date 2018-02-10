@@ -5,10 +5,11 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 	$scope.pager = {};
 	//This is to make possible the first entrance to setPage function (look if there is a better solution)
 	$scope.pager.totalPages = 2;
+	$scope.searchValue = "";
 	
 	$scope.setPage = function(page) {
 		if(page <= $scope.pager.totalPages) {
-			PersonService.getPaginatedPerson(15, (page - 1))
+			PersonService.searchPerson($scope.searchValue, 15, (page - 1))
 			.then(function success(response) {
 				$scope.persons = response.data;
 				$scope.pager.currentPage = response.data.page.number + 1;
@@ -16,9 +17,16 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
 				$scope.message='';
 				$scope.errorMessage = '';
+				if($scope.pager.totalPages <= 0) {
+					alert("No people found");
+					$scope.pager.totalPages = 2;
+					$scope.searchValue = "";
+					$scope.setPage(1);
+				}
 			}, function error (response) {
 				$scope.message='';
-				$scope.errorMessage = 'Error getting persons!';
+				$scope.errorMessage = 'Error searching persons: \n' + response.data.cause.cause.message;
+				alert($scope.errorMessage);
 			});
 		}
 	}
