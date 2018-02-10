@@ -87,6 +87,13 @@ app.service('PersonService', [ '$http', function($http) {
 		});
 	}
 	
+	this.deletePerson = function(personUrl) {
+		return $http({
+			method: 'DELETE',
+	        url: personUrl
+	    });
+	}
+	
 	this.deletePersonAddress = function deletePersonAddress(id, addressId) {
 		return $http({
 			method: 'DELETE',

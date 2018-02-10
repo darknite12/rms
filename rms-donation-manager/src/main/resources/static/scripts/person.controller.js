@@ -25,6 +25,15 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 	
 	$scope.setPage(1);
 	
+	$scope.deletePerson = function (personUrl) {
+		PersonService.deletePerson(personUrl)
+		.then(function success(response) {
+			$scope.setPage(1);
+		}, function error(response) {
+			alert("Error deleting person: \n" + response.data.cause.cause.message);
+		});
+	}
+	
 	$scope.modifyPerson = function (personUrl) {
 		$location.path(personUrl.split(location.host)[1]);
 	}
