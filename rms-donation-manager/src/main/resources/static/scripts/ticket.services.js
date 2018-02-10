@@ -35,7 +35,7 @@ app.service('TicketService', [ '$http', function($http) {
 	this.addBuyer = function(id, buyerKind,buyerUrl) {
 		return $http({
 			method : 'PUT',
-			url : 'http://localhost:8080/tickets/' + id + '/' + 'buyerKind',
+			url : 'http://localhost:8080/tickets/' + id + '/' + buyerKind,
 			headers: {'Content-Type': 'text/uri-list'},
 			data : buyerUrl
 		});

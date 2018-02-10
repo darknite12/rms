@@ -1,12 +1,58 @@
 var app = angular.module('rmsdmgui.ticket.controllers');
 
-app.controller('NewTicketController', ['$scope', '$location', 'PersonService', 'AddressService', 'OrganizationService', 'TicketService', 'TableService',
-	function($scope, $location, PersonService, AddressService, OrganizationService, TicketService, TableService){
+app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'PersonService', 'AddressService', 'OrganizationService', 'TicketService', 'TableService',
+	function($scope, $location, PagerService, PersonService, AddressService, OrganizationService, TicketService, TableService){
 	
 	var buyerKind = "";
+	var dBTable = "";
 	$scope.newTicketView = true;
 	$scope.newTickets = [];
 	$scope.tickets = {};
+	$scope.pager = {};
+	
+	
+	$scope.setPage = function (page) {
+		$scope.buyer = {};
+		$scope.buyers = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
+			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
+		var itemsPerColumn = 15;
+		var counter = 0;
+		
+		switch(dBTable) {
+		case "persons":
+			PersonService.getPaginatedPerson(45, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= 2; i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.buyers[j].push(response.data._embedded.persons[counter]);
+						counter++;
+					}
+				}
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+			}, function error(response){
+				
+			});
+			break;
+		case "organizations":
+			OrganizationService.getPaginatedOrganization(45, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= 2; i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.buyers[j].push(response.data._embedded.organizations[counter]);
+						counter++;
+					}
+				}
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+			}, function error(response) {
+				
+			});
+			break;
+		}
+	}
 	
 	$scope.getTickets = function () {
 		$scope.newTicket = {};
@@ -23,25 +69,15 @@ app.controller('NewTicketController', ['$scope', '$location', 'PersonService', '
 	$scope.getPersons = function () {
 		$scope.addBuyerElem = true;
 		$scope.addOrganizationElem = false;
-		$scope.buyer = {};
-		PersonService.getPaginatedPerson(15, 0)
-		.then(function success(response) {
-			$scope.buyers = response.data._embedded.persons;
-		}, function error(response){
-			
-		});
+		dBTable = "persons";
+		$scope.setPage(1);
 	}
 	
 	$scope.getOrganizations = function () {
 		$scope.addBuyerElem = true;
 		$scope.addPersonElem = false;
-		$scope.buyer = {};
-		OrganizationService.getAllOrganizations()
-		.then(function success(response) {
-			$scope.buyers = response.data._embedded.organizations;
-		}, function error(response) {
-			
-		});
+		dBTable = "organizations";
+		$scope.setPage(1);
 	}
 	
 	$scope.addTicket = function () {
@@ -51,50 +87,41 @@ app.controller('NewTicketController', ['$scope', '$location', 'PersonService', '
 	}
 	
 	$scope.addTickets = function () {
-		
-		var tableExists = false;
 		var tableUrl = "";
-		
-		TableService.getAllTables()
+		//It works when adding tickets to an existing table, but it does not 
+		//work when the table does not exists
+		TableService.searchTable($scope.sittingTable.sittingTableNumber)
 		.then(function success(response) {
-			var sittingTables = response.data._embedded.sittingTables;
-			for(var i = 0; i <= (sittingTables.length - 1); i++) {
-				if (sittingTable[i].sittingTableNumber == $scope.sittingTable) {
-					tableExists = true;
-					tableUrl = sittingTable[i]._links.self.href;
-				}
-			}
-			//I Stopped Here
-		}, function error(response) {
-			
-		});
-		
-		TableService.addTable($scope.sittingTable)
-		.then(function success(response) {
-			tableUrl = response.data._links.self.href;
-			for(var i = 0; i <= ($scope.newTickets.length - 1); i++) {
-				TicketService.addTicket($scope.newTickets[i])
-				.then(function success(response) {
-					var ticketId = response.data._links.self.href.split("http://localhost:8080/tickets/")[1];
-					TicketService.addSittingTable(ticketId, tableUrl)
+			if (response.data != null) {
+				tableUrl = response.data._links.self.href;
+				for(var i = 0; i <= ($scope.newTickets.length - 1); i++) {
+					TicketService.addTicket($scope.newTickets[i])
 					.then(function success(response) {
-						TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+						var ticketId = response.data._links.self.href.split("http://localhost:8080/tickets/")[1];
+						TicketService.addSittingTable(ticketId, tableUrl)
 						.then(function success(response) {
-							
+							TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+							.then(function success(response) {
+								$location.path('/tickets');
+							}, function error(response) {
+								alert("Error adding buyer");
+							});
 						}, function error(response) {
-							alert("Eror adding buyer");
+							alert("Error adding sittingTable to ticket");
 						});
 					}, function error(response) {
-						alert("Eror adding sittingTable to ticket");
+						alert("Error adding ticket");
 					});
-				}, function error(response) {
-					alert("Eror adding ticket");
+				}
+			} else if (response.data == null) {
+				TableService.addTable($scope.sittingTable)
+				.then(function success(resoponse) {
+					tableUrl = response.data._links.self.href;
 				});
 			}
 		}, function error(response) {
-			alert("Eror adding sittingTable");
-		});
-		$location.path('/tickets');
+			alert("Error checking table");
+		});	
 	}
 	
 	$scope.updateTicket = function (ticket, index) {

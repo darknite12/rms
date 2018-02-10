@@ -11,11 +11,11 @@ app.controller('TicketsController', ['$scope','TicketService', '$location', func
 		/*allTickets = response.data._embedded;
 		
 		var ticket = {
-			ticketNumber : "",
-			soldBy : "",
-			url : "",
-			buyer : ""
-		};
+				ticketNumber : "",
+				soldBy : "",
+				url : "",
+				buyer : ""
+			};
 		var buyerKind = "";
 		var ticketId = "";
 		var actualTicket = {};
@@ -23,6 +23,14 @@ app.controller('TicketsController', ['$scope','TicketService', '$location', func
 		//trying to get the name of the buyers
 		
 		for(var i = 0; i <= (allTickets.tickets.length - 1); i++) {
+			ticket.ticketNumber = "32";
+			ticket.soldBy = "El";
+			ticket.url = "aqui.com";
+			ticket.buyer = "Yo for now";
+			$scope.tickets.push(ticket);
+		}
+		
+		/*for(var i = 0; i <= (allTickets.tickets.length - 1); i++) {
 			actualTicket = allTickets.tickets[i];
 			ticketId = actualTicket._links.self.href.split("http://localhost:8080/tickets/")[1];
 			if(actualTicket._links.person.href != null) {
@@ -32,22 +40,22 @@ app.controller('TicketsController', ['$scope','TicketService', '$location', func
 			}
 			TicketService.getBuyer(ticketId, buyerKind)
 			.then(function success(response) {
-				ticket.ticketNumber = actualTicket.ticketNumber;
-				ticket.soldBy = actualTicket.soldBy;
-				ticket.url = actualTicket._links.self.href;
+				ticket[i].ticketNumber = actualTicket.ticketNumber;
+				ticket[i].soldBy = actualTicket.soldBy;
+				ticket[i].url = actualTicket._links.self.href;
 				if(response.data.firstName != null) {
-					ticket.buyer = response.data.firstName + " " + response.data.lastName;
+					ticket[i].buyer = response.data.firstName + " " + response.data.lastName;
 				} else if(response.data.name != null) {
-					ticket.buyer = response.data.name;
+					ticket[i].buyer = response.data.name;
 				}
-				$scope.tickets.push(ticket);
+				$scope.tickets.push(ticket[i]);
 			}, function error(response) {
 				
 			});
 			 
-		}
+		}*/
 		$scope.message='';
-		$scope.errorMessage = '';*/
+		$scope.errorMessage = '';
 	}, function error (response) {
 		$scope.message='';
 		$scope.errorMessage = 'Error getting persons!';

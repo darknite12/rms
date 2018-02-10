@@ -10,6 +10,8 @@
 							<tr>
 								<th>Number</a></th>
 								<th>Sold By</th>
+								<th>Paid</th>
+								<th>Form of Payment</th>
 								<th>Year</th>
 								<th><a ng-hide="addTicketElem" ng-click="getTickets()">+ Ticket</a></th>
 							</tr>
@@ -19,6 +21,8 @@
 								<ng-form name="newTicketForm">
 									<td><input type="text" id="ticketNumber" class='form-control' ng-model="nt.ticketNumber" /></td>
 									<td><input type="text" id="soldBy" class='form-control' ng-model="nt.soldBy" /></td>
+									<td><input type="checkbox" id="paid" class='form-control' ng-model="nt.paid" /></td>
+									<td><input type="text" id="formOfPayment" class='form-control' ng-model="nt.formOfPayment" ng-disabled="nt.paid"/></td>
 									<td><input type="text" id="year" class='form-control' ng-model="nt.year" /></td>
 									<td><a ng-click="updateTicket(nt, $index)" class="btn btn-small btn-primary">update</a></td>
 									<td><a ng-click="deleteTicket($index)" class="btn btn-small btn-primary">delete</a></td>
@@ -27,6 +31,8 @@
 							<tr ng-show="addTicketElem">
 								<th><input type="text" class='form-control' ng-model="newTicket.ticketNumber"/></th>
 								<th><input type="text" class='form-control' ng-model="newTicket.soldBy"/></th>
+								<td><input type="checkbox" class='form-control' ng-model="newTicket.paid" /></td>
+									<td><input type="text" class='form-control' ng-model="newTicket.formOfPayment" ng-disabled="!newTicket.paid"/></td>
 								<th><input type="text" class='form-control' ng-model="newTicket.year"/></th>
 								<th><a ng-click="addTicket()" class="btn btn-small btn-primary">add</a></th>
 								<th><a ng-click="addTicketElem=false" class="btn btn-small btn-primary">cancel</a></th>
@@ -34,6 +40,8 @@
 							<tr ng-show="addTicketElem" ng-repeat="t in tickets._embedded.tickets | filter: newTicket.ticketNumber">
 								<td>{{t.ticketNumber}}</td>
 								<td>{{t.soldBy}}</td>
+								<td>{{t.paid}}</td>
+								<td>{{t.formOfPayment}}</td>
 								<td>{{t.year}}</td>
 							</tr>
 						</tbody>
@@ -79,14 +87,38 @@
 						<tbody>
 							<tr class="form-group" ng-form="BoughtByForm">
 								<td><input type="text" id="Name" class='form-control' ng-model="buyer.name" /></td>
+								<td></td>
 								<td><a ng-click="buyer = {}" class="btn btn-small btn-primary">delete</a></td>
 							</tr>
 							<tr ng-show="addBuyerElem" ng-repeat="b in buyers | filter: buyer.name">
-								<td ng-show="addPersonElem"><a ng-click="setBuyer(b)">{{b.firstName}} {{b.lastName}}</a></td>
-								<td ng-show="addOrganizationElem"><a ng-click="setBuyer(b)">{{b.name}}</a></td>
+								<td ng-show="addPersonElem"><a ng-click="setBuyer(b[0])">{{b[0].firstName}} {{b[0].lastName}}</a></td>
+								<td ng-show="addPersonElem"><a ng-click="setBuyer(b[1])">{{b[1].firstName}} {{b[1].lastName}}</a></td>
+								<td ng-show="addPersonElem"><a ng-click="setBuyer(b[2])">{{b[2].firstName}} {{b[2].lastName}}</a></td>
+								<td ng-show="addOrganizationElem"><a ng-click="setBuyer(b[0])">{{b[0].name}}</a></td>
+								<td ng-show="addOrganizationElem"><a ng-click="setBuyer(b[1])">{{b[1].name}}</a></td>
+								<td ng-show="addOrganizationElem"><a ng-click="setBuyer(b[2])">{{b[2].name}}</a></td>
 							</tr>
 						</tbody>
 					</table>
+					<div class="text-center" ng-show="addBuyerElem">
+						<ul ng-if="pager.totalPages" class="pagination">
+						    <li ng-class="{disabled:pager.currentPage === 1}">
+						        <a ng-click="setPage(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:pager.currentPage === 1}">
+						        <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+						        <a ng-click="setPage(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+						        <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+						        <a ng-click="setPage(pager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
 				</div>
 			</form>
 			<div ng-show="newTicketView" class='text-right'>

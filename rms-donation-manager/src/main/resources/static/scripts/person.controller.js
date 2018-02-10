@@ -1,18 +1,32 @@
 var app = angular.module('rmsdmgui.person.controllers', []);
 
-app.controller('PersonsController', ['$scope','PersonService', '$location', function ($scope, PersonService, $location) {
-	PersonService.getPaginatedPerson(15, 0)
-	.then(function success(response) {
-		$scope.persons = response.data;
-		$scope.message='';
-		$scope.errorMessage = '';
-	}, function error (response) {
-		$scope.message='';
-		$scope.errorMessage = 'Error getting persons!';
-	});
+app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '$location', function ($scope, PersonService, PagerService, $location) {
+	
+	$scope.pager = {};
+	//This is to make possible the first entrance to setPage function (look if there is a better solution)
+	$scope.pager.totalPages = 2;
+	
+	$scope.setPage = function(page) {
+		if(page <= $scope.pager.totalPages) {
+			PersonService.getPaginatedPerson(15, (page - 1))
+			.then(function success(response) {
+				$scope.persons = response.data;
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+				$scope.message='';
+				$scope.errorMessage = '';
+			}, function error (response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting persons!';
+			});
+		}
+	}
+	
+	$scope.setPage(1);
 	
 	$scope.modifyPerson = function (personUrl) {
-		$location.path(personUrl.split(location.host)[1]);		
+		$location.path(personUrl.split(location.host)[1]);
 	}
 	
 }]);

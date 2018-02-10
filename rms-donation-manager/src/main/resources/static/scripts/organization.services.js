@@ -2,6 +2,13 @@ var app = angular.module('rmsdmgui.organization.services', []);
 
 app.service('OrganizationService', ['$http', function($http){
 	
+	this.getPaginatedOrganization = function (size, number) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/organizations?size=' + size + '&page=' + number + '&sort=name'
+		});
+	}
+	
 	this.getAllOrganizations = function getAllOrganizations(){
 		return $http({
 			method : 'GET',

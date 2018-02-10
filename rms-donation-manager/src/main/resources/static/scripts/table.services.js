@@ -16,4 +16,11 @@ app.service('TableService', ['$http', function($http) {
 			data : table
 		});
 	}
+	
+	this.searchTable = function(tableNumber) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/sittingTables/search/findBySittingTableNumber?sittingTableNumber=' + tableNumber
+		});
+	}
 }]);
