@@ -78,7 +78,6 @@
 							<textarea class='form-control' name='info' ng-model="person.info" placeholder="Extra information" rows='1'></textarea>
 						</div>
 						<div ng-hide="newPersonView" class='text-right'>
-							<a ng-click="cancel()" class="btn btn-small">cancel</a>
 							<a ng-click="updatePerson()" class="btn btn-small btn-primary">update</a>
 						</div>
 					</div>
@@ -175,6 +174,10 @@
 			<div ng-show="newPersonView" class='text-right'>
 				<a ng-click="cancel()" class="btn btn-small">cancel</a>
 				<a ng-click="addPerson()" class="btn btn-small btn-primary">Add</a>
+			</div>
+			<div ng-hide="newPersonView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="cancel()" class="btn btn-small btn-primary">Done</a>
 			</div>
 		</div>
 	</div>

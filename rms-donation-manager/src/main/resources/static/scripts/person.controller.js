@@ -166,11 +166,9 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 			}, function error(response){
 				refreshPersonOrganization();
 			});
-		},
-		function error(response) {
+		},function error(response) {
 			
-		}
-		);
+		});
 	}
 	
 	$scope.setPersonAddress = function (address) {
