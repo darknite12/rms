@@ -5,6 +5,9 @@ app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'P
 	
 	var buyerKind = "";
 	var dBTable = "";
+	var buyerAdded = false;
+	var sittingTableAdded = false;
+	$scope.sittingTable = {sittingTableNumber : ""};
 	$scope.newTicketView = true;
 	$scope.newTickets = [];
 	$scope.tickets = {};
@@ -67,6 +70,7 @@ app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'P
 	}
 	
 	$scope.getPersons = function () {
+		
 		$scope.addBuyerElem = true;
 		$scope.addOrganizationElem = false;
 		dBTable = "persons";
@@ -88,44 +92,79 @@ app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'P
 	
 	$scope.addTickets = function () {
 		var tableUrl = "";
-		//It works when adding tickets to an existing table, but it does not 
-		//work when the table does not exists
-		TableService.searchTable($scope.sittingTable.sittingTableNumber)
-		.then(function success(response) {
-			if (response.data != null) {
-				tableUrl = response.data._links.self.href;
-				for(var i = 0; i <= ($scope.newTickets.length - 1); i++) {
-					TicketService.addTicket($scope.newTickets[i])
+		var ticketId = "";
+		for(var i = 0; i <= ($scope.newTickets.length - 1); i++) {
+			TicketService.addTicket($scope.newTickets[i])
+			.then(function success(response) {
+				ticketId = response.data._links.self.href.split("http://localhost:8080/tickets/")[1];
+				if(sittingTableAdded){
+					TableService.searchTable($scope.sittingTable.sittingTableNumber)
 					.then(function success(response) {
-						var ticketId = response.data._links.self.href.split("http://localhost:8080/tickets/")[1];
+						tableUrl = response.data._links.self.href;
 						TicketService.addSittingTable(ticketId, tableUrl)
 						.then(function success(response) {
-							TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
-							.then(function success(response) {
-								$location.path('/tickets');
-							}, function error(response) {
-								alert("Error adding buyer");
-							});
+							
 						}, function error(response) {
-							alert("Error adding sittingTable to ticket");
+							alert("Error adding sittingTable to ticket 1");
 						});
 					}, function error(response) {
-						alert("Error adding ticket");
+						//The code to add the new table goes here
+						switch(response.status) {
+						case 404:
+							TableService.addTable($scope.sittingTable)
+							.then(function success(response) {
+								tableUrl = response.data._links.self.href;
+								TicketService.addSittingTable(ticketId, tableUrl)
+								.then(function success(response) {
+									
+								}, function error(response) {
+									alert("Error adding sittingTable to ticket 2");
+								});
+							}, function error(response) {
+								
+							});
+						}
 					});
 				}
-			} else if (response.data == null) {
-				TableService.addTable($scope.sittingTable)
-				.then(function success(resoponse) {
-					tableUrl = response.data._links.self.href;
+				
+				if (buyerAdded) {
+					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+				.then(function success(response) {
+					if(i >= ($scope.newTickets.length - 1)) {
+						$location.path('/tickets');
+					}
+				}, function error(response) {
+					alert("Error adding buyer");
 				});
-			}
-		}, function error(response) {
-			alert("Error checking table");
-		});	
+				} else if(i >= ($scope.newTickets.length - 1)) {
+					$location.path('/tickets');
+				}
+				
+				if (i >= ($scope.newTickets.length - 1)){
+					$location.path('/tickets');
+				}
+				
+			}, function error(response) {
+				alert("Error adding ticket");
+			});
+		}
 	}
 	
 	$scope.updateTicket = function (ticket, index) {
 		$scope.newTickets[index] = ticket;
+	}
+	
+	$scope.addSittingTable = function() {
+		$scope.addSittingTableElem = true;
+		sittingTableAdded = $scope.addSittingTableElem;
+	}
+	
+	$scope.deleteSittingTable = function() {
+		if($scope.sittingTableNumber != ""){
+			$scope.sittingTable.sittingTableNumber = "";
+		}
+		$scope.addSittingTableElem = false;
+		sittingTableAdded = $scope.addSittingTableElem;
 	}
 	
 	$scope.setBuyer = function (buyer) {
@@ -137,6 +176,12 @@ app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'P
 			buyerKind = "organization";
 		}
 		$scope.addBuyerElem = false;
+		buyerAdded = true;
+	}
+	
+	$scope.deleteBuyer = function() {
+		$scope.buyer = {}
+		buyerAdded = false;
 	}
 	
 	$scope.cancel = function () {

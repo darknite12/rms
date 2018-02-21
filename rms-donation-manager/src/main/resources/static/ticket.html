@@ -22,7 +22,7 @@
 									<td><input type="text" id="ticketNumber" class='form-control' ng-model="nt.ticketNumber" /></td>
 									<td><input type="text" id="soldBy" class='form-control' ng-model="nt.soldBy" /></td>
 									<td><input type="checkbox" id="paid" class='form-control' ng-model="nt.paid" /></td>
-									<td><input type="text" id="formOfPayment" class='form-control' ng-model="nt.formOfPayment" ng-disabled="nt.paid"/></td>
+									<td><input type="text" id="formOfPayment" class='form-control' ng-model="nt.formOfPayment" ng-disabled="!nt.paid"/></td>
 									<td><input type="text" id="year" class='form-control' ng-model="nt.year" /></td>
 									<td><a ng-click="updateTicket(nt, $index)" class="btn btn-small btn-primary">update</a></td>
 									<td><a ng-click="deleteTicket($index)" class="btn btn-small btn-primary">delete</a></td>
@@ -40,7 +40,7 @@
 							<tr ng-show="addTicketElem" ng-repeat="t in tickets._embedded.tickets | filter: newTicket.ticketNumber">
 								<td>{{t.ticketNumber}}</td>
 								<td>{{t.soldBy}}</td>
-								<td>{{t.paid}}</td>
+								<td><input type="checkbox" ng-model="t.paid" ng-disabled="true"/></td>
 								<td>{{t.formOfPayment}}</td>
 								<td>{{t.year}}</td>
 							</tr>
@@ -50,12 +50,29 @@
 			</form>
 		</div>
 		<div class='well'>
-			<h2>Sitting Table</h2>
-			<form name="ticketForm">
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Sitting Table</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<b>Number</b>
+				</div>
+				<div class="col-sm-4">
+					<a ng-hide="addSittingTableElem" ng-click="addSittingTable()"><b>+ Sitting Table</b></a>
+				</div>
+			</div>
+			<form ng-show="addSittingTableElem" name="ticketForm">
 				<div class='row'>
 					<div class='col-sm-2'>
 						<div class='form-group'>
 							<input type="text" id="sittingTable" class='form-control' ng-model="sittingTable.sittingTableNumber" placeholder="Table" />
+						</div>
+					</div>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<a ng-click="deleteSittingTable()" class="btn btn-small btn-primary">delete</a>
 						</div>
 					</div>
 				</div>
@@ -88,7 +105,7 @@
 							<tr class="form-group" ng-form="BoughtByForm">
 								<td><input type="text" id="Name" class='form-control' ng-model="buyer.name" /></td>
 								<td></td>
-								<td><a ng-click="buyer = {}" class="btn btn-small btn-primary">delete</a></td>
+								<td><a ng-click="deleteBuyer()" class="btn btn-small btn-primary">delete</a></td>
 							</tr>
 							<tr ng-show="addBuyerElem" ng-repeat="b in buyers | filter: buyer.name">
 								<td ng-show="addPersonElem"><a ng-click="setBuyer(b[0])">{{b[0].firstName}} {{b[0].lastName}}</a></td>
