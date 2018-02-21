@@ -18,7 +18,6 @@ ALTER DATABASE rmsdb CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 -- -----------------------------------------------------
 -- Table `address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `address` ;
 
 CREATE TABLE IF NOT EXISTS `address` (
   `address_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -33,11 +32,9 @@ CREATE TABLE IF NOT EXISTS `address` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-
 -- -----------------------------------------------------
 -- Table `receipt`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `receipt` ;
 
 CREATE TABLE IF NOT EXISTS `receipt` (
   `receipt_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -53,11 +50,9 @@ CREATE TABLE IF NOT EXISTS `receipt` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-
 -- -----------------------------------------------------
 -- Table `organization`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `organization` ;
 
 CREATE TABLE IF NOT EXISTS `organization` (
   `organization_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -66,11 +61,9 @@ CREATE TABLE IF NOT EXISTS `organization` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-
 -- -----------------------------------------------------
 -- Table `person`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `person` ;
 
 CREATE TABLE `person` (
   `person_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -93,11 +86,9 @@ CREATE TABLE `person` (
 ENGINE=InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-
 -- -----------------------------------------------------
 -- Table `person_organization`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `person_organization` ;
 
 CREATE TABLE IF NOT EXISTS `person_organization` (
   `person_organization_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -121,11 +112,9 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
-
 -- -----------------------------------------------------
 -- Table `donation`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `donation` ;
 
 CREATE TABLE IF NOT EXISTS `donation` (
   `donation_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -159,11 +148,9 @@ CREATE TABLE IF NOT EXISTS `donation` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-
 -- -----------------------------------------------------
 -- Table `organization_address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `organization_address` ;
 
 CREATE TABLE IF NOT EXISTS `organization_address` (
   `organization_address_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -189,7 +176,6 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `person_address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `person_address` ;
 
 CREATE TABLE IF NOT EXISTS `person_address` (
   `person_address_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -215,7 +201,6 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `ticket_price`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ticket_price` ;
 
 CREATE TABLE IF NOT EXISTS `ticket_price` (
   `ticket_price_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -226,11 +211,9 @@ CREATE TABLE IF NOT EXISTS `ticket_price` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-
 -- -----------------------------------------------------
 -- Table `sitting_table`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `sitting_table` ;
 
 CREATE TABLE IF NOT EXISTS `sitting_table` (
   `sitting_table_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -246,7 +229,6 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `ticket`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ticket` ;
 
 CREATE TABLE IF NOT EXISTS `ticket` (
   `ticket_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -294,6 +276,44 @@ CREATE TABLE IF NOT EXISTS `ticket` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
+-- -----------------------------------------------------
+-- Table `event`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `event` (
+  `event_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `year` INT(11) NOT NULL,
+  `location` VARCHAR(255) NULL,
+  `masters_of_ceremony` VARCHAR(255) NULL,
+  PRIMARY KEY (`event_id`))
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+-- -----------------------------------------------------
+-- Table `ticket_event`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `ticket_event` (
+  `ticket_event_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `ticket_id` INT(11) NOT NULL,
+  `event_id` INT(11) NOT NULL,
+  PRIMARY KEY (`ticket_event_id`),
+  INDEX `fk_ticket_event_ticket_idx` (`ticket_id` ASC),
+  INDEX `fk_ticket_event_event_idx` (`event_id` ASC),
+  CONSTRAINT `fk_ticket_event_ticket`
+    FOREIGN KEY (`ticket_id`)
+    REFERENCES `ticket` (`ticket_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ticket_event_event`
+    FOREIGN KEY (`event_id`)
+    REFERENCES `event` (`event_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
