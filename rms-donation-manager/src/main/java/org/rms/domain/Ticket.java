@@ -1,6 +1,7 @@
 package org.rms.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
@@ -57,6 +60,12 @@ public class Ticket implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "sitting_table_id")
 	private SittingTable sittingTable;
+
+	// bi-directional many-to-many association to
+	@ManyToMany
+	@JoinTable(name = "ticket_event", joinColumns = { @JoinColumn(name = "ticket_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "event_id") })
+	private List<Event> events;
 
 	@Column(name = "form_of_payment")
 	private String formOfPayment;
@@ -153,6 +162,14 @@ public class Ticket implements Serializable {
 
 	public void setPaid(boolean isPaid) {
 		this.isPaid = isPaid;
+	}
+
+	public List<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(List<Event> events) {
+		this.events = events;
 	}
 
 }

@@ -9,6 +9,7 @@
 		<class>org.rms.domain.SittingTable</class>
 		<class>org.rms.domain.Ticket</class>
 		<class>org.rms.domain.TicketPrice</class>
+		<class>org.rms.domain.Event</class>
 		<properties>
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/rmsdb?serverTimezone=UTC"/>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
