@@ -60,22 +60,26 @@
 					<b>Number</b>
 				</div>
 				<div class="col-sm-4">
-					<a ng-hide="addSittingTableElem" ng-click="addSittingTable()"><b>+ Sitting Table</b></a>
+					<a ng-hide="addSittingTableElem" ng-click="addSittingTableElem = true"><b>+ Sitting Table</b></a>
 				</div>
 			</div>
-			<form ng-show="addSittingTableElem" name="ticketForm">
+			<form ng-show="addSittingTableElem" name="ticketForm" novalidate>
 				<div class='row'>
 					<div class='col-sm-2'>
 						<div class='form-group'>
-							<input type="text" id="sittingTable" class='form-control' ng-model="sittingTable.sittingTableNumber" placeholder="Table" />
+							<input type="text" id="sittingTable" class='form-control' 
+							ng-model="sittingTable.sittingTableNumber" placeholder="Table" 
+							name="tSittingTable" required="" />
 						</div>
 					</div>
 					<div class='col-sm-2'>
 						<div class='form-group'>
-							<a ng-click="deleteSittingTable()" class="btn btn-small btn-primary">delete</a>
+							<a ng-hide="tableAdded" ng-click="addSittingTable()" class="btn btn-small btn-primary">add</a>
+							<a ng-show="tableAdded" ng-click="deleteSittingTable()" class="btn btn-small btn-primary">delete</a>
 						</div>
 					</div>
 				</div>
+				<span ng-show="ticketForm.tSittingTable.$error.required">Please insert table number</span>
 			</form>
 		</div>
 		
