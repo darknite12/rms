@@ -1,24 +1,31 @@
 var app = angular.module('rmsdmgui.ticket.controllers');
 
-app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'PersonService', 'AddressService', 'OrganizationService', 'TicketService', 'TableService',
-	function($scope, $location, PagerService, PersonService, AddressService, OrganizationService, TicketService, TableService){
+app.controller('NewTicketController', 
+		['$scope', '$location', 'PagerService', 'PersonService', 'AddressService', 
+			'OrganizationService', 'TicketService', 'TableService', 'PriceService',
+	function($scope, $location, PagerService, PersonService, AddressService, 
+			OrganizationService, TicketService, TableService, PriceService){
 	
 	var buyerKind = "";
 	var dBTable = "";
 	var tableUrl = "";
+	var priceUrl = "";
 	var buyerAdded = false;
 	var sittingTableAdded = false;
+	var date = new Date();
 	$scope.sittingTable = {sittingTableNumber : ""};
 	$scope.newTicketView = true;
 	$scope.newTickets = [];
 	$scope.tickets = {};
 	$scope.pager = {};
 	
-	/* Code to get the year or any part of the date from the system
-	 * Add option to search ticket prices by the year to the ticketPrice table
-	 * var date = new Date();
-	 * alert("Date: " + date.getFullYear());
-	*/
+	PriceService.getPriceByYear(date.getFullYear())
+	.then(function success(response) {
+		priceUrl = response.data._links.self.href;
+	}, function error(response) {
+		alert("Year for price not found");
+	});
+	
 	$scope.setPage = function (page) {
 		$scope.buyer = {};
 		$scope.buyers = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
@@ -64,7 +71,7 @@ app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'P
 	
 	$scope.getTickets = function () {
 		$scope.newTicket = {};
-		$scope.newTicket.year = "2018";
+		$scope.newTicket.year = date.getFullYear();
 		$scope.addTicketElem = true;
 		TicketService.getAllTickets()
 		.then(function success(response) {
@@ -90,7 +97,7 @@ app.controller('NewTicketController', ['$scope', '$location', 'PagerService', 'P
 	}
 	
 	$scope.addTicket = function () {
-		$scope.newTicket.ticketPrice = "http://localhost:8080/ticketPrices/2";
+		$scope.newTicket.ticketPrice = priceUrl;
 		$scope.newTickets.push($scope.newTicket);
 		$scope.addTicketElem = false;
 	}
