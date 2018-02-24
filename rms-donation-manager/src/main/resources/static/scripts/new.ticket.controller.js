@@ -23,7 +23,7 @@ app.controller('NewTicketController',
 	.then(function success(response) {
 		priceUrl = response.data._links.self.href;
 	}, function error(response) {
-		alert("Year for price not found");
+		alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
 	});
 	
 	$scope.setPage = function (page) {
