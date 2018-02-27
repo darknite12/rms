@@ -48,6 +48,19 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	}
 	
 	$scope.setPage(1);
+	
+	$scope.deleteTicket = function(ticketUrl) {
+		TicketService.deleteTicket(ticketUrl)
+		.then(function success(response) {
+			$scope.setPage(1);
+		}, function error(response) {
+			alert("Error deleting ticket: \n" + response.data.cause.cause.message);
+		});
+	}
+	
+	$scope.modifyTicket = function (ticketUrl) {
+		$location.path(ticketUrl.split(location.host)[1]);
+	}
  	/*
 	TicketService.getAllTickets()
 	.then(function success(response) {
@@ -105,3 +118,5 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 		$scope.errorMessage = 'Error getting persons!';
 	});*/
 }]);
+
+//add the controller to modify tickets

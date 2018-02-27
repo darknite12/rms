@@ -5,7 +5,7 @@ app.service('TicketService', [ '$http', function($http) {
 	this.getPaginatedTicket = function (size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/tickets?size=' + size + '&page=' + page + '&sort=firstName&lastName'
+			url : 'http://localhost:8080/tickets?size=' + size + '&page=' + page + '&sort=ticketNumber'
 		});
 	}
 	
@@ -47,6 +47,13 @@ app.service('TicketService', [ '$http', function($http) {
 			headers: {'Content-Type': 'text/uri-list'},
 			data : buyerUrl
 		});
+	}
+	
+	this.deleteTicket = function(ticketUrl) {
+		return $http({
+			method: 'DELETE',
+	        url: ticketUrl
+	    });
 	}
 	
 	this.searchTicket = function(searchValue, size, page) {
