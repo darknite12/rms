@@ -2,10 +2,10 @@ var app = angular.module('rmsdmgui.person.services', []);
 
 app.service('PersonService', [ '$http', function($http) {
 	
-	this.getPaginatedPerson = function (size, number) {
+	this.getPaginatedPerson = function (size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/persons?size=' + size + '&page=' + number + '&sort=firstName&lastName'
+			url : 'http://localhost:8080/persons?size=' + size + '&page=' + page + '&sort=firstName&lastName'
 		});
 	}
 	
@@ -60,10 +60,10 @@ app.service('PersonService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.searchPerson = function(searchValue, size, number) {
+	this.searchPerson = function(searchValue, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/persons/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + number + '&sort=firstName&lastName'
+			url : 'http://localhost:8080/persons/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=firstName&lastName'
 		});
 	}
 	
