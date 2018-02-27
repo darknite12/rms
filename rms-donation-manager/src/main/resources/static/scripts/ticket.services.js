@@ -1,10 +1,18 @@
 var app = angular.module('rmsdmgui.ticket.services', []);
 
 app.service('TicketService', [ '$http', function($http) {
+	
+	this.getPaginatedTicket = function (size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/tickets?size=' + size + '&page=' + page + '&sort=firstName&lastName'
+		});
+	}
+	
 	this.getAllTickets = function() {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/tickets/'
+			url : 'http://localhost:8080/tickets?sort=ticketNumber'
 		});
 	}
 	
@@ -38,6 +46,13 @@ app.service('TicketService', [ '$http', function($http) {
 			url : 'http://localhost:8080/tickets/' + id + '/' + buyerKind,
 			headers: {'Content-Type': 'text/uri-list'},
 			data : buyerUrl
+		});
+	}
+	
+	this.searchTicket = function(searchValue, size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/tickets/search/findByTicketNumber?ticketNumber=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
 		});
 	}
 }]);
