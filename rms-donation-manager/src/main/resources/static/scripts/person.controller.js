@@ -6,10 +6,11 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 	//This is to make possible the first entrance to setPage function (look if there is a better solution)
 	$scope.pager.totalPages = 2;
 	$scope.searchValue = "";
+	var pageSize = 15;
 	
 	$scope.setPage = function(page) {
 		if(page <= $scope.pager.totalPages) {
-			PersonService.searchPerson($scope.searchValue, 15, (page - 1))
+			PersonService.searchPerson($scope.searchValue, pageSize, (page - 1))
 			.then(function success(response) {
 				$scope.persons = response.data;
 				$scope.pager.currentPage = response.data.page.number + 1;

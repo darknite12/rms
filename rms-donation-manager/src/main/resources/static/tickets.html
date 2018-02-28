@@ -6,8 +6,25 @@
 		</div>
 		<div class="panel-body">
 			<form name="ticketSearch">
-				<div class="form-group col-sm-6">
-					<label for="search" class="control-label">Search:</label> <input
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label for="search" class="control-label">Search:</label> 
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<input type="text" class="form-control" ng-model="searchValue" />
+					</div>
+					<div class="form-group col-sm-6">
+						<a ng-click="setPage(1)" class="btn btn-small btn-primary">Search</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="panel-body">
+			<form name="ticketFilter">
+				<div class="form-group col-sm-4">
+					<label for="search" class="control-label">Filter:</label> <input
 						type="text" class="form-control" ng-model="searchKeyword" />
 				</div>
 			</form>
@@ -29,10 +46,30 @@
 				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a>
 				<td>{{t.buyer}}</td>
 				<td>{{t.soldBy}}</td>
-				<td> </td>
+				<td><a ng-click="deleteTicket(t._links.self.href)" class="btn btn-small btn-primary">delete</a></td>
 
 			</tr>
 		</tbody>
 	</table>
+	<!-- Pager -->
+	<div class="text-center">
+		<ul ng-if="pager.totalPages" class="pagination">
+		    <li ng-class="{disabled:pager.currentPage === 1}">
+		        <a ng-click="setPage(1)">First</a>
+		    </li>
+		    <li ng-class="{disabled:pager.currentPage === 1}">
+		        <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+		    </li>
+		    <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+		        <a ng-click="setPage(page)">{{page}}</a>
+		    </li>                
+		    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+		        <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+		    </li>
+		    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+		        <a ng-click="setPage(pager.totalPages)">Last</a>
+		    </li>
+		</ul>
+	</div>
 	
 </div>

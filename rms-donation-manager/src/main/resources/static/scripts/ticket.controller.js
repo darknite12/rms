@@ -1,10 +1,67 @@
 var app = angular.module('rmsdmgui.ticket.controllers', []);
 
-app.controller('TicketsController', ['$scope','TicketService', '$location', function ($scope, TicketService, $location) {
+app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '$location', function ($scope, TicketService, PagerService, $location) {
 	
 	$scope.tickets = [];
 	var allTickets = [];
 	
+	$scope.pager = {};
+	//This is to make possible the first entrance to setPage function (look if there is a better solution)
+	$scope.pager.totalPages = 2;
+	$scope.searchValue = "";
+	var pageSize = 15;
+	
+	$scope.setPage = function(page) {
+		if(page <= $scope.pager.totalPages) {
+			if($scope.searchValue == "") {
+				TicketService.getPaginatedTicket(pageSize, (page - 1))
+				.then(function success(response) {
+					$scope.tickets = response.data._embedded.tickets;
+					$scope.pager.currentPage = response.data.page.number + 1;
+					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+					$scope.message='';
+					$scope.errorMessage = '';
+				}, function error(response) {
+					
+				});
+			} else {
+				TicketService.searchTicket($scope.searchValue, pageSize, (page - 1))
+				.then(function success(response) {
+					$scope.tickets = response.data._embedded.tickets;
+					$scope.pager.currentPage = response.data.page.number + 1;
+					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+					$scope.message='';
+					$scope.errorMessage = '';
+					if($scope.pager.totalPages <= 0) {
+						alert("No tickets found");
+						$scope.pager.totalPages = 2;
+						$scope.searchValue = "";
+						$scope.setPage(1);
+					}
+				}, function error(response) {
+					
+				});
+			}
+		}
+	}
+	
+	$scope.setPage(1);
+	
+	$scope.deleteTicket = function(ticketUrl) {
+		TicketService.deleteTicket(ticketUrl)
+		.then(function success(response) {
+			$scope.setPage(1);
+		}, function error(response) {
+			alert("Error deleting ticket: \n" + response.data.cause.cause.message);
+		});
+	}
+	
+	$scope.modifyTicket = function (ticketUrl) {
+		$location.path(ticketUrl.split(location.host)[1]);
+	}
+ 	/*
 	TicketService.getAllTickets()
 	.then(function success(response) {
 		$scope.tickets = response.data._embedded.tickets;
@@ -53,11 +110,13 @@ app.controller('TicketsController', ['$scope','TicketService', '$location', func
 				
 			});
 			 
-		}*/
+		}
 		$scope.message='';
 		$scope.errorMessage = '';
 	}, function error (response) {
 		$scope.message='';
 		$scope.errorMessage = 'Error getting persons!';
-	});
+	});*/
 }]);
+
+//add the controller to modify tickets
