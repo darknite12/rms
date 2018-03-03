@@ -50,11 +50,19 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.setPage(1);
 	
 	$scope.deleteTicket = function(ticketUrl) {
-		TicketService.deleteTicket(ticketUrl)
+		TicketService.deleteTicket(ticketUrl.split("http://localhost:8080/tickets/")[1])
 		.then(function success(response) {
 			$scope.setPage(1);
 		}, function error(response) {
-			alert("Error deleting ticket: \n" + response.data.cause.cause.message);
+			switch(response.status) {
+			case 409:
+				alert("Error deleting ticket: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+				break;
+			case 500:
+				alert("Error deleting ticket: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+				break;
+			}
+			
 		});
 	}
 	

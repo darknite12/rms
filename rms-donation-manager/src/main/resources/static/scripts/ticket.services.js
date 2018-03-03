@@ -85,10 +85,10 @@ app.service('TicketService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.deleteTicket = function(ticketUrl) {
+	this.deleteTicket = function(id) {
 		return $http({
 			method: 'DELETE',
-	        url: ticketUrl
+	        url: 'http://localhost:8080/tickets/' + id
 	    });
 	}
 	
