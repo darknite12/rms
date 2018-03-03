@@ -25,6 +25,10 @@ angular.module('rmsdmgui', ['ngRoute',
     	templateUrl : '../tickets.html',
     	controller : 'TicketsController',
     	controllerAs : 'controller'
+    }).when('/tickets/:id', {
+    	templateUrl : '../ticket.html',
+    	controller : 'TicketController',
+    	controllerAs : 'controller'
     }).when('/newticket', {
     	templateUrl : '../ticket.html',
     	controller : 'NewTicketController',

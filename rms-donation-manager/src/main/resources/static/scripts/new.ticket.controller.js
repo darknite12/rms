@@ -14,10 +14,12 @@ app.controller('NewTicketController',
 	var sittingTableAdded = false;
 	var date = new Date();
 	$scope.sittingTable = {sittingTableNumber : ""};
+	$scope.buyer = {name : ""};
 	$scope.newTicketView = true;
 	$scope.newTickets = [];
 	$scope.tickets = {};
 	$scope.pager = {};
+	$scope.tablePager = {};
 	
 	PriceService.getPriceByYear(date.getFullYear())
 	.then(function success(response) {
@@ -69,20 +71,47 @@ app.controller('NewTicketController',
 		}
 	}
 	
-	$scope.getTickets = function () {
-		$scope.newTicket = {};
-		$scope.newTicket.year = date.getFullYear();
-		$scope.addTicketElem = true;
-		TicketService.getAllTickets()
+	$scope.setPaginatedTables = function (page) {
+		$scope.addTableElem = true;
+		$scope.tables = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
+		var columns = 15;
+		var itemsPerColumn = 5;
+		var counter = 0;
+		TableService.getPaginatedTable(75, (page - 1))
 		.then(function success(response) {
-			$scope.tickets = response.data;
+			for(var i = 0; i <= (columns - 1); i++) {
+				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+					$scope.tables[j].push(response.data._embedded.sittingTables[counter]);
+					counter++;
+				}
+			}
+			$scope.tablePager.currentPage = response.data.page.number + 1;
+			$scope.tablePager.totalPages = response.data.page.totalPages;
+			$scope.tablePager.pages = PagerService.createSlideRange($scope.tablePager.currentPage, $scope.tablePager.totalPages);
 		}, function error(response) {
 			
 		});
 	}
 	
+	$scope.selectTable = function (table) {
+		$scope.sittingTable = table;
+		sittingTableAdded = true;
+		$scope.addTableElem = false;
+	}
+	
+	$scope.unlinkTable = function () {
+		$scope.sittingTable = {sittingTableNumber : ""};
+		sittingTableAdded = false;
+	}
+	
+	$scope.showTicketForm = function () {
+		$scope.newTicket = {};
+		$scope.newTicket.ticketNumber = "";
+		$scope.newTicket.year = date.getFullYear();
+		$scope.addTicketElem = true;
+	}
+	
 	$scope.getPersons = function () {
-		
 		$scope.addBuyerElem = true;
 		$scope.addOrganizationElem = false;
 		dBTable = "persons";
@@ -96,10 +125,24 @@ app.controller('NewTicketController',
 		$scope.setPage(1);
 	}
 	
-	$scope.addTicket = function () {
-		$scope.newTicket.ticketPrice = priceUrl;
-		$scope.newTickets.push($scope.newTicket);
-		$scope.addTicketElem = false;
+	$scope.validateTicket = function () {
+		TicketService.searchTicketByNumber($scope.newTicket.ticketNumber)
+		.then(function success(response) {
+				alert("Ticket number: " + response.data.ticketNumber + " already exists");
+		}, function error(response) {
+			switch(response.status){
+			case 404:
+				if($scope.newTicket.ticketNumber == ""){
+					alert("Please insert a ticket number");
+				} else {
+					$scope.newTicket.ticketPrice = priceUrl;
+					$scope.newTickets.push($scope.newTicket);
+					$scope.addTicketElem = false;
+				}
+				break;
+			}
+		});
+		
 	}
 	
 	$scope.addTickets = function () {
@@ -109,7 +152,7 @@ app.controller('NewTicketController',
 			.then(function success(response) {
 				ticketId = response.data._links.self.href.split("http://localhost:8080/tickets/")[1];
 				if(sittingTableAdded){
-					TicketService.addSittingTable(ticketId, tableUrl)
+					TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
 					.then(function success(response) {
 						
 					}, function error(response) {
@@ -130,13 +173,15 @@ app.controller('NewTicketController',
 				alert("Error adding ticket");
 			});
 		}
+		//When the application goes back to the tickets GUI the new tickets do not appear until the page is reload
+		//The problem is that the page change is faster than the time that the changes are made in the DB. 
 		$location.path('/tickets');
 	}
 	
 	$scope.updateTicket = function (ticket, index) {
 		$scope.newTickets[index] = ticket;
 	}
-	
+	/* Can be used for the sitting table GUI
 	$scope.addSittingTable = function() {
 		sittingTableAdded = $scope.addSittingTableElem;
 		TableService.searchTable($scope.sittingTable.sittingTableNumber)
@@ -156,7 +201,7 @@ app.controller('NewTicketController',
 			}
 		});
 	}
-	
+	*/
 	$scope.deleteSittingTable = function() {
 		if($scope.sittingTableNumber != ""){
 			$scope.sittingTable.sittingTableNumber = "";
@@ -166,7 +211,7 @@ app.controller('NewTicketController',
 		$scope.tableAdded = false;
 	}
 	
-	$scope.setBuyer = function (buyer) {
+	$scope.selectBuyer = function (buyer) {
 		$scope.buyer = buyer;
 		if(buyer.firstName != null){
 			$scope.buyer.name = buyer.firstName + " " + buyer.lastName;
@@ -178,8 +223,10 @@ app.controller('NewTicketController',
 		buyerAdded = true;
 	}
 	
-	$scope.deleteBuyer = function() {
-		$scope.buyer = {}
+	$scope.unlinkBuyer = function() {
+		$scope.buyer = {name : ""};
+		$scope.addOrganizationElem = false;
+		$scope.addPersonElem = false;
 		buyerAdded = false;
 	}
 	

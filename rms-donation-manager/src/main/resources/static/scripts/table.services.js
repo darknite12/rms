@@ -2,6 +2,13 @@ var app = angular.module('rmsdmgui.table.services', []);
 
 app.service('TableService', ['$http', function($http) {
 	
+	this.getPaginatedTable = function(size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/sittingTables?size=' + size + '&page=' + page + '&sort=sittingTableNumber'
+		});
+	}
+	
 	this.getAllTables = function() {
 		return $http({
 			method : 'GET',
