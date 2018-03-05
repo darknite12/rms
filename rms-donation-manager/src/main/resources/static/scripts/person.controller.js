@@ -39,7 +39,14 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 		.then(function success(response) {
 			$scope.setPage(1);
 		}, function error(response) {
-			alert("Error deleting person: \n" + response.data.cause.cause.message);
+			switch(response.status) {
+			case 409:
+				alert("Error deleting ticket: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+				break;
+			case 500:
+				alert("Error deleting ticket: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+				break;
+			}
 		});
 	}
 	
