@@ -52,7 +52,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.deleteTicket = function(ticketUrl) {
 		TicketService.deleteTicket(ticketUrl.split("http://localhost:8080/tickets/")[1])
 		.then(function success(response) {
-			$scope.setPage(1);
+			$scope.setPage($scope.pager.currentPage);
 		}, function error(response) {
 			switch(response.status) {
 			case 409:
