@@ -16,6 +16,13 @@ app.service('OrganizationService', ['$http', function($http){
 		});
 	}
 	
+	this.searchOrganization = function (searchValue, size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/organizations/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+		});
+	}
+	
 	this.addOrganization = function (organization){
 		return $http({
 			method : 'POST',

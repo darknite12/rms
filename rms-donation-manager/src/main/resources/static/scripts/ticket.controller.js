@@ -148,9 +148,21 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	}
 	
 	$scope.selectTable = function (table) {
-		$scope.sittingTable = table;
+		TableService.getAssociatedTickets(table._links.self.href.split('http://localhost:8080/sittingTables/')[1])
+		.then(function success(response) {
+			var actualTickets = response.data._embedded.tickets.length;
+			var maxTickets = table.peoplePerTable;
+			if(actualTickets >= maxTickets) {
+				$scope.sittingTable = {sittingTableNumber : ""};
+				alert("This table is full. Please select another table");
+			} else if (actualTickets < maxTickets) {
+				$scope.sittingTable = table;
+				sittingTableChanged = true;
+			}
+		}, function error(response) {
+			alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
+		});
 		$scope.addTableElem = false;
-		sittingTableChanged = true;
 	}
 	
 	$scope.unlinkTable = function () {
@@ -178,15 +190,63 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	}
 	
 	$scope.setPage = function (page) {
-		$scope.buyer = {};
 		$scope.buyers = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
 			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
 		var itemsPerColumn = 15;
 		var counter = 0;
+		var pageSize = 45;
 		
 		switch(dBTable) {
 		case "persons":
-			PersonService.getPaginatedPerson(45, (page - 1))
+			if(page <= $scope.pager.totalPages) {
+				PersonService.getPaginatedPerson(pageSize, (page - 1))
+				.then(function success(response) {
+					for(var i = 0; i <= 2; i++) {
+						for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+							$scope.buyers[j].push(response.data._embedded.persons[counter]);
+							counter++;
+						}
+					}
+					$scope.pager.currentPage = response.data.page.number + 1;
+					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+				}, function error(response){
+					
+				});
+			}
+			break;
+		case "organizations":
+			if(page <= $scope.pager.totalPages) {
+				OrganizationService.getPaginatedOrganization(pageSize, (page - 1))
+				.then(function success(response) {
+					for(var i = 0; i <= 2; i++) {
+						for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+							$scope.buyers[j].push(response.data._embedded.organizations[counter]);
+							counter++;
+						}
+					}
+					$scope.pager.currentPage = response.data.page.number + 1;
+					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+				}, function error(response) {
+					
+				});
+			}
+			break;
+		}
+	}
+	
+	$scope.searchBuyer = function () {
+		$scope.buyers = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
+			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
+		var page = 1;
+		var itemsPerColumn = 15;
+		var counter = 0;
+		var pageSize = 45;
+		
+		switch(dBTable) {
+		case "persons":
+			PersonService.searchPerson($scope.searchValue, pageSize, (page - 1))
 			.then(function success(response) {
 				for(var i = 0; i <= 2; i++) {
 					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
@@ -202,7 +262,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 			});
 			break;
 		case "organizations":
-			OrganizationService.getPaginatedOrganization(45, (page - 1))
+			OrganizationService.searchOrganization($scope.searchValue, pageSize, (page - 1))
 			.then(function success(response) {
 				for(var i = 0; i <= 2; i++) {
 					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
@@ -223,6 +283,8 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	$scope.getPersons = function () {
 		$scope.addBuyerElem = true;
 		$scope.addOrganizationElem = false;
+		$scope.searchValue = "";
+		$scope.pager.totalPages = 2
 		dBTable = "persons";
 		$scope.setPage(1);
 	}
@@ -230,19 +292,22 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	$scope.getOrganizations = function () {
 		$scope.addBuyerElem = true;
 		$scope.addPersonElem = false;
+		$scope.searchValue = "";
+		$scope.pager.totalPages = 2
 		dBTable = "organizations";
 		$scope.setPage(1);
 	}
 	
 	$scope.updateTicket = function() {
-		//remember to compare if the table has been unlike or if there is a new one
+		//remember to compare if the table has been unlinked or if there is a new one
 		var updatingTicket = $scope.newTickets[0];
+		var ticketId = $routeParams.id;
 		TicketService.searchTicketByNumber(updatingTicket.ticketNumber)
 		.then(function success(response) {
 			if(updatingTicket.ticketNumber == $scope.ticketNumber) {
-				TicketService.updateTicket($routeParams.id, updatingTicket)
+				TicketService.updateTicket(ticketId, updatingTicket)
 				.then(function success(response) {
-					alert("Ticket Updated");
+					$location.path('/tickets');
 				}, function error(response) {
 					alert("Error: " + response.status);
 				});
@@ -255,9 +320,9 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 				if(updatingTicket.ticketNumber == ""){
 					alert("Please insert a ticket number");
 				} else {
-					TicketService.updateTicket($routeParams.id, updatingTicket)
+					TicketService.updateTicket(ticketId, updatingTicket)
 					.then(function success(response) {
-						
+						$location.path('/tickets');
 					}, function error(response) {
 						alert("Error: " + response.status);
 					});
@@ -266,18 +331,17 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 			}
 		});
 		
+		
 		if(sittingTableChanged) {
 			if($scope.sittingTable.sittingTableNumber == "") {
-				TicketService.deleteSittingTable($routeParams.id)
+				TicketService.deleteSittingTable(ticketId)
 				.then(function success(response) {
-					alert("Table Updated: Deleted");
 				}, function error(response) {
 					alert("Error: " + response.status);
 				});
 			} else {
-				TicketService.addSittingTable($routeParams.id, $scope.sittingTable._links.self.href)
+				TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
 				.then(function success(response) {
-					alert("Table Updated");
 				}, function error(response) {
 					alert("Error: " + response.status);
 				});
@@ -286,21 +350,19 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 		
 		if(buyerChanged) {
 			if($scope.buyer.name == "") {
-				TicketService.deletePerson($routeParams.id)
+				TicketService.deletePerson(ticketId)
 				.then(function success(response) {
-					TicketService.deleteOrganization($routeParams.id)
+					TicketService.deleteOrganization(ticketId)
 					.then(function success(response) {
-						alert("Person and Organization unlinked");
 					}, function error(response) {
 						alert("Error: " + response.status);
 					});
 				}, function error(response) {
-					alert("Error: " + response.status);
+					alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
 				});
 			} else {
-				TicketService.addBuyer($routeParams.id, buyerKind, $scope.buyer._links.self.href)
+				TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
 				.then(function success(response) {
-					alert("Buyer updated");
 				}, function error(response) {
 					alert("Error adding buyer");
 				});

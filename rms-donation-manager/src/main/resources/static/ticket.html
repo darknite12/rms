@@ -67,12 +67,12 @@
 								<th></th>
 								<th></th>
 								<th></th>
-								<th><a ng-hide="addTableElem" ng-click="setPaginatedTables(1)">+ Sitting Table</a></th>
+								<th><a ng-hide="addTableElem || (sittingTable.sittingTableNumber != '')" ng-click="setPaginatedTables(1)">+ Sitting Table</a></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="form-group" ng-form="sittingTableForm">
-								<td><input type="text" id="sittingTable" class='form-control' ng-model="sittingTable.sittingTableNumber" placeholder="Table"/></td>
+								<td><input ng-hide="sittingTable.sittingTableNumber == ''" type="text" id="sittingTable" class='form-control' ng-model="sittingTable.sittingTableNumber" placeholder="Table" ng-disabled="true"/></td>
 								<td><a ng-hide="sittingTable.sittingTableNumber == ''" ng-click="unlinkTable()" class="btn btn-small btn-primary">unlink</a></td>
 								<td></td>
 								<td></td>
@@ -137,16 +137,29 @@
 				<div class='row'>
 					<div class='col-sm-2'>
 						<div class='form-group'>
-							<label><input type="radio" id="person" ng-model="addPersonElem" value="false" ng-click="getPersons()"/> Person</label>
+							<label ng-show="buyer.name == ''"><input type="radio" id="person" ng-model="addPersonElem" value="false" ng-click="getPersons()"/> Person</label>
 						</div>
 					</div>
 					<div class='col-sm-2'>
 						<div class='form-group'>
-							<label><input type="radio" id="organization" ng-model="addOrganizationElem" value="false" ng-click="getOrganizations()"/> Organization</label>
+							<label ng-show="buyer.name == ''"><input type="radio" id="organization" ng-model="addOrganizationElem" value="false" ng-click="getOrganizations()"/> Organization</label>
 						</div>
 					</div>
 				</div>
 				<div class='col-sm-14'>
+					<div ng-show="addBuyerElem" class="row">
+						<div class="form-group col-sm-6">
+							<label for="search" class="control-label">Search:</label> 
+						</div>
+					</div>
+					<div ng-show="addBuyerElem" class="row">
+						<div class="form-group col-sm-6">
+							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert name"/>
+						</div>
+						<div class="form-group col-sm-6">
+							<a ng-click="searchBuyer()" class="btn btn-small btn-primary">Search</a>
+						</div>
+					</div>
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -155,11 +168,11 @@
 						</thead>
 						<tbody>
 							<tr class="form-group" ng-form="BoughtByForm">
-								<td><input type="text" id="Name" class='form-control' ng-model="buyer.name"/></td>
+								<td><input ng-hide="buyer.name == ''" type="text" id="Name" class='form-control' ng-model="buyer.name" ng-disabled="true"/></td>
 								<td></td>
 								<td><a ng-hide="buyer.name == ''" ng-click="unlinkBuyer()" class="btn btn-small btn-primary">unlink</a></td>
 							</tr>
-							<tr ng-show="addBuyerElem" ng-repeat="b in buyers | filter: buyer.name">
+							<tr ng-show="addBuyerElem" ng-repeat="b in buyers">
 								<td ng-show="addPersonElem"><a ng-click="selectBuyer(b[0])">{{b[0].firstName}} {{b[0].lastName}}</a></td>
 								<td ng-show="addPersonElem"><a ng-click="selectBuyer(b[1])">{{b[1].firstName}} {{b[1].lastName}}</a></td>
 								<td ng-show="addPersonElem"><a ng-click="selectBuyer(b[2])">{{b[2].firstName}} {{b[2].lastName}}</a></td>

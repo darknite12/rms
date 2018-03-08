@@ -94,8 +94,20 @@ app.controller('NewTicketController',
 	}
 	
 	$scope.selectTable = function (table) {
-		$scope.sittingTable = table;
-		sittingTableAdded = true;
+		TableService.getAssociatedTickets(table._links.self.href.split('http://localhost:8080/sittingTables/')[1])
+		.then(function success(response) {
+			var actualTickets = response.data._embedded.tickets.length;
+			var maxTickets = table.peoplePerTable;
+			if(actualTickets >= maxTickets) {
+				$scope.sittingTable = {sittingTableNumber : ""};
+				alert("This table is full. Please select another table");
+			} else if (actualTickets < maxTickets) {
+				$scope.sittingTable = table;
+				sittingTableAdded = true;
+			}
+		}, function error(response) {
+			alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
+		});
 		$scope.addTableElem = false;
 	}
 	

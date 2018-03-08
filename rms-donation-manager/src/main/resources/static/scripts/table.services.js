@@ -16,6 +16,13 @@ app.service('TableService', ['$http', function($http) {
 		});
 	}
 	
+	this.getAssociatedTickets = function(id) {
+		return $http({
+			method : 'GET',
+			url : 'http://localhost:8080/sittingTables/' + id + '/tickets'
+		});
+	}
+	
 	this.addTable = function(table) {
 		return $http({
 			method : 'POST',
