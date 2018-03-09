@@ -10,25 +10,40 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 	
 	$scope.setPage = function(page) {
 		if(page <= $scope.pager.totalPages) {
-			PersonService.searchPerson($scope.searchValue, pageSize, (page - 1))
-			.then(function success(response) {
-				$scope.persons = response.data;
-				$scope.pager.currentPage = response.data.page.number + 1;
-				$scope.pager.totalPages = response.data.page.totalPages;
-				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
-				$scope.message='';
-				$scope.errorMessage = '';
-				if($scope.pager.totalPages <= 0) {
-					alert("No people found");
-					$scope.pager.totalPages = 2;
-					$scope.searchValue = "";
-					$scope.setPage(1);
-				}
-			}, function error (response) {
-				$scope.message='';
-				$scope.errorMessage = 'Error searching persons: \n' + response.data.cause.cause.message;
-				alert($scope.errorMessage);
-			});
+			if($scope.searchValue = "") {
+				PersonService.getPaginatedPerson(pageSize, (page - 1))
+				.then(function success(response) {
+					$scope.persons = response.data;
+					$scope.pager.currentPage = response.data.page.number + 1;
+					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+					$scope.message='';
+					$scope.errorMessage = '';
+				}, function error(response) {
+					alert($scope.errorMessage);
+				});
+			} else {
+				PersonService.searchPerson($scope.searchValue, pageSize, (page - 1))
+				.then(function success(response) {
+					$scope.persons = response.data;
+					$scope.pager.currentPage = response.data.page.number + 1;
+					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+					$scope.message='';
+					$scope.errorMessage = '';
+					if($scope.pager.totalPages <= 0) {
+						alert("No people found");
+						$scope.pager.totalPages = 2;
+						$scope.searchValue = "";
+						$scope.setPage(1);
+					}
+				}, function error (response) {
+					$scope.message='';
+					$scope.errorMessage = 'Error searching persons: \n' + response.data.cause.cause.message;
+					alert($scope.errorMessage);
+				});
+			}
+			
 		}
 	}
 	
@@ -142,17 +157,11 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 		});
 	}
 	
-	$scope.deletePersonAddress = function (addressUrl,itemIndex) {
-		PersonService.deletePersonAddress($routeParams.id,
-				addressUrl.split("http://localhost:8080/addresses/")[1])
+	$scope.deletePersonAddress = function (addressUrl, itemIndex) {
+		var addressId = addressUrl.split("http://localhost:8080/addresses/")[1];
+		PersonService.deletePersonAddress($routeParams.id,	addressId)
 			.then(function success(response) {
-				AddressService.deleteAddress(addressUrl)
-				.then(function success(response) {
-					//Provisional way for refreshing personAddress model
-					refreshPersonAddress();
-				}, function error(response){
-					refreshPersonAddress();
-				});
+				refreshPersonAddress();
 				$scope.message = 'Persons address data deleted!';
 				$scope.errorMessage = '';
 			},
@@ -164,16 +173,10 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.deletePersonOrganization = function (organizationUrl) {
-		PersonService.deletePersonOrganization($routeParams.id,
-			organizationUrl.split("http://localhost:8080/organizations/")[1])
+		var OrganizationId = organizationUrl.split("http://localhost:8080/organizations/")[1];
+		PersonService.deletePersonOrganization($routeParams.id, OrganizationId)
 		.then(function success(response) {
-			OrganizationService.deleteOrganization(organizationUrl)
-			.then(function success(response) {
-				//Provisional way for refreshing personOrganization model
-				refreshPersonOrganization();
-			}, function error(response){
-				refreshPersonOrganization();
-			});
+			refreshPersonOrganization();
 		},function error(response) {
 			
 		});
