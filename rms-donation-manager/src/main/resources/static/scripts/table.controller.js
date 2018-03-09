@@ -17,24 +17,15 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 				TableService.getPaginatedTable(pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tables = response.data._embedded.sittingTables;
-					/*for(var i = 0; i <= $scope.tables.length; i++) {
-						var tableId = $scope.tables[i]._links.self.href.split("http://localhost:8080/sittingTables/")[1];
+					$scope.tables.forEach(function(element){
+						var tableId = element._links.self.href.split("http://localhost:8080/sittingTables/")[1]
 						TableService.getAssociatedTickets(tableId)
 						.then(function success(response) {
-							$scope.tables[i].peopleInTable = response.data._embedded.tickets.length;
-							added = true;
+							element.peopleInTable = response.data._embedded.tickets.length;
 						}, function error(response) {
-							switch(response.status) {
-							case 409:
-								alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
-								break;
-							case 500:
-								alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
-								break;
-							}
+							alert("Error Error");
 						});
-						while(!added) {}
-					}*/
+					});
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
@@ -47,6 +38,15 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 				TableService.searchTable($scope.searchValue, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tables = response.data._embedded.sittingTables;
+					$scope.tables.forEach(function(element){
+						var tableId = element._links.self.href.split("http://localhost:8080/sittingTables/")[1]
+						TableService.getAssociatedTickets(tableId)
+						.then(function success(response) {
+							element.peopleInTable = response.data._embedded.tickets.length;
+						}, function error(response) {
+							alert("Error Error");
+						});
+					});
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);

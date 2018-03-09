@@ -17,6 +17,25 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 				TicketService.getPaginatedTicket(pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tickets = response.data._embedded.tickets;
+					$scope.tickets.forEach(function(element) {
+						/*var ticketId = element._links.self.href.split("http://localhost:8080/tickets/")[1];
+						TicketService.getPerson(ticketId)
+						.then(function success(response) {
+							element.buyer = response.data.firstName + " " + $scope.buyer.lastName;
+						}, function(response) {
+							switch(response.status) {
+							case 404:
+								TicketService.getOrganization(ticketId)
+								.then(function success(response) {
+									element.buyer = response.data.name;
+								}, function error(response) {
+									
+								});
+								break;
+							}
+						});
+						element.buyer = "hola";*/
+					});
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
