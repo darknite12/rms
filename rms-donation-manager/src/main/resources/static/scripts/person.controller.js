@@ -132,7 +132,8 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.updatePersonAddress = function (address) {
-		PersonService.updatePersonAddress(address)
+		var addressId = address._links.self.href.split("http://localhost:8080/addresses/")[1];
+		PersonService.updatePersonAddress(addressId, address)
 		.then(function success(response) {
 			$scope.message = 'Persons address data updated!';
 			$scope.errorMessage = '';
@@ -144,10 +145,9 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.updatePersonOrganization = function (organization) {
-		PersonService.updatePersonOrganization(
-				organization.name,
-				organization._links.self.href
-		).then(function success(response) {
+		var organizationId = organization._links.self.href.split("http://localhost:8080/organizations/")[1];
+		PersonService.updatePersonOrganization(organizationId, organization)
+		.then(function success(response) {
 			$scope.message = 'Persons organization data updated!';
 			$scope.errorMessage = '';
 		},

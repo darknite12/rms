@@ -5,36 +5,36 @@ app.service('OrganizationService', ['$http', function($http){
 	this.getPaginatedOrganization = function (size, number) {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/organizations?size=' + size + '&page=' + number + '&sort=name'
+			url : 'http://' + location.host + '/organizations?size=' + size + '&page=' + number + '&sort=name'
 		});
 	}
 	
 	this.getAllOrganizations = function getAllOrganizations(){
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/organizations/'
+			url : 'http://' + location.host + '/organizations/'
 		});
 	}
 	
 	this.searchOrganization = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://localhost:8080/organizations/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+			url : 'http://' + location.host + '/organizations/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
 		});
 	}
 	
 	this.addOrganization = function (organization){
 		return $http({
 			method : 'POST',
-			url : 'http://localhost:8080/organizations/',
+			url : 'http://' + location.host + '/organizations/',
 			data : organization
 		});
 	}
 	
-	this.deleteOrganization = function deleteOrganization(OrganizationUrl) {
+	this.deleteOrganization = function deleteOrganization(id) {
 		return $http({
 			method: 'DELETE',
-	        url: OrganizationUrl
+	        url: 'http://' + location.host + '/organizations/' + id
 	    });
 	}
 }]);
