@@ -302,70 +302,70 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 		//remember to compare if the table has been unlinked or if there is a new one
 		var updatingTicket = $scope.newTickets[0];
 		var ticketId = $routeParams.id;
-		TicketService.searchTicketByNumber(updatingTicket.ticketNumber)
-		.then(function success(response) {
-			if(updatingTicket.ticketNumber == $scope.ticketNumber) {
-				TicketService.updateTicket(ticketId, updatingTicket)
-				.then(function success(response) {
-					$location.path('/tickets');
-				}, function error(response) {
-					alert("Error: " + response.status);
-				});
-			} else {
-				alert("Ticket number: " + response.data.ticketNumber + " already exists");
-			}
-		}, function error(response) {
-			switch(response.status){
-			case 404:
-				if(updatingTicket.ticketNumber == ""){
-					alert("Please insert a ticket number");
-				} else {
+		if(updatingTicket.ticketNumber == ""){
+			alert("Please insert a ticket number");
+		} else {
+			TicketService.searchTicketByNumber(updatingTicket.ticketNumber)
+			.then(function success(response) {
+				if(updatingTicket.ticketNumber == $scope.ticketNumber) {
 					TicketService.updateTicket(ticketId, updatingTicket)
 					.then(function success(response) {
 						$location.path('/tickets');
 					}, function error(response) {
 						alert("Error: " + response.status);
 					});
+				} else {
+					alert("Ticket number: " + response.data.ticketNumber + " already exists");
 				}
-				break;
-			}
-		});
-		
-		
-		if(sittingTableChanged) {
-			if($scope.sittingTable.sittingTableNumber == "") {
-				TicketService.deleteSittingTable(ticketId)
-				.then(function success(response) {
-				}, function error(response) {
-					alert("Error: " + response.status);
-				});
-			} else {
-				TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
-				.then(function success(response) {
-				}, function error(response) {
-					alert("Error: " + response.status);
-				});
-			}
-		}
-		
-		if(buyerChanged) {
-			if($scope.buyer.name == "") {
-				TicketService.deletePerson(ticketId)
-				.then(function success(response) {
-					TicketService.deleteOrganization(ticketId)
+			}, function error(response) {
+				switch(response.status){
+				case 404:
+					TicketService.updateTicket(ticketId, updatingTicket)
+					.then(function success(response) {
+						$location.path('/tickets');
+					}, function error(response) {
+						alert("Error: " + response.status);
+					});
+					break;
+				}
+			});
+			
+			
+			if(sittingTableChanged) {
+				if($scope.sittingTable.sittingTableNumber == "") {
+					TicketService.deleteSittingTable(ticketId)
 					.then(function success(response) {
 					}, function error(response) {
 						alert("Error: " + response.status);
 					});
-				}, function error(response) {
-					alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
-				});
-			} else {
-				TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
-				.then(function success(response) {
-				}, function error(response) {
-					alert("Error adding buyer");
-				});
+				} else {
+					TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
+					.then(function success(response) {
+					}, function error(response) {
+						alert("Error: " + response.status);
+					});
+				}
+			}
+			
+			if(buyerChanged) {
+				if($scope.buyer.name == "") {
+					TicketService.deletePerson(ticketId)
+					.then(function success(response) {
+						TicketService.deleteOrganization(ticketId)
+						.then(function success(response) {
+						}, function error(response) {
+							alert("Error: " + response.status);
+						});
+					}, function error(response) {
+						alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
+					});
+				} else {
+					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+					.then(function success(response) {
+					}, function error(response) {
+						alert("Error adding buyer");
+					});
+				}
 			}
 		}
 	}

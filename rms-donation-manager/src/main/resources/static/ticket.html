@@ -23,7 +23,7 @@
 									<td><input type="text" id="soldBy" class='form-control' ng-model="nt.soldBy"/></td>
 									<td><input type="checkbox" id="paid" class='form-control' ng-model="nt.paid"/></td>
 									<td>
-										<select id="repeatSelect" ng-model="nt.formOfPayment" class='form-control' ng-disabled="!newTicket.paid">
+										<select id="repeatSelect" ng-model="nt.formOfPayment" class='form-control' ng-disabled="!nt.paid">
 									      <option ng-repeat="option in selectOptions" value="{{option.option}}">{{option.option}}</option>
 									    </select>
 									</td>

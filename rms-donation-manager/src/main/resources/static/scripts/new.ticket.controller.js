@@ -193,27 +193,7 @@ app.controller('NewTicketController',
 	$scope.updateTicket = function (ticket, index) {
 		$scope.newTickets[index] = ticket;
 	}
-	/* Can be used for the sitting table GUI
-	$scope.addSittingTable = function() {
-		sittingTableAdded = $scope.addSittingTableElem;
-		TableService.searchTable($scope.sittingTable.sittingTableNumber)
-		.then(function success(response) {
-			tableUrl = response.data._links.self.href;
-			$scope.tableAdded = true;
-		}, function error(response) {
-			switch(response.status) {
-			case 404:
-				TableService.addTable($scope.sittingTable)
-				.then(function success(response) {
-					tableUrl = response.data._links.self.href;
-					$scope.tableAdded = true;
-				}, function error(response) {
-					alert("Error adding table");
-				});
-			}
-		});
-	}
-	*/
+	
 	$scope.deleteSittingTable = function() {
 		if($scope.sittingTableNumber != ""){
 			$scope.sittingTable.sittingTableNumber = "";

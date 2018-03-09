@@ -7,6 +7,7 @@ angular.module('rmsdmgui', ['ngRoute',
 	'rmsdmgui.organization.services',
 	'rmsdmgui.general.services',
 	'rmsdmgui.price.services',
+	'rmsdmgui.table.controllers',
 	'rmsdmgui.table.services'])
 .config(function($routeProvider, $httpProvider) {
     $routeProvider.when('/persons', {
@@ -32,6 +33,18 @@ angular.module('rmsdmgui', ['ngRoute',
     }).when('/newticket', {
     	templateUrl : '../ticket.html',
     	controller : 'NewTicketController',
+    	controllerAs : 'controller'
+    }).when('/sittingTables', {
+    	templateUrl : '../tables.html',
+    	controller : 'TablesController',
+    	controllerAs : 'controller'
+    }).when('/sittingTables/:id', {
+    	templateUrl : '../table.html',
+    	controller : 'TableController',
+    	controllerAs : 'controller'
+    }).when('/newsittingTable', {
+    	templateUrl : '../table.html',
+    	controller : 'NewTableController',
     	controllerAs : 'controller'
     }).otherwise('/');
 });

@@ -1,0 +1,91 @@
+<div class="container-fluid">
+	<h1 ng-hide="newTableView">Table Number: {{sittingTableNumber}}</h1>
+	<div class="panel panel-default">
+		<div class='well'>
+			<h2 ng-show="newTableView">New Table</h2>
+			<form name="tableForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Number</a></th>
+								<th>Name</th>
+								<th>People per Table</th>
+								<th ng-hide="newTableView">People in Table</th>
+								<th>year</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="newTableForm">
+								<ng-form name="newTableForm">
+									<td><input type="text" id="sittingTableNumber" class='form-control' ng-model="sittingTable.sittingTableNumber"/></td>
+									<td><input type="text" id="sitingTableName" class='form-control' ng-model="sittingTable.sittingTableName"/></td>
+									<td><input type="text" id="peoplePerTable" class='form-control' ng-model="sittingTable.peoplePerTable"/></td>
+									<td ng-hide="newTableView"><input type="text" id="peopleInTable" class='form-control' ng-model="sittingTable.peopleInTable" ng-disabled="true"/></td>
+									<td><input type="text" id="year" class='form-control' ng-model="sittingTable.year"/></td>
+								</ng-form>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</form>
+			<div  ng-show="newTableView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="addTable()" class="btn btn-small btn-primary">Add</a>
+			</div>
+		</div>
+		<div ng-hide="newTableView" class='well'>
+			<h2 ng-hide="newTableView">Linked Tickets</h2>
+			<form ng-hide="newTableView" name="linkedTicketsForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Number</th>
+								<th>Bought By</th>
+								<th>Paid</th>
+								<th>From of Payment</th>
+								<!-- <th><a ng-hide="addTicketElem" ng-click="getTickets()">+ Ticket</a></th> -->
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="linkedTicketsForm" ng-repeat="t in tickets">
+								<ng-form name="linkedTicketsForm">
+									<td>{{t.ticketNumber}}</a>
+									<td>{{t.person.firstName}}</td>
+									<td><input type="checkbox" id="paid" class='form-group' ng-model="t.paid" ng-disabled="true"/></td>
+									<td>{{t.formOfPayment}}</td>
+									<td><a ng-click="unlinkTicket(t._links.self.href)" class="btn btn-small btn-primary">unlink</a></td>
+								</ng-form>
+							</tr>
+							<!-- <tr ng-show="addPersonAddressElem">
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.address"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.address2"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.city"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.poBox"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.postalCode"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.province"/></th>
+								<th><input type="text" class='form-control' ng-model="newPersonAddress.country"/></th>
+								<th><a ng-click="addPersonAddress()" class="btn btn-small btn-primary">add</a></th>
+								<th><a ng-click="addPersonAddressElem=false" class="btn btn-small btn-primary">cancel</a></th>
+							</tr>
+							<tr ng-show="addPersonAddressElem" ng-repeat="a in addresses._embedded.addresses | filter: newPersonAddress.address">
+								<td><a ng-click="setPersonAddress(a)">{{a.address}}</a></td>
+								<td>{{a.address2}}</td>
+								<td>{{a.city}}</td>
+								<td>{{a.poBox}}</td>
+								<td>{{a.postalCode}}</td>
+								<td>{{a.province}}</td>
+								<td>{{a.country}}</td>
+							</tr> -->
+						</tbody>
+					</table>
+				</div>
+			</form>
+			<div  ng-hide="newTableView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="updateTable()" class="btn btn-small btn-primary">Update</a>
+			</div>
+		</div>
+	</div>
+</div>
