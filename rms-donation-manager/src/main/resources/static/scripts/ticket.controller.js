@@ -18,10 +18,10 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 				.then(function success(response) {
 					$scope.tickets = response.data._embedded.tickets;
 					$scope.tickets.forEach(function(element) {
-						/*var ticketId = element._links.self.href.split("http://localhost:8080/tickets/")[1];
+						var ticketId = element._links.self.href.split('http://' + location.host + '/tickets/')[1];
 						TicketService.getPerson(ticketId)
 						.then(function success(response) {
-							element.buyer = response.data.firstName + " " + $scope.buyer.lastName;
+							element.buyer = response.data.firstName + " " + response.data.lastName;
 						}, function(response) {
 							switch(response.status) {
 							case 404:
@@ -34,7 +34,12 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 								break;
 							}
 						});
-						element.buyer = "hola";*/
+						TicketService.getSittingTable(ticketId)
+						.then(function success(response) {
+							element.sittingTableNumber = response.data.sittingTableNumber;
+						}, function error(response) {
+							
+						});
 					});
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
@@ -48,6 +53,24 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 				TicketService.searchTicket($scope.searchValue, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tickets = response.data._embedded.tickets;
+					$scope.tickets.forEach(function(element) {
+						var ticketId = element._links.self.href.split('http://' + location.host + '/tickets/')[1];
+						TicketService.getPerson(ticketId)
+						.then(function success(response) {
+							element.buyer = response.data.firstName + " " + response.data.lastName;
+						}, function(response) {
+							switch(response.status) {
+							case 404:
+								TicketService.getOrganization(ticketId)
+								.then(function success(response) {
+									element.buyer = response.data.name;
+								}, function error(response) {
+									
+								});
+								break;
+							}
+						});
+					});
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
@@ -69,7 +92,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.setPage(1);
 	
 	$scope.deleteTicket = function(ticketUrl) {
-		TicketService.deleteTicket(ticketUrl.split("http://localhost:8080/tickets/")[1])
+		TicketService.deleteTicket(ticketUrl.split('http://' + location.host + '/tickets/')[1])
 		.then(function success(response) {
 			$scope.setPage($scope.pager.currentPage);
 		}, function error(response) {
@@ -167,7 +190,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	}
 	
 	$scope.selectTable = function (table) {
-		TableService.getAssociatedTickets(table._links.self.href.split('http://localhost:8080/sittingTables/')[1])
+		TableService.getAssociatedTickets(table._links.self.href.split('http://' + location.host + '/sittingTables/')[1])
 		.then(function success(response) {
 			var actualTickets = response.data._embedded.tickets.length;
 			var maxTickets = table.peoplePerTable;
@@ -312,15 +335,16 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 		$scope.addBuyerElem = true;
 		$scope.addPersonElem = false;
 		$scope.searchValue = "";
-		$scope.pager.totalPages = 2
+		$scope.pager.totalPages = 2;
 		dBTable = "organizations";
 		$scope.setPage(1);
 	}
 	
 	$scope.updateTicket = function() {
-		//remember to compare if the table has been unlinked or if there is a new one
 		var updatingTicket = $scope.newTickets[0];
 		var ticketId = $routeParams.id;
+		var sittingTable = $scope.sittingTable;
+		var buyer = $scope.buyer;
 		if(updatingTicket.ticketNumber == ""){
 			alert("Please insert a ticket number");
 		} else {
@@ -350,24 +374,23 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 			});
 			
 			
-			if(sittingTableChanged) {
-				if($scope.sittingTable.sittingTableNumber == "") {
+			if(sittingTableChanged && !buyerChanged) {
+				if(sittingTable.sittingTableNumber == "") {
 					TicketService.deleteSittingTable(ticketId)
 					.then(function success(response) {
+						
 					}, function error(response) {
 						alert("Error: " + response.status);
 					});
 				} else {
-					TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
+					TicketService.addSittingTable(ticketId, sittingTable._links.self.href)
 					.then(function success(response) {
 					}, function error(response) {
 						alert("Error: " + response.status);
 					});
 				}
-			}
-			
-			if(buyerChanged) {
-				if($scope.buyer.name == "") {
+			}else if(!sittingTableChanged && buyerChanged) {
+				if(buyer.name == "") {
 					TicketService.deletePerson(ticketId)
 					.then(function success(response) {
 						TicketService.deleteOrganization(ticketId)
@@ -379,8 +402,55 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 						alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
 					});
 				} else {
-					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+					TicketService.addBuyer(ticketId, buyerKind, buyer._links.self.href)
 					.then(function success(response) {
+					}, function error(response) {
+						alert("Error adding buyer");
+					});
+				}
+			} else if(sittingTableChanged && buyerChanged) {
+				if(buyer.name == "") {
+					TicketService.deletePerson(ticketId)
+					.then(function success(response) {
+						TicketService.deleteOrganization(ticketId)
+						.then(function success(response) {
+							if(sittingTable.sittingTableNumber == "") {
+								TicketService.deleteSittingTable(ticketId)
+								.then(function success(response) {
+									
+								}, function error(response) {
+									alert("Error: " + response.status);
+								});
+							} else {
+								TicketService.addSittingTable(ticketId, sittingTable._links.self.href)
+								.then(function success(response) {
+								}, function error(response) {
+									alert("Error: " + response.status);
+								});
+							}
+						}, function error(response) {
+							alert("Error: " + response.status);
+						});
+					}, function error(response) {
+						alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
+					});
+				} else {
+					TicketService.addBuyer(ticketId, buyerKind, buyer._links.self.href)
+					.then(function success(response) {
+						if(sittingTable.sittingTableNumber == "") {
+							TicketService.deleteSittingTable(ticketId)
+							.then(function success(response) {
+								
+							}, function error(response) {
+								alert("Error: " + response.status);
+							});
+						} else {
+							TicketService.addSittingTable(ticketId, sittingTable._links.self.href)
+							.then(function success(response) {
+							}, function error(response) {
+								alert("Error: " + response.status);
+							});
+						}
 					}, function error(response) {
 						alert("Error adding buyer");
 					});

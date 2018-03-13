@@ -1,7 +1,7 @@
 var app = angular.module('rmsdmgui.person.controllers');
 
-app.controller('NewPersonController', ['$scope', '$location', 'PersonService', 'AddressService', 'OrganizationService', 
-	function($scope, $location, PersonService, AddressService, OrganizationService){
+app.controller('NewPersonController', ['$scope', '$location', 'PersonService', 'AddressService', 'OrganizationService', 'PagerService',
+	function($scope, $location, PersonService, AddressService, OrganizationService, PagerService){
 	
 	$scope.newPersonView = true;
 	
@@ -13,10 +13,12 @@ app.controller('NewPersonController', ['$scope', '$location', 'PersonService', '
 	$scope.newPersonAddress = {};
 	$scope.newPersonOrganization = {};
 	
+	$scope.pager = {};
+	
 	$scope.addPerson = function () {
 		PersonService.addPerson($scope.person)
 		.then(function success (response) {
-			var personId = response.data._links.self.href.split("http://localhost:8080/persons/")[1];
+			var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
 			
 			for(var i = 0 ; i <= ($scope.personAddress.addresses.length - 1) ; i++){
 				
@@ -123,18 +125,35 @@ app.controller('NewPersonController', ['$scope', '$location', 'PersonService', '
 	
 	$scope.getOrganizations = function () {
 		$scope.addPersonOrganizationElem = true;
-		
 		$scope.newPersonOrganization = {};
+		$scope.searchValue = "";
+		$scope.pager.totalPages = 2;
+		$scope.setPage(1);
+	}
+	
+	$scope.setPage = function (page) {
+		$scope.organizations = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
+			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
+		var itemsPerColumn = 15;
+		var counter = 0;
+		var pageSize = 45;
 		
-		OrganizationService.getAllOrganizations()
-		.then(function success(response) {
-			$scope.organizations = response.data;
-			$scope.message='Good';
-			$scope.errorMessage = '';
-		}, function error(response){
-			$scope.message='';
-			$scope.errorMessage = 'Error getting organizations!';
-		});
+		if(page <= $scope.pager.totalPages) {
+			OrganizationService.getPaginatedOrganization(pageSize, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= 2; i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.organizations[j].push(response.data._embedded.organizations[counter]);
+						counter++;
+					}
+				}
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+			}, function error(response) {
+				
+			});
+		}
 	}
 	
 	$scope.cancel = function () {

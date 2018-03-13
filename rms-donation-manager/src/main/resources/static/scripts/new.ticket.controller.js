@@ -29,7 +29,7 @@ app.controller('NewTicketController',
 	});
 	
 	$scope.setPage = function (page) {
-		$scope.buyer = {};
+		$scope.buyer = {name : ""}; {};
 		$scope.buyers = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
 			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
 		var itemsPerColumn = 15;
@@ -71,6 +71,50 @@ app.controller('NewTicketController',
 		}
 	}
 	
+	$scope.searchBuyer = function () {
+		$scope.buyers = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
+			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
+		var page = 1;
+		var itemsPerColumn = 15;
+		var counter = 0;
+		var pageSize = 45;
+		
+		switch(dBTable) {
+		case "persons":
+			PersonService.searchPerson($scope.searchValue, pageSize, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= 2; i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.buyers[j].push(response.data._embedded.persons[counter]);
+						counter++;
+					}
+				}
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+			}, function error(response){
+				
+			});
+			break;
+		case "organizations":
+			OrganizationService.searchOrganization($scope.searchValue, pageSize, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= 2; i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.buyers[j].push(response.data._embedded.organizations[counter]);
+						counter++;
+					}
+				}
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+			}, function error(response) {
+				
+			});
+			break;
+		}
+	}
+	
 	$scope.setPaginatedTables = function (page) {
 		$scope.addTableElem = true;
 		$scope.tables = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
@@ -94,7 +138,7 @@ app.controller('NewTicketController',
 	}
 	
 	$scope.selectTable = function (table) {
-		TableService.getAssociatedTickets(table._links.self.href.split('http://localhost:8080/sittingTables/')[1])
+		TableService.getAssociatedTickets(table._links.self.href.split('http://' + location.host + '/sittingTables/')[1])
 		.then(function success(response) {
 			var actualTickets = response.data._embedded.tickets.length;
 			var maxTickets = table.peoplePerTable;
@@ -162,7 +206,7 @@ app.controller('NewTicketController',
 		for(var i = 0; i <= ($scope.newTickets.length - 1); i++) {
 			TicketService.addTicket($scope.newTickets[i])
 			.then(function success(response) {
-				ticketId = response.data._links.self.href.split("http://localhost:8080/tickets/")[1];
+				ticketId = response.data._links.self.href.split('http://' + location.host + '/tickets/')[1];
 				if(sittingTableAdded){
 					TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
 					.then(function success(response) {

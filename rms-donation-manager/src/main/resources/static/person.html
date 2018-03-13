@@ -164,11 +164,32 @@
 								<td><a ng-click="addPersonOrganization()" class="btn btn-small btn-primary">add</a></td>
 								<td><a ng-click="addPersonOrganizationElem=false" class="btn btn-small btn-primary">cancel</a></td>
 							</tr>
-							<tr ng-show="addPersonOrganizationElem" ng-repeat="o in organizations._embedded.organizations | filter: newPersonOrganization.name">
-								<td><a ng-click="setPersonOrganization(o)">{{o.name}}</a></td>
+							<tr ng-show="addPersonOrganizationElem" ng-repeat="o in organizations | filter: newPersonOrganization.name">
+								<td><a ng-click="setPersonOrganization(o[0])">{{o[0].name}}</a></td>
+								<td><a ng-click="setPersonOrganization(o[1])">{{o[1].name}}</a></td>
+								<td><a ng-click="setPersonOrganization(o[2])">{{o[2].name}}</a></td>
 							</tr>
 						</tbody>
 					</table>
+					<div class="text-center" ng-show="addPersonOrganizationElem">
+						<ul ng-if="pager.totalPages" class="pagination">
+						    <li ng-class="{disabled:pager.currentPage === 1}">
+						        <a ng-click="setPage(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:pager.currentPage === 1}">
+						        <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+						        <a ng-click="setPage(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+						        <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+						        <a ng-click="setPage(pager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
 				</div>
 			</form>
 			<div ng-show="newPersonView" class='text-right'>
