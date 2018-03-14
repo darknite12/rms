@@ -1,39 +1,51 @@
 package org.rms.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the sitting_table database table.
  * 
  */
 @Entity
-@Table(name="sitting_table")
-@NamedQuery(name="SittingTable.findAll", query="SELECT s FROM SittingTable s")
+@Table(name = "sitting_table")
+@NamedQuery(name = "SittingTable.findAll", query = "SELECT s FROM SittingTable s")
 public class SittingTable implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="sitting_table_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "sitting_table_id")
 	private int sittingTableId;
 
-	@Column(name="people_per_table")
+	@Column(name = "people_per_table")
 	private int peoplePerTable;
 
-	@Column(name="sitting_table_name")
-	private String sittingTableName;
+	private String name;
 
-	@Column(name="sitting_table_number")
-	private int sittingTableNumber;
+	private int number;
 
 	private int year;
 
-	//bi-directional many-to-one association to Ticket
-	@OneToMany(mappedBy="sittingTable")
+	// bi-directional many-to-one association to Ticket
+	@OneToMany(mappedBy = "sittingTable")
 	private List<Ticket> tickets;
+
+	// bi-directional many-to-one association to Event
+	@ManyToOne
+	@JoinColumn(name = "event_id")
+	private Event event;
 
 	public SittingTable() {
 	}
@@ -54,20 +66,28 @@ public class SittingTable implements Serializable {
 		this.peoplePerTable = peoplePerTable;
 	}
 
-	public String getSittingTableName() {
-		return this.sittingTableName;
+	public String getName() {
+		return name;
 	}
 
-	public void setSittingTableName(String sittingTableName) {
-		this.sittingTableName = sittingTableName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public int getSittingTableNumber() {
-		return this.sittingTableNumber;
+	public int getNumber() {
+		return number;
 	}
 
-	public void setSittingTableNumber(int sittingTableNumber) {
-		this.sittingTableNumber = sittingTableNumber;
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
 	}
 
 	public int getYear() {
