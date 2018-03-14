@@ -6,8 +6,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  * The persistent class for the event database table.
@@ -22,7 +22,7 @@ public class Event implements Serializable {
 	@Column(name = "event_id")
 	private int eventId;
 
-	private String location;
+	private String venue;
 
 	@Column(name = "masters_of_ceremony")
 	private String mastersOfCeremony;
@@ -31,8 +31,10 @@ public class Event implements Serializable {
 
 	private int year;
 
-	// bi-directional many-to-many association to Ticket
-	@ManyToMany(mappedBy = "events")
+	private String address;
+
+	// bi-directional many-to-one association to Ticket
+	@OneToMany(mappedBy = "event")
 	private List<Ticket> tickets;
 
 	public Event() {
@@ -46,12 +48,12 @@ public class Event implements Serializable {
 		this.eventId = eventId;
 	}
 
-	public String getLocation() {
-		return this.location;
+	public String getVenue() {
+		return venue;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setVenue(String venue) {
+		this.venue = venue;
 	}
 
 	public String getMastersOfCeremony() {
@@ -78,6 +80,14 @@ public class Event implements Serializable {
 		this.year = year;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	public List<Ticket> getTickets() {
 		return tickets;
 	}
@@ -85,7 +95,5 @@ public class Event implements Serializable {
 	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
 	}
-	
-	
 
 }
