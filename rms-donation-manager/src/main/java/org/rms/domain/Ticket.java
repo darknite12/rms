@@ -1,7 +1,6 @@
 package org.rms.domain;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 
@@ -61,17 +59,19 @@ public class Ticket implements Serializable {
 	@JoinColumn(name = "sitting_table_id")
 	private SittingTable sittingTable;
 
-	// bi-directional many-to-many association to
-	@ManyToMany
-	@JoinTable(name = "ticket_event", joinColumns = { @JoinColumn(name = "ticket_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "event_id") })
-	private List<Event> events;
+	// bi-directional many-to-one association to Event
+	@ManyToOne
+	@JoinColumn(name = "event_id")
+	private Event event;
 
 	@Column(name = "form_of_payment")
 	private String formOfPayment;
 
 	@Column(name = "is_paid")
 	private boolean isPaid;
+
+	@Lob
+	private String info;
 
 	public Ticket() {
 	}
@@ -164,12 +164,20 @@ public class Ticket implements Serializable {
 		this.isPaid = isPaid;
 	}
 
-	public List<Event> getEvents() {
-		return events;
+	public Event getEvent() {
+		return event;
 	}
 
-	public void setEvents(List<Event> events) {
-		this.events = events;
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	public String getInfo() {
+		return this.info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
 }
