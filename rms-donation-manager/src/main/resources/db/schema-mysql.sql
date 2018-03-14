@@ -218,11 +218,18 @@ DEFAULT CHARACTER SET = latin1;
 
 CREATE TABLE IF NOT EXISTS `sitting_table` (
   `sitting_table_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `sitting_table_name` VARCHAR(255) NULL DEFAULT NULL,
-  `sitting_table_number` INT(11) NULL DEFAULT NULL,
+  `name` VARCHAR(255) NULL DEFAULT NULL,
+  `number` INT(11) NULL DEFAULT NULL,
+  `event_id` INT(11) NOT NULL,
   `year` INT(11) NULL DEFAULT NULL,
   `people_per_table` INT(11) NULL DEFAULT NULL,
-  PRIMARY KEY (`sitting_table_id`))
+  PRIMARY KEY (`sitting_table_id`),
+  INDEX `fk_sitting_table_event_idx` (`event_id` ASC),
+  CONSTRAINT `fk_sitting_table_event`
+    FOREIGN KEY (`event_id`)
+    REFERENCES `event` (`event_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
