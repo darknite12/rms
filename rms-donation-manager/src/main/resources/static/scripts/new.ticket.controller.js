@@ -140,12 +140,16 @@ app.controller('NewTicketController',
 	$scope.selectTable = function (table) {
 		TableService.getAssociatedTickets(table._links.self.href.split('http://' + location.host + '/sittingTables/')[1])
 		.then(function success(response) {
-			var actualTickets = response.data._embedded.tickets.length;
+			var existingTickets = response.data._embedded.tickets.length;
 			var maxTickets = table.peoplePerTable;
-			if(actualTickets >= maxTickets) {
+			var ticketsToBeAdded = $scope.newTickets.length;
+			if (existingTickets >= maxTickets) {
 				$scope.sittingTable = {sittingTableNumber : ""};
 				alert("This table is full. Please select another table");
-			} else if (actualTickets < maxTickets) {
+			}else if((existingTickets + ticketsToBeAdded) > maxTickets) {
+				$scope.sittingTable = {sittingTableNumber : ""};
+				alert("This table is almost full.\nYou can add only " + (maxTickets - existingTickets) + " to this table");
+			} else if (existingTickets < maxTickets) {
 				$scope.sittingTable = table;
 				sittingTableAdded = true;
 			}
@@ -203,32 +207,46 @@ app.controller('NewTicketController',
 	
 	$scope.addTickets = function () {
 		var ticketId = "";
-		for(var i = 0; i <= ($scope.newTickets.length - 1); i++) {
-			TicketService.addTicket($scope.newTickets[i])
+		var ticketIds = [];
+		var counter = 0;
+		
+		$scope.newTickets.forEach(function (element) {
+			TicketService.addTicket(element)
 			.then(function success(response) {
 				ticketId = response.data._links.self.href.split('http://' + location.host + '/tickets/')[1];
-				if(sittingTableAdded){
+				ticketIds.push(ticketId);
+				if(sittingTableAdded && !buyerAdded){
 					TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
 					.then(function success(response) {
 						
 					}, function error(response) {
 						alert("Error adding sittingTable to ticket");
 					});
-				}
-				
-				if (buyerAdded) {
+				} else if (!sittingTableAdded && buyerAdded) {
 					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
 					.then(function success(response) {
 						
 					}, function error(response) {
 						alert("Error adding buyer");
 					});
+				} else if (sittingTableAdded && buyerAdded) {
+					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+					.then(function success(response) {
+						TicketService.addSittingTable(ticketIds[counter], $scope.sittingTable._links.self.href)
+						.then(function success(response) {
+							
+						}, function error(response) {
+							alert("Error adding sittingTable to ticket");
+						});
+						counter++;
+					}, function error(response) {
+						alert("Error adding buyer");
+					});
 				}
-				
 			}, function error(response) {
 				alert("Error adding ticket");
 			});
-		}
+		});
 		//When the application goes back to the tickets GUI the new tickets do not appear until the page is reload
 		//The problem is that the page change is faster than the time that the changes are made in the DB. 
 		$location.path('/tickets');
