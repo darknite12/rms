@@ -10,7 +10,7 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 	
 	$scope.setPage = function(page) {
 		if(page <= $scope.pager.totalPages) {
-			if($scope.searchValue = "") {
+			if($scope.searchValue == "") {
 				PersonService.getPaginatedPerson(pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.persons = response.data;
@@ -71,13 +71,14 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 	
 }]);
 
-app.controller('PersonController', ['$scope', 'PersonService', 'AddressService', 'OrganizationService', '$location', '$routeParams', 
-	function ($scope, PersonService, AddressService, OrganizationService, $location, $routeParams) {
+app.controller('PersonController', ['$scope', 'PersonService', 'AddressService', 'OrganizationService', 'PagerService', '$location', '$routeParams', 
+	function ($scope, PersonService, AddressService, OrganizationService, PagerService, $location, $routeParams) {
 	
 	var addressExists = false;
 	var organizationExists = false;
 	$scope.personAddress = [];
 	$scope.personOrganization = [];
+	$scope.pager = {};
 	
 	$scope.person = PersonService.getPerson($routeParams.id)
 	.then(function success(response) {
@@ -132,7 +133,7 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.updatePersonAddress = function (address) {
-		var addressId = address._links.self.href.split("http://localhost:8080/addresses/")[1];
+		var addressId = address._links.self.href.split('http://' + location.host + '/addresses/')[1];
 		PersonService.updatePersonAddress(addressId, address)
 		.then(function success(response) {
 			$scope.message = 'Persons address data updated!';
@@ -145,7 +146,7 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.updatePersonOrganization = function (organization) {
-		var organizationId = organization._links.self.href.split("http://localhost:8080/organizations/")[1];
+		var organizationId = organization._links.self.href.split('http://' + location.host + '/organizations/')[1];
 		PersonService.updatePersonOrganization(organizationId, organization)
 		.then(function success(response) {
 			$scope.message = 'Persons organization data updated!';
@@ -158,7 +159,7 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.deletePersonAddress = function (addressUrl, itemIndex) {
-		var addressId = addressUrl.split("http://localhost:8080/addresses/")[1];
+		var addressId = addressUrl.split('http://' + location.host + '/addresses/')[1];
 		PersonService.deletePersonAddress($routeParams.id,	addressId)
 			.then(function success(response) {
 				refreshPersonAddress();
@@ -173,7 +174,7 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.deletePersonOrganization = function (organizationUrl) {
-		var OrganizationId = organizationUrl.split("http://localhost:8080/organizations/")[1];
+		var OrganizationId = organizationUrl.split('http://' + location.host + '/organizations/')[1];
 		PersonService.deletePersonOrganization($routeParams.id, OrganizationId)
 		.then(function success(response) {
 			refreshPersonOrganization();
@@ -266,18 +267,35 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	
 	$scope.getOrganizations = function () {
 		$scope.addPersonOrganizationElem = true;
-		
 		$scope.newPersonOrganization = {};
+		$scope.searchValue = "";
+		$scope.pager.totalPages = 2;
+		$scope.setPage(1);
+	}
+	
+	$scope.setPage = function (page) {
+		$scope.organizations = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
+			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
+		var itemsPerColumn = 15;
+		var counter = 0;
+		var pageSize = 45;
 		
-		OrganizationService.getAllOrganizations()
-		.then(function success(response) {
-			$scope.organizations = response.data;
-			$scope.message='Good';
-			$scope.errorMessage = '';
-		}, function error(response){
-			$scope.message='';
-			$scope.errorMessage = 'Error getting organizations!';
-		});
+		if(page <= $scope.pager.totalPages) {
+			OrganizationService.getPaginatedOrganization(pageSize, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= 2; i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.organizations[j].push(response.data._embedded.organizations[counter]);
+						counter++;
+					}
+				}
+				$scope.pager.currentPage = response.data.page.number + 1;
+				$scope.pager.totalPages = response.data.page.totalPages;
+				$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+			}, function error(response) {
+				
+			});
+		}
 	}
 	
 	$scope.cancel = function () {

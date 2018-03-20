@@ -34,8 +34,9 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th>Number</a></th>
+				<th>Ticket Number</a></th>
 				<th>Bought By</th>
+				<th>Table</th>
 				<th>Paid</th>
 				<th>From of Payment</th>
 				<th><a href="#!/newticket">+ Ticket</a></th>
@@ -46,6 +47,7 @@
 				ng-repeat="t in tickets | filter: searchKeyword ">
 				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a>
 				<td>{{t.buyer}}</td>
+				<td>{{t.sittingTableNumber}}</td>
 				<td><input type="checkbox" id="paid" class='form-group' ng-model="t.paid" ng-disabled="true"/></td>
 				<td>{{t.formOfPayment}}</td>
 				<td><a ng-click="deleteTicket(t._links.self.href)" class="btn btn-small btn-primary">delete</a></td>

@@ -34,9 +34,8 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th>Number</a></th>
+				<th>Table Number</a></th>
 				<th>Name</th>
-				<th>People per Table</th>
 				<th>People in Table</th>
 				<th>year</th>
 				<th><a href="#!/newsittingTable">+ Table</a></th>
@@ -47,8 +46,7 @@
 				ng-repeat="t in tables | filter: searchKeyword ">
 				<td><a ng-click="modifyTable(t._links.self.href)">{{t.sittingTableNumber}}</a>
 				<td>{{t.sittingTableName}}</td>
-				<td>{{t.peoplePerTable}}</td>
-				<td>{{t.peopleInTable}}</td>
+				<td>{{t.peopleInTable}}/{{t.peoplePerTable}}</td>
 				<td>{{t.year}}</td>
 				<td><a ng-click="deleteTable(t._links.self.href)" class="btn btn-small btn-primary">delete</a></td>
 			</tr>

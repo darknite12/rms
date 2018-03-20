@@ -18,7 +18,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 				.then(function success(response) {
 					$scope.tables = response.data._embedded.sittingTables;
 					$scope.tables.forEach(function(element){
-						var tableId = element._links.self.href.split("http://localhost:8080/sittingTables/")[1]
+						var tableId = element._links.self.href.split('http://' + location.host + '/sittingTables/')[1];
 						TableService.getAssociatedTickets(tableId)
 						.then(function success(response) {
 							element.peopleInTable = response.data._embedded.tickets.length;
@@ -39,7 +39,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 				.then(function success(response) {
 					$scope.tables = response.data._embedded.sittingTables;
 					$scope.tables.forEach(function(element){
-						var tableId = element._links.self.href.split("http://localhost:8080/sittingTables/")[1]
+						var tableId = element._links.self.href.split('http://' + location.host + '/sittingTables/')[1]
 						TableService.getAssociatedTickets(tableId)
 						.then(function success(response) {
 							element.peopleInTable = response.data._embedded.tickets.length;
@@ -75,7 +75,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 	$scope.setPage(1);
 	
 	$scope.deleteTable = function(tableUrl) {
-		TableService.deleteTable(tableUrl.split("http://localhost:8080/sittingTables/")[1])
+		TableService.deleteTable(tableUrl.split('http://' + location.host + '/sittingTables/')[1])
 		.then(function success(response) {
 			$scope.setPage($scope.pager.currentPage);
 		}, function error(response) {
@@ -119,6 +119,24 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService','Pa
 	TableService.getAssociatedTickets(tableId)
 	.then(function success(response) {
 		$scope.tickets = response.data._embedded.tickets;
+		$scope.tickets.forEach(function (element) {
+			var ticketId = element._links.self.href.split('http://' + location.host + '/tickets/')[1];
+			TicketService.getPerson(ticketId)
+			.then(function success(response) {
+				element.buyer = response.data.firstName + " " + response.data.lastName;
+			}, function(response) {
+				switch(response.status) {
+				case 404:
+					TicketService.getOrganization(ticketId)
+					.then(function success(response) {
+						element.buyer = response.data.name;
+					}, function error(response) {
+						
+					});
+					break;
+				}
+			});
+		});
 		$scope.sittingTable.peopleInTable = response.data._embedded.tickets.length;
 	}, function error(response) {
 		switch(response.status) {
@@ -178,7 +196,7 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService','Pa
 	}
 	
 	$scope.unlinkTicket = function (ticketUrl) {
-		var ticketId = ticketUrl.split('http://localhost:8080/tickets/')[1]
+		var ticketId = ticketUrl.split('http://' + location.host + '/tickets/')[1];
 		TicketService.deleteSittingTable(ticketId)
 		.then(function success(response) {
 			TableService.getAssociatedTickets(tableId)
