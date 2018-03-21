@@ -23,6 +23,13 @@ app.service('TableService', ['$http', function($http) {
 		});
 	}
 	
+	this.getEvent = function(id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/sittingTables/' + id + '/event'
+		});
+	}
+	
 	this.getAssociatedTickets = function(id) {
 		return $http({
 			method : 'GET',

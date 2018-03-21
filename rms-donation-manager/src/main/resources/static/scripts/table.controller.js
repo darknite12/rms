@@ -25,6 +25,12 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 						}, function error(response) {
 							alert("Error Error");
 						});
+						TableService.getEvent(tableId)
+						.then(function sucess(response) {
+							element.event = response.data.name + ' ' + response.data.year;
+						}, function error(response) {
+							alert("Error Getting Event for Table");
+						});
 					});
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
