@@ -7,6 +7,7 @@ angular.module('rmsdmgui', ['ngRoute',
 	'rmsdmgui.organization.services',
 	'rmsdmgui.general.services',
 	'rmsdmgui.price.services',
+	'rmsdmgui.event.services',
 	'rmsdmgui.table.controllers',
 	'rmsdmgui.table.services'])
 .config(function($routeProvider, $httpProvider) {

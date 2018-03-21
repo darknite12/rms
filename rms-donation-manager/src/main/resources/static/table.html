@@ -34,6 +34,65 @@
 				<a ng-click="addTable()" class="btn btn-small btn-primary">Add</a>
 			</div>
 		</div>
+		
+		<div class='well'>
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Event</h2>
+				</div>
+			</div>
+			<form name="eventForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class='col-sm-2'>Name</th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th><a ng-hide="addEventElem || (event.name != '')" ng-click="setPaginatedEvents(1)">+ Event</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="eventForm">
+								<td><input ng-hide="event.name == ''" type="text" id="event" class='form-control' ng-model="event.name" placeholder="Event" ng-disabled="true"/></td>
+								<td><a ng-hide="event.name == ''" ng-click="unlinkEvent()" class="btn btn-small btn-primary">unlink</a></td>
+								<td></td>
+								<td></td>
+								
+							</tr>
+							<tr ng-show="addEventElem" ng-repeat="e in events">
+								<td><a ng-click="selectEvent(e[0])">{{e[0].name}} {{e[0].year}}</a></td>
+								<td><a ng-click="selectEvent(e[1])">{{e[1].name}} {{e[1].year}}</a></td>
+								<td><a ng-click="selectEvent(e[2])">{{e[2].name}} {{e[2].year}}</a></td>
+								<td><a ng-click="selectEvent(e[3])">{{e[3].name}} {{e[3].year}}</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="text-center" ng-show="addEventElem">
+						<ul ng-if="eventPager.totalPages" class="pagination">
+						    <li ng-class="{disabled:eventPager.currentPage === 1}">
+						        <a ng-click="setPaginatedTables(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:eventPager.currentPage === 1}">
+						        <a ng-click="setPaginatedTables(eventPager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in eventPager.pages" ng-class="{active:eventPager.currentPage === page}">
+						        <a ng-click="setPaginatedTables(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:eventPager.currentPage === eventPager.totalPages}">
+						        <a ng-click="setPaginatedTables(eventPager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:eventPager.currentPage === eventPager.totalPages}">
+						        <a ng-click="setPaginatedTables(eventPager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
+					
+				</div>
+			</form>
+		</div>
+		
 		<div ng-hide="newTableView" class='well'>
 			<h2 ng-hide="newTableView">Linked Tickets</h2>
 			<form ng-hide="newTableView" name="linkedTicketsForm">
