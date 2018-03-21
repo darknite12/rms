@@ -70,6 +70,9 @@ public class Ticket implements Serializable {
 	@Column(name = "is_paid")
 	private boolean isPaid;
 
+	@Column(name = "is_at_event")
+	private boolean isAtEvent;
+
 	@Lob
 	private String info;
 
@@ -162,6 +165,14 @@ public class Ticket implements Serializable {
 
 	public void setPaid(boolean isPaid) {
 		this.isPaid = isPaid;
+	}
+
+	public boolean isAtEvent() {
+		return isAtEvent;
+	}
+
+	public void setAtEvent(boolean isAtEvent) {
+		this.isAtEvent = isAtEvent;
 	}
 
 	public Event getEvent() {

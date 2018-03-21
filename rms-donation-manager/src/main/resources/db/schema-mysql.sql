@@ -265,6 +265,7 @@ CREATE TABLE IF NOT EXISTS `ticket` (
   `event_id` INT(11) NOT NULL,
   `form_of_payment` VARCHAR(50) NULL DEFAULT NULL,
   `is_paid` tinyint(1) DEFAULT 0,
+  `is_at_event` tinyint(1) DEFAULT 0,
   `info` longtext,
   PRIMARY KEY (`ticket_id`),
   INDEX `fk_ticket_receipt1_idx` (`receipt_id` ASC),
