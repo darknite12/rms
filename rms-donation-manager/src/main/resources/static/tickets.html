@@ -35,6 +35,7 @@
 		<thead>
 			<tr>
 				<th>Ticket Number</a></th>
+				<th>Sold By</th>
 				<th>Bought By</th>
 				<th>Event</th>
 				<th>Table</th>
@@ -48,6 +49,7 @@
 			<tr
 				ng-repeat="t in tickets | filter: searchKeyword ">
 				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a>
+				<td>{{t.soldBy}}</td>
 				<td>{{t.buyer}}</td>
 				<td>{{t.event}}</td>
 				<td>{{t.number}}</td>
