@@ -23,6 +23,13 @@ app.service('TicketService', [ '$http', function($http) {
 		});
 	}
 	
+	this.getEvent = function(id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/' + id + '/event'
+		});
+	}
+	
 	this.getSittingTable = function(id) {
 		return $http({
 			method : 'GET',
