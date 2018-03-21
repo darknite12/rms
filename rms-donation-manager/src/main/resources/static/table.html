@@ -1,5 +1,5 @@
 <div class="container-fluid">
-	<h1 ng-hide="newTableView">Table Number: {{sittingTableNumber}}</h1>
+	<h1 ng-hide="newTableView">Table Number: {{number}}</h1>
 	<div class="panel panel-default">
 		<div class='well'>
 			<h2 ng-show="newTableView">New Table</h2>
@@ -18,8 +18,8 @@
 						<tbody>
 							<tr class="form-group" ng-form="newTableForm">
 								<ng-form name="newTableForm">
-									<td><input type="text" id="sittingTableNumber" class='form-control' ng-model="sittingTable.sittingTableNumber"/></td>
-									<td><input type="text" id="sitingTableName" class='form-control' ng-model="sittingTable.sittingTableName"/></td>
+									<td><input type="text" id="number" class='form-control' ng-model="sittingTable.number"/></td>
+									<td><input type="text" id="name" class='form-control' ng-model="sittingTable.name"/></td>
 									<td><input type="text" id="peoplePerTable" class='form-control' ng-model="sittingTable.peoplePerTable"/></td>
 									<td ng-hide="newTableView"><input type="text" id="peopleInTable" class='form-control' ng-model="sittingTable.peopleInTable" ng-disabled="true"/></td>
 									<td><input type="text" id="year" class='form-control' ng-model="sittingTable.year"/></td>

@@ -104,7 +104,7 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService','Pa
 	TableService.getTable(tableId)
 	.then(function success(response) {
 		$scope.sittingTable = response.data;
-		$scope.sittingTableNumber = response.data.sittingTableNumber;
+		$scope.sittingTableNumber = response.data.number;
 	}, function error(response) {
 		switch(response.status) {
 		case 409:
@@ -151,12 +151,14 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService','Pa
 	
 	$scope.updateTable = function () {
 		var updatingTable = $scope.sittingTable;
-		if(updatingTable.sittingTableNumber == "") {
+		if(updatingTable.number == "") {
 			alert("Please insert a table number");
+		} else if (updatingTable.peoplePerTable < updatingTable.peopleInTable) {
+			alert("People per table cannot be less than people in table:\nPlease delete tickets to fit in the capacity of the table");
 		} else {
-			TableService.searchTableByNumber(updatingTable.sittingTableNumber)
+			TableService.searchTableByNumber(updatingTable.number)
 			.then(function success(response) {
-				if(updatingTable.sittingTableNumber == $scope.sittingTableNumber) {
+				if(updatingTable.number == $scope.sittingTableNumber) {
 					TableService.updateTable(tableId, updatingTable)
 					.then(function success(response) {
 						$location.path('/sittingTables');
@@ -171,7 +173,7 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService','Pa
 						}
 					});
 				} else {
-					alert("Table number: " + response.data.sittingTableNumber + " already exists");
+					alert("Table number: " + response.data.number + " already exists");
 				}
 			}, function error(response) {
 				switch(response.status){

@@ -5,7 +5,7 @@ app.service('TableService', ['$http', function($http) {
 	this.getPaginatedTable = function(size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables?size=' + size + '&page=' + page + '&sort=sittingTableNumber'
+			url : 'http://' + location.host + '/sittingTables?size=' + size + '&page=' + page + '&sort=number'
 		});
 	}
 	
@@ -57,14 +57,14 @@ app.service('TableService', ['$http', function($http) {
 		//There is an error here
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=sittingTableNumber'
+			url : 'http://' + location.host + '/sittingTables/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=number'
 		});
 	}
 	
 	this.searchTableByNumber = function(tableNumber) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/search/findBySittingTableNumber?sittingTableNumber=' + tableNumber
+			url : 'http://' + location.host + '/sittingTables/search/findBynumber?number=' + tableNumber
 		});
 	}
 }]);

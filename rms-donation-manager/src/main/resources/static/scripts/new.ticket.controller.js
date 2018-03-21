@@ -13,7 +13,7 @@ app.controller('NewTicketController',
 	var buyerAdded = false;
 	var sittingTableAdded = false;
 	var date = new Date();
-	$scope.sittingTable = {sittingTableNumber : ""};
+	$scope.sittingTable = {number : ""};
 	$scope.buyer = {name : ""};
 	$scope.newTicketView = true;
 	$scope.newTickets = [];
@@ -144,10 +144,10 @@ app.controller('NewTicketController',
 			var maxTickets = table.peoplePerTable;
 			var ticketsToBeAdded = $scope.newTickets.length;
 			if (existingTickets >= maxTickets) {
-				$scope.sittingTable = {sittingTableNumber : ""};
+				$scope.sittingTable = {number : ""};
 				alert("This table is full. Please select another table");
 			}else if((existingTickets + ticketsToBeAdded) > maxTickets) {
-				$scope.sittingTable = {sittingTableNumber : ""};
+				$scope.sittingTable = {number : ""};
 				alert("This table is almost full.\nYou can add only " + (maxTickets - existingTickets) + " to this table");
 			} else if (existingTickets < maxTickets) {
 				$scope.sittingTable = table;
@@ -160,7 +160,7 @@ app.controller('NewTicketController',
 	}
 	
 	$scope.unlinkTable = function () {
-		$scope.sittingTable = {sittingTableNumber : ""};
+		$scope.sittingTable = {number : ""};
 		sittingTableAdded = false;
 	}
 	
@@ -258,7 +258,7 @@ app.controller('NewTicketController',
 	
 	$scope.deleteSittingTable = function() {
 		if($scope.sittingTableNumber != ""){
-			$scope.sittingTable.sittingTableNumber = "";
+			$scope.sittingTable.number = "";
 		}
 		$scope.addSittingTableElem = false;
 		sittingTableAdded = $scope.addSittingTableElem;

@@ -2,19 +2,19 @@ var app = angular.module('rmsdmgui.table.controllers');
 
 app.controller('NewTableController', ['$scope', 'TableService', '$location', function($scope, TableService, $location) {
 	$scope.newTableView = true;
-	$scope.sittingTable = {sittingTableNumber : ""};
+	$scope.sittingTable = {number : ""};
 	var date = new Date();
 	
 	$scope.sittingTable.year = date.getFullYear();
 	
 	$scope.addTable = function() {
 		var table = $scope.sittingTable;
-		if (table.sittingTableNumber == "") {
+		if (table.number == "") {
 			alert("Please insert a table number");
 		} else {
-			TableService.searchTableByNumber(table.sittingTableNumber)
+			TableService.searchTableByNumber(table.number)
 			.then(function success(response) {
-				alert("Table number: " + response.data.sittingTableNumber + " already exists");
+				alert("Table number: " + response.data.number + " already exists");
 			}, function error(response) {
 				switch(response.status){
 				case 404:

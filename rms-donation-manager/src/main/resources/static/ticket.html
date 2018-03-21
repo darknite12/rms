@@ -8,7 +8,7 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Number</a></th>
+								<th>Number</th>
 								<th>Sold By</th>
 								<th>Paid</th>
 								<th>Form of Payment</th>
@@ -67,13 +67,13 @@
 								<th></th>
 								<th></th>
 								<th></th>
-								<th><a ng-hide="addTableElem || (sittingTable.sittingTableNumber != '')" ng-click="setPaginatedTables(1)">+ Sitting Table</a></th>
+								<th><a ng-hide="addTableElem || (sittingTable.number != '')" ng-click="setPaginatedTables(1)">+ Sitting Table</a></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="form-group" ng-form="sittingTableForm">
-								<td><input ng-hide="sittingTable.sittingTableNumber == ''" type="text" id="sittingTable" class='form-control' ng-model="sittingTable.sittingTableNumber" placeholder="Table" ng-disabled="true"/></td>
-								<td><a ng-hide="sittingTable.sittingTableNumber == ''" ng-click="unlinkTable()" class="btn btn-small btn-primary">unlink</a></td>
+								<td><input ng-hide="sittingTable.number == ''" type="text" id="sittingTable" class='form-control' ng-model="sittingTable.number" placeholder="Table" ng-disabled="true"/></td>
+								<td><a ng-hide="sittingTable.number == ''" ng-click="unlinkTable()" class="btn btn-small btn-primary">unlink</a></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -89,21 +89,21 @@
 								<td></td>
 							</tr>
 							<tr ng-show="addTableElem" ng-repeat="t in tables">
-								<td><a ng-click="selectTable(t[0])">{{t[0].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[1])">{{t[1].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[2])">{{t[2].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[3])">{{t[3].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[4].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[5].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[6].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[7].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[8].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[9].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[10].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[11].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[12].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[13].sittingTableNumber}}</a></td>
-								<td><a ng-click="selectTable(t[4])">{{t[14].sittingTableNumber}}</a></td>
+								<td><a ng-click="selectTable(t[0])">{{t[0].number}}</a></td>
+								<td><a ng-click="selectTable(t[1])">{{t[1].number}}</a></td>
+								<td><a ng-click="selectTable(t[2])">{{t[2].number}}</a></td>
+								<td><a ng-click="selectTable(t[3])">{{t[3].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[4].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[5].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[6].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[7].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[8].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[9].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[10].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[11].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[12].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[13].number}}</a></td>
+								<td><a ng-click="selectTable(t[4])">{{t[14].number}}</a></td>
 							</tr>
 						</tbody>
 					</table>

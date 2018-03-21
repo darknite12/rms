@@ -44,8 +44,8 @@
 		<tbody>
 			<tr
 				ng-repeat="t in tables | filter: searchKeyword ">
-				<td><a ng-click="modifyTable(t._links.self.href)">{{t.sittingTableNumber}}</a>
-				<td>{{t.sittingTableName}}</td>
+				<td><a ng-click="modifyTable(t._links.self.href)">{{t.number}}</a>
+				<td>{{t.name}}</td>
 				<td>{{t.peopleInTable}}/{{t.peoplePerTable}}</td>
 				<td>{{t.year}}</td>
 				<td><a ng-click="deleteTable(t._links.self.href)" class="btn btn-small btn-primary">delete</a></td>

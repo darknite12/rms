@@ -36,7 +36,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 						});
 						TicketService.getSittingTable(ticketId)
 						.then(function success(response) {
-							element.sittingTableNumber = response.data.sittingTableNumber;
+							element.number = response.data.number;
 						}, function error(response) {
 							
 						});
@@ -125,7 +125,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	$scope.newTicketView = false;
 	$scope.ticketNumber = "";
 	$scope.newTickets = [];
-	$scope.sittingTable = {sittingTableNumber : ""};
+	$scope.sittingTable = {number : ""};
 	$scope.buyer = {name : ""};
 	$scope.pager = {};
 	$scope.tablePager = {};
@@ -144,7 +144,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	}, function error(response) {
 		switch(response.status) {
 		case 404:
-			$scope.sittingTable = {sittingTableNumber : ""};
+			$scope.sittingTable = {number : ""};
 			$scope.addTableElem = false;
 			break;
 		}
@@ -195,7 +195,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 			var actualTickets = response.data._embedded.tickets.length;
 			var maxTickets = table.peoplePerTable;
 			if(actualTickets >= maxTickets) {
-				$scope.sittingTable = {sittingTableNumber : ""};
+				$scope.sittingTable = {number : ""};
 				alert("This table is full. Please select another table");
 			} else if (actualTickets < maxTickets) {
 				$scope.sittingTable = table;
@@ -208,7 +208,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	}
 	
 	$scope.unlinkTable = function () {
-		$scope.sittingTable = {sittingTableNumber : ""};
+		$scope.sittingTable = {number : ""};
 		sittingTableChanged = true;
 	}
 	
@@ -375,7 +375,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 			
 			
 			if(sittingTableChanged && !buyerChanged) {
-				if(sittingTable.sittingTableNumber == "") {
+				if(sittingTable.number == "") {
 					TicketService.deleteSittingTable(ticketId)
 					.then(function success(response) {
 						
@@ -414,7 +414,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 					.then(function success(response) {
 						TicketService.deleteOrganization(ticketId)
 						.then(function success(response) {
-							if(sittingTable.sittingTableNumber == "") {
+							if(sittingTable.number == "") {
 								TicketService.deleteSittingTable(ticketId)
 								.then(function success(response) {
 									
@@ -437,7 +437,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 				} else {
 					TicketService.addBuyer(ticketId, buyerKind, buyer._links.self.href)
 					.then(function success(response) {
-						if(sittingTable.sittingTableNumber == "") {
+						if(sittingTable.number == "") {
 							TicketService.deleteSittingTable(ticketId)
 							.then(function success(response) {
 								
