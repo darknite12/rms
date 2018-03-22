@@ -9,9 +9,11 @@
 						<thead>
 							<tr>
 								<th>Number</th>
+								<th>Info</th>
 								<th>Sold By</th>
 								<th>Paid</th>
 								<th>Form of Payment</th>
+								<th>At event</th>
 								<th>Year</th>
 								<th><a ng-hide="addTicketElem || !newTicketView" ng-click="showTicketForm()">+ Ticket</a></th>
 							</tr>
@@ -20,6 +22,7 @@
 							<tr class="form-group" ng-form="newTicketForm" ng-repeat="nt in newTickets">
 								<ng-form name="newTicketForm">
 									<td><input type="text" id="ticketNumber" class='form-control' ng-model="nt.ticketNumber"/></td>
+									<td><input type="text" id="info" class='form-control' ng-model="nt.info"/></td>
 									<td><input type="text" id="soldBy" class='form-control' ng-model="nt.soldBy"/></td>
 									<td><input type="checkbox" id="paid" class='form-control' ng-model="nt.paid"/></td>
 									<td>
@@ -27,7 +30,7 @@
 									      <option ng-repeat="option in selectOptions" value="{{option.option}}">{{option.option}}</option>
 									    </select>
 									</td>
-									<!--  <td><input type="text" id="formOfPayment" class='form-control' ng-model="nt.formOfPayment" ng-disabled="!nt.paid"/></td> -->
+									<td><input type="checkbox" id="atEvent" class='form-control' ng-model="nt.atEvent"/></td>
 									<td><input type="text" id="year" class='form-control' ng-model="nt.year"/></td>
 									<td><a ng-show="newTicketView" ng-click="updateTicket(nt, $index)" class="btn btn-small btn-primary">update</a></td>
 									<td><a ng-hide="true" ng-click="deleteTicket($index)" class="btn btn-small btn-primary">delete</a></td>
@@ -35,6 +38,7 @@
 							</tr>
 							<tr ng-show="addTicketElem">
 								<th><input type="text" class='form-control' ng-model="newTicket.ticketNumber"/></th>
+								<td><input type="text" id="info" class='form-control' ng-model="newTicket.info"/></td>
 								<th><input type="text" class='form-control' ng-model="newTicket.soldBy"/></th>
 								<td><input type="checkbox" class='form-control' ng-model="newTicket.paid" /></td>
 								<td>
@@ -42,7 +46,7 @@
 								      <option ng-repeat="option in selectOptions" value="{{option.option}}">{{option.option}}</option>
 								    </select>
 								</td>
-								<!--  <td><input type="text" class='form-control' ng-model="newTicket.formOfPayment" ng-disabled="!newTicket.paid"/></td>  -->
+								<td><input type="checkbox" id="atEvent" class='form-control' ng-model="newTicket.atEvent"/></td>
 								<th><input type="text" class='form-control' ng-model="newTicket.year"/></th>
 								<th><a ng-click="validateTicket()" class="btn btn-small btn-primary">add</a></th>
 								<th><a ng-click="addTicketElem=false" class="btn btn-small btn-primary">cancel</a></th>
@@ -52,6 +56,62 @@
 				</div>
 			</form>
 		</div>
+		
+		<div class='well'>
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Event</h2>
+				</div>
+			</div>
+			<form name="eventForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class='col-sm-3'>Name</th>
+								<th><a ng-hide="addEventElem || (event.name != '')" ng-click="setPaginatedEvents(1)">+ Event</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="eventForm">
+								<td><input ng-hide="event.name == ''" type="text" id="event" class='form-control' ng-model="event.nameToShow" placeholder="Event" ng-disabled="true"/></td>
+								<td><a ng-hide="event.name == ''" ng-click="unlinkEvent()" class="btn btn-small btn-primary">unlink</a></td>
+								<td></td>
+								<td></td>
+								
+							</tr>
+							<tr ng-show="addEventElem" ng-repeat="e in events">
+								<td><a ng-click="selectEvent(e[0])">{{e[0].name}} {{e[0].year}}</a></td>
+								<td><a ng-click="selectEvent(e[1])">{{e[1].name}} {{e[1].year}}</a></td>
+								<td><a ng-click="selectEvent(e[2])">{{e[2].name}} {{e[2].year}}</a></td>
+								<td><a ng-click="selectEvent(e[3])">{{e[3].name}} {{e[3].year}}</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="text-center" ng-show="addEventElem">
+						<ul ng-if="eventPager.totalPages" class="pagination">
+						    <li ng-class="{disabled:eventPager.currentPage === 1}">
+						        <a ng-click="setPaginatedTables(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:eventPager.currentPage === 1}">
+						        <a ng-click="setPaginatedTables(eventPager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in eventPager.pages" ng-class="{active:eventPager.currentPage === page}">
+						        <a ng-click="setPaginatedTables(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:eventPager.currentPage === eventPager.totalPages}">
+						        <a ng-click="setPaginatedTables(eventPager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:eventPager.currentPage === eventPager.totalPages}">
+						        <a ng-click="setPaginatedTables(eventPager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
+					
+				</div>
+			</form>
+		</div>
+		
 		<div class='well'>
 			<div class="row">
 				<div class="col-sm-6">

@@ -1,9 +1,9 @@
 var app = angular.module('rmsdmgui.ticket.controllers');
 
 app.controller('NewTicketController', 
-		['$scope', '$location', 'PagerService', 'PersonService', 'AddressService', 
+		['$scope', '$location', 'PagerService', 'PersonService', 'AddressService', 'EventService',
 			'OrganizationService', 'TicketService', 'TableService', 'PriceService',
-	function($scope, $location, PagerService, PersonService, AddressService, 
+	function($scope, $location, PagerService, PersonService, AddressService, EventService,
 			OrganizationService, TicketService, TableService, PriceService){
 	
 	var buyerKind = "";
@@ -15,11 +15,13 @@ app.controller('NewTicketController',
 	var date = new Date();
 	$scope.sittingTable = {number : ""};
 	$scope.buyer = {name : ""};
+	$scope.event = {name : ""};
 	$scope.newTicketView = true;
 	$scope.newTickets = [];
 	$scope.tickets = {};
 	$scope.pager = {};
 	$scope.tablePager = {};
+	$scope.eventPager = {};
 	
 	PriceService.getPriceByYear(date.getFullYear())
 	.then(function success(response) {
@@ -164,6 +166,38 @@ app.controller('NewTicketController',
 		sittingTableAdded = false;
 	}
 	
+	$scope.setPaginatedEvents = function (page) {
+		$scope.addEventElem = true;
+		$scope.events = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
+		var columns = 4;
+		var itemsPerColumn = 5;
+		var counter = 0;
+		EventService.getPaginatedEvent(20, (page - 1))
+		.then(function success(response) {
+			for(var i = 0; i <= (columns - 1); i++) {
+				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+					$scope.events[j].push(response.data._embedded.events[counter]);
+					counter++;
+				}
+			}
+			$scope.eventPager.currentPage = response.data.page.number + 1;
+			$scope.eventPager.totalPages = response.data.page.totalPages;
+			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
+		}, function error(response) {
+			
+		});
+	}
+	
+	$scope.selectEvent = function (event) {
+		$scope.event = event;
+		$scope.event.nameToShow = event.name + " " + event.year;
+		$scope.addEventElem = false;
+	}
+	
+	$scope.unlinkEvent = function () {
+		$scope.event = {name : ""};
+	}
+	
 	$scope.showTicketForm = function () {
 		$scope.newTicket = {};
 		$scope.newTicket.ticketNumber = "";
@@ -209,47 +243,53 @@ app.controller('NewTicketController',
 		var ticketId = "";
 		var ticketIds = [];
 		var counter = 0;
+		var event = $scope.event;
 		
-		$scope.newTickets.forEach(function (element) {
-			TicketService.addTicket(element)
-			.then(function success(response) {
-				ticketId = response.data._links.self.href.split('http://' + location.host + '/tickets/')[1];
-				ticketIds.push(ticketId);
-				if(sittingTableAdded && !buyerAdded){
-					TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
-					.then(function success(response) {
-						
-					}, function error(response) {
-						alert("Error adding sittingTable to ticket");
-					});
-				} else if (!sittingTableAdded && buyerAdded) {
-					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
-					.then(function success(response) {
-						
-					}, function error(response) {
-						alert("Error adding buyer");
-					});
-				} else if (sittingTableAdded && buyerAdded) {
-					TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
-					.then(function success(response) {
-						TicketService.addSittingTable(ticketIds[counter], $scope.sittingTable._links.self.href)
+		if(event.name == "") {
+			alert("Please select an event");
+		} else {
+			$scope.newTickets.forEach(function (element) {
+				element.event = event._links.self.href;
+				TicketService.addTicket(element)
+				.then(function success(response) {
+					ticketId = response.data._links.self.href.split('http://' + location.host + '/tickets/')[1];
+					ticketIds.push(ticketId);
+					if(sittingTableAdded && !buyerAdded){
+						TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
 						.then(function success(response) {
 							
 						}, function error(response) {
 							alert("Error adding sittingTable to ticket");
 						});
-						counter++;
-					}, function error(response) {
-						alert("Error adding buyer");
-					});
-				}
-			}, function error(response) {
-				alert("Error adding ticket");
+					} else if (!sittingTableAdded && buyerAdded) {
+						TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+						.then(function success(response) {
+							
+						}, function error(response) {
+							alert("Error adding buyer");
+						});
+					} else if (sittingTableAdded && buyerAdded) {
+						TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+						.then(function success(response) {
+							TicketService.addSittingTable(ticketIds[counter], $scope.sittingTable._links.self.href)
+							.then(function success(response) {
+								
+							}, function error(response) {
+								alert("Error adding sittingTable to ticket");
+							});
+							counter++;
+						}, function error(response) {
+							alert("Error adding buyer");
+						});
+					}
+				}, function error(response) {
+					alert("Error adding ticket");
+				});
 			});
-		});
-		//When the application goes back to the tickets GUI the new tickets do not appear until the page is reload
-		//The problem is that the page change is faster than the time that the changes are made in the DB. 
-		$location.path('/tickets');
+			$location.path('/tickets');
+		}
+		
+		
 	}
 	
 	$scope.updateTicket = function (ticket, index) {

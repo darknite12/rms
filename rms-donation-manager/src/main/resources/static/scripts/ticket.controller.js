@@ -120,8 +120,8 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
  	
 }]);
 
-app.controller('TicketController', ['$scope','TicketService', 'TableService', 'PersonService', 'OrganizationService','PagerService', '$location', '$routeParams', 
-	function ($scope, TicketService, TableService, PersonService, OrganizationService, PagerService, $location, $routeParams) {
+app.controller('TicketController', ['$scope','TicketService', 'TableService', 'PersonService', 'OrganizationService','PagerService', 'EventService', '$location', '$routeParams', 
+	function ($scope, TicketService, TableService, PersonService, OrganizationService, PagerService, EventService, $location, $routeParams) {
 	
 	var sittingTableChanged = false;
 	var buyerChanged = false;
@@ -135,6 +135,7 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 	$scope.buyer = {name : ""};
 	$scope.pager = {};
 	$scope.tablePager = {};
+	$scope.eventPager = {};
 	
 	TicketService.getTicket($routeParams.id)
 	.then(function success(response) {
@@ -142,6 +143,14 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 		$scope.newTickets.push(response.data);
 	}, function error(response) {
 		alert("Error getting ticket");
+	});
+	
+	TicketService.getEvent($routeParams.id)
+	.then(function success(response) {
+		$scope.event = response.data;
+		$scope.event.nameToShow = response.data.name + " " + response.data.year;
+	}, function error(response) {
+		
 	});
 	
 	TicketService.getSittingTable($routeParams.id)
@@ -172,6 +181,38 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 			break;
 		}
 	});
+	
+	$scope.setPaginatedEvents = function (page) {
+		$scope.addEventElem = true;
+		$scope.events = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
+		var columns = 4;
+		var itemsPerColumn = 5;
+		var counter = 0;
+		EventService.getPaginatedEvent(20, (page - 1))
+		.then(function success(response) {
+			for(var i = 0; i <= (columns - 1); i++) {
+				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+					$scope.events[j].push(response.data._embedded.events[counter]);
+					counter++;
+				}
+			}
+			$scope.eventPager.currentPage = response.data.page.number + 1;
+			$scope.eventPager.totalPages = response.data.page.totalPages;
+			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
+		}, function error(response) {
+			
+		});
+	}
+	
+	$scope.selectEvent = function (event) {
+		$scope.event = event;
+		$scope.event.nameToShow = event.name + " " + event.year;
+		$scope.addEventElem = false;
+	}
+	
+	$scope.unlinkEvent = function () {
+		$scope.event = {name : ""};
+	}
 	
 	$scope.setPaginatedTables = function (page) {
 		$scope.addTableElem = true;
@@ -351,9 +392,14 @@ app.controller('TicketController', ['$scope','TicketService', 'TableService', 'P
 		var ticketId = $routeParams.id;
 		var sittingTable = $scope.sittingTable;
 		var buyer = $scope.buyer;
+		var event = $scope.event;
+		
 		if(updatingTicket.ticketNumber == ""){
 			alert("Please insert a ticket number");
+		} else if(event.name == ""){
+			alert("Please select an event");
 		} else {
+			updatingTicket.event = event._links.self.href;
 			TicketService.searchTicketByNumber(updatingTicket.ticketNumber)
 			.then(function success(response) {
 				if(updatingTicket.ticketNumber == $scope.ticketNumber) {
