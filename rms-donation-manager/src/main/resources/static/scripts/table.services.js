@@ -71,7 +71,7 @@ app.service('TableService', ['$http', function($http) {
 	this.searchTableByNumber = function(tableNumber) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/search/findBynumber?number=' + tableNumber
+			url : 'http://' + location.host + '/sittingTables/search/findByNumber?number=' + tableNumber
 		});
 	}
 }]);

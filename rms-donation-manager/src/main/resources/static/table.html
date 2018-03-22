@@ -1,5 +1,5 @@
 <div class="container-fluid">
-	<h1 ng-hide="newTableView">Table Number: {{number}}</h1>
+	<h1 ng-hide="newTableView">Table Number: {{sittingTableNumber}}</h1>
 	<div class="panel panel-default">
 		<div class='well'>
 			<h2 ng-show="newTableView">New Table</h2>
@@ -29,10 +29,6 @@
 					</table>
 				</div>
 			</form>
-			<div  ng-show="newTableView" class='text-right'>
-				<a ng-click="cancel()" class="btn btn-small">cancel</a>
-				<a ng-click="addTable()" class="btn btn-small btn-primary">Add</a>
-			</div>
 		</div>
 		
 		<div class='well'>
@@ -46,16 +42,13 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th class='col-sm-2'>Name</th>
-								<th></th>
-								<th></th>
-								<th></th>
+								<th class='col-sm-3'>Name</th>
 								<th><a ng-hide="addEventElem || (event.name != '')" ng-click="setPaginatedEvents(1)">+ Event</a></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="form-group" ng-form="eventForm">
-								<td><input ng-hide="event.name == ''" type="text" id="event" class='form-control' ng-model="event.name" placeholder="Event" ng-disabled="true"/></td>
+								<td><input ng-hide="event.name == ''" type="text" id="event" class='form-control' ng-model="event.nameToShow" placeholder="Event" ng-disabled="true"/></td>
 								<td><a ng-hide="event.name == ''" ng-click="unlinkEvent()" class="btn btn-small btn-primary">unlink</a></td>
 								<td></td>
 								<td></td>
@@ -91,6 +84,10 @@
 					
 				</div>
 			</form>
+			<div  ng-show="newTableView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="addTable()" class="btn btn-small btn-primary">Add</a>
+			</div>
 		</div>
 		
 		<div ng-hide="newTableView" class='well'>
@@ -101,19 +98,23 @@
 						<thead>
 							<tr>
 								<th>Number</th>
+								<th>Info</th>
 								<th>Bought By</th>
 								<th>Paid</th>
 								<th>From of Payment</th>
+								<th>At event</th>
 								<!-- <th><a ng-hide="addTicketElem" ng-click="getTickets()">+ Ticket</a></th> -->
 							</tr>
 						</thead>
 						<tbody>
 							<tr class="form-group" ng-form="linkedTicketsForm" ng-repeat="t in tickets">
 								<ng-form name="linkedTicketsForm">
-									<td>{{t.ticketNumber}}</a>
+									<td>{{t.ticketNumber}}</td>
+									<td>{{t.info}}</td>
 									<td>{{t.buyer}}</td>
 									<td><input type="checkbox" id="paid" class='form-group' ng-model="t.paid" ng-disabled="true"/></td>
 									<td>{{t.formOfPayment}}</td>
+									<td><input type="checkbox" id="atEvent" class='form-group' ng-model="t.atEvent" ng-disabled="true"/></td>
 									<td><a ng-click="unlinkTicket(t._links.self.href)" class="btn btn-small btn-primary">unlink</a></td>
 								</ng-form>
 							</tr>

@@ -5,8 +5,8 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 	$scope.newTableView = true;
 	$scope.sittingTable = {number : ""};
 	$scope.event = {name : ""};
+	$scope.eventPager = {};
 	var date = new Date();
-	var eventAdded = false;
 	
 	$scope.sittingTable.year = date.getFullYear();
 	
@@ -24,16 +24,9 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 			}, function error(response) {
 				switch(response.status){
 				case 404:
+					table.event = event._links.self.href;
 					TableService.addTable(table)
 					.then(function success(response) {
-						var tableUrl = response.data._links.self.href;
-						EventService.addTable(tableUrl)
-						.then(function success(response) {
-							//Add the function in the service to add the table to the event
-						}, function error(response) {
-							
-						});
-						
 						$location.path('/sittingTables');
 					}, function error(response) {
 						switch(response.status) {
@@ -65,9 +58,9 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 					counter++;
 				}
 			}
-			$scope.tablePager.currentPage = response.data.page.number + 1;
-			$scope.tablePager.totalPages = response.data.page.totalPages;
-			$scope.tablePager.pages = PagerService.createSlideRange($scope.tablePager.currentPage, $scope.tablePager.totalPages);
+			$scope.eventPager.currentPage = response.data.page.number + 1;
+			$scope.eventPager.totalPages = response.data.page.totalPages;
+			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
 		}, function error(response) {
 			
 		});
@@ -75,13 +68,12 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 	
 	$scope.selectEvent = function (event) {
 		$scope.event = event;
+		$scope.event.nameToShow = event.name + " " + event.year;
 		$scope.addEventElem = false;
-		eventAdded = true;
 	}
 	
 	$scope.unlinkEvent = function () {
 		$scope.event = {name : ""};
-		eventAdded = false;
 	}
 	
 	$scope.cancel = function () {
