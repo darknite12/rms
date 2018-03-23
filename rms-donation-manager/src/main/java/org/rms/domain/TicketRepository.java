@@ -13,6 +13,6 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
 	Page<Ticket> findByYear(@Param("year") Integer year, Pageable page);
 
 	@Query("select t from Ticket t where cast(t.ticketNumber as string) like %:searchParameter% or t.soldBy like %:searchParameter% or "
-			+ "t.formOfPayment like %:searchParameter% ")
+			+ "t.formOfPayment like %:searchParameter% or t.event.name like %:searchParameter% ")
 	Page<Ticket> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
 }
