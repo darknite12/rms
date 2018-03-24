@@ -14,7 +14,6 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<docker.image.prefix>rms</docker.image.prefix>
-		<docker.host>http://localhost:2375</docker.host>
 	</properties>
 
 	<dependencies>
@@ -73,7 +72,6 @@
 							</build>
 						</image>
 					</images>
-					<dockerHost>${docker.host}</dockerHost>
 				</configuration>
 			</plugin>
 		</plugins>
