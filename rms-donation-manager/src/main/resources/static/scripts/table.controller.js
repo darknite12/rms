@@ -23,11 +23,14 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 						TableService.getAssociatedTickets(tableId)
 						.then(function success(response) {
 							element.peopleInTable = response.data._embedded.tickets.length;
-							for(var i = 0; i <= element.peopleInTable; i++) {
-								if(response.data._embedded.tickets[i].atEvent) {
-									element.peopleAtTable ++;
+							if(element.peopleInTable > 0) {
+								for(var i = 0; i <= (element.peopleInTable - 1); i++) {
+									if(response.data._embedded.tickets[i].atEvent) {
+										element.peopleAtTable ++;
+									}
 								}
 							}
+							
 						}, function error(response) {
 							alert("Error Error");
 						});
@@ -56,9 +59,11 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', '$
 						TableService.getAssociatedTickets(tableId)
 						.then(function success(response) {
 							element.peopleInTable = response.data._embedded.tickets.length;
-							for(var i = 0; i <= element.peopleInTable; i++) {
-								if(element.atEvent) {
-									element.peopleAtTable ++;
+							if(element.peopleInTable > 0) {
+								for(var i = 0; i <= (element.peopleInTable - 1); i++) {
+									if(response.data._embedded.tickets[i].atEvent) {
+										element.peopleAtTable ++;
+									}
 								}
 							}
 						}, function error(response) {
@@ -118,7 +123,11 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 	function ($scope, TableService, TicketService, PagerService, EventService, $location, $routeParams) {
 	
 	var tableId = $routeParams.id;
+	$scope.searchValue = "";
+	$scope.linkingTickets = [];
 	$scope.eventPager = {};
+	$scope.ticketPager = {};
+	$scope.sittingTable = {};
 	
 	TableService.getTable(tableId)
 	.then(function success(response) {
@@ -215,6 +224,74 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 		$scope.event = {name : ""};
 	}
 	
+	$scope.setPaginatedTickets = function (page) {
+		$scope.addTicketElem = true;
+		$scope.addingTickets = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
+		var columns = 15;
+		var itemsPerColumn = 5;
+		var pageSize = 75;
+		var counter = 0;
+		
+		if ($scope.searchValue == "") {
+			TicketService.getPaginatedTicket(pageSize, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= (columns - 1); i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.addingTickets[j].push(response.data._embedded.tickets[counter]);
+						counter++;
+					}
+				}
+				$scope.ticketPager.currentPage = response.data.page.number + 1;
+				$scope.ticketPager.totalPages = response.data.page.totalPages;
+				$scope.ticketPager.pages = PagerService.createSlideRange($scope.ticketPager.currentPage, $scope.ticketPager.totalPages);
+			}, function error(response) {
+				
+			});
+		} else {
+			TicketService.searchTicket($scope.searchValue, pageSize, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= (columns - 1); i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.addingTickets[j].push(response.data._embedded.tickets[counter]);
+						counter++;
+					}
+				}
+				$scope.ticketPager.currentPage = response.data.page.number + 1;
+				$scope.ticketPager.totalPages = response.data.page.totalPages;
+				$scope.ticketPager.pages = PagerService.createSlideRange($scope.ticketPager.currentPage, $scope.ticketPager.totalPages);
+			}, function error(response) {
+				alert("error geting ticket");
+			});
+		}
+		
+		
+	}
+	
+	$scope.selectTicket = function (ticket) {
+		var ticketId = ticket._links.self.href.split('http://' + location.host + '/tickets/')[1];
+		var ticketInArray = false;
+		$scope.linkingTickets.forEach(function (element) {
+			var elementId = element._links.self.href.split('http://' + location.host + '/tickets/')[1];
+			if(elementId == ticketId) {
+				ticketInArray = true;
+			}
+		});
+		if(ticketInArray) {
+			alert("You already added this ticket number");
+		} else {
+			TicketService.getSittingTable(ticketId)
+			.then(function success(response) {
+				alert("This ticket is already assigned to table " + response.data.number);
+			}, function error(response) {
+				switch(response.status) {
+				case 404:
+					$scope.linkingTickets.push(ticket);
+				}
+			});
+		}
+		$scope.addTicketElem = false;
+	}
+	
 	$scope.updateTable = function () {
 		var updatingTable = $scope.sittingTable;
 		var event = $scope.event;
@@ -263,6 +340,15 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 					});
 					break;
 				}
+			});
+			$scope.linkingTickets.forEach(function (element) {
+				var ticketId = element._links.self.href.split('http://' + location.host + '/tickets/')[1];
+				TicketService.addSittingTable(ticketId, tableId)
+				.then(function success(response) {
+					
+				}, function error(response) {
+					alert("Errors linking tickets");
+				});
 			});
 		}
 	}

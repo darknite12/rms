@@ -65,19 +65,19 @@
 					<div class="text-center" ng-show="addEventElem">
 						<ul ng-if="eventPager.totalPages" class="pagination">
 						    <li ng-class="{disabled:eventPager.currentPage === 1}">
-						        <a ng-click="setPaginatedTables(1)">First</a>
+						        <a ng-click="setPaginatedEvents(1)">First</a>
 						    </li>
 						    <li ng-class="{disabled:eventPager.currentPage === 1}">
-						        <a ng-click="setPaginatedTables(eventPager.currentPage - 1)">Previous</a>
+						        <a ng-click="setPaginatedEvents(eventPager.currentPage - 1)">Previous</a>
 						    </li>
 						    <li ng-repeat="page in eventPager.pages" ng-class="{active:eventPager.currentPage === page}">
-						        <a ng-click="setPaginatedTables(page)">{{page}}</a>
+						        <a ng-click="setPaginatedEvents(page)">{{page}}</a>
 						    </li>                
 						    <li ng-class="{disabled:eventPager.currentPage === eventPager.totalPages}">
-						        <a ng-click="setPaginatedTables(eventPager.currentPage + 1)">Next</a>
+						        <a ng-click="setPaginatedEvents(eventPager.currentPage + 1)">Next</a>
 						    </li>
 						    <li ng-class="{disabled:eventPager.currentPage === eventPager.totalPages}">
-						        <a ng-click="setPaginatedTables(eventPager.totalPages)">Last</a>
+						        <a ng-click="setPaginatedEvents(eventPager.totalPages)">Last</a>
 						    </li>
 						</ul>
 					</div>
@@ -97,13 +97,13 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Number</th>
+								<th>Ticket Number</th>
 								<th>Info</th>
 								<th>Bought By</th>
 								<th>Paid</th>
 								<th>From of Payment</th>
 								<th>At event</th>
-								<!-- <th><a ng-hide="addTicketElem" ng-click="getTickets()">+ Ticket</a></th> -->
+								<th><a ng-hide="addTicketElem" ng-click="setPaginatedTickets()">+ Ticket</a></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -118,28 +118,70 @@
 									<td><a ng-click="unlinkTicket(t._links.self.href)" class="btn btn-small btn-primary">unlink</a></td>
 								</ng-form>
 							</tr>
-							<!-- <tr ng-show="addPersonAddressElem">
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.address"/></th>
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.address2"/></th>
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.city"/></th>
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.poBox"/></th>
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.postalCode"/></th>
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.province"/></th>
-								<th><input type="text" class='form-control' ng-model="newPersonAddress.country"/></th>
-								<th><a ng-click="addPersonAddress()" class="btn btn-small btn-primary">add</a></th>
-								<th><a ng-click="addPersonAddressElem=false" class="btn btn-small btn-primary">cancel</a></th>
+							<tr class="form-group" ng-form="linkingTicketsForm" ng-repeat="lt in linkingTickets">
+								<ng-form name="linkingTicketsForm">
+									<td>{{lt.ticketNumber}}</td>
+									<td>{{lt.info}}</td>
+									<td>{{lt.buyer}}</td>
+									<td><input type="checkbox" id="paid" class='form-group' ng-model="lt.paid" ng-disabled="true"/></td>
+									<td>{{lt.formOfPayment}}</td>
+									<td><input type="checkbox" id="atEvent" class='form-group' ng-model="lt.atEvent" ng-disabled="true"/></td>
+									<td></td>
+								</ng-form>
 							</tr>
-							<tr ng-show="addPersonAddressElem" ng-repeat="a in addresses._embedded.addresses | filter: newPersonAddress.address">
-								<td><a ng-click="setPersonAddress(a)">{{a.address}}</a></td>
-								<td>{{a.address2}}</td>
-								<td>{{a.city}}</td>
-								<td>{{a.poBox}}</td>
-								<td>{{a.postalCode}}</td>
-								<td>{{a.province}}</td>
-								<td>{{a.country}}</td>
-							</tr> -->
 						</tbody>
 					</table>
+					<div ng-show="addTicketElem" class="row">
+						<div class="form-group col-sm-6">
+							<label for="search" class="control-label">Search:</label> 
+						</div>
+					</div>
+					<div ng-show="addTicketElem" class="row">
+						<div class="form-group col-sm-4">
+							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert number"/>
+						</div>
+						<div class="form-group col-sm-6">
+							<a ng-click="setPaginatedTickets()" class="btn btn-small btn-primary">Search</a>
+						</div>
+					</div>
+					<table ng-show="addTicketElem" class="table table-striped">
+						<tr ng-repeat="t in addingTickets">
+							<td><a ng-click="selectTicket(t[0])">{{t[0].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[1])">{{t[1].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[2])">{{t[2].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[3])">{{t[3].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[4].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[5].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[6].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[7].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[8].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[9].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[10].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[11].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[12].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[13].ticketNumber}}</a></td>
+							<td><a ng-click="selectTicket(t[4])">{{t[14].ticketNumber}}</a></td>
+						</tr>
+					</table>
+					<div class="text-center" ng-show="addTicketElem">
+						<ul ng-if="ticketPager.totalPages" class="pagination">
+						    <li ng-class="{disabled:ticketPager.currentPage === 1}">
+						        <a ng-click="setPaginatedTickets(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:ticketPager.currentPage === 1}">
+						        <a ng-click="setPaginatedTickets(ticketPager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in ticketPager.pages" ng-class="{active:ticketPager.currentPage === page}">
+						        <a ng-click="setPaginatedTickets(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:ticketPager.currentPage === ticketPager.totalPages}">
+						        <a ng-click="setPaginatedTickets(ticketPager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:ticketPager.currentPage === ticketPager.totalPages}">
+						        <a ng-click="setPaginatedTickets(ticketPager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
 				</div>
 			</form>
 			<div  ng-hide="newTableView" class='text-right'>

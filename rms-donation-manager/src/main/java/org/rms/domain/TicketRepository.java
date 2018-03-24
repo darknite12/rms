@@ -12,7 +12,9 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
 	
 	Page<Ticket> findByYear(@Param("year") Integer year, Pageable page);
 	
-	@Query("select t from Ticket t where t.ticketNumber like %:searchParameter% or t.soldBy like %:searchParameter% or "
-			+ "CONCAT(t.person.firstName, ' ', t.person.lastName) like %:searchParameter% or t.organization.name like %:searchParameter%")
+	@Query("select t from Ticket t where t.ticketNumber like %:searchParameter%")
 	Page<Ticket> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
+	
+	/*or t.soldBy like %:searchParameter% or "
+			+ "CONCAT(t.person.firstName, ' ', t.person.lastName) like %:searchParameter% or t.organization.name like %:searchParameter%*/
 }
