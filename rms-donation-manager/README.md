@@ -40,10 +40,9 @@ docker network create -d overlay qa
 #### Deploying Maria DB
 The end result will be to create a Maria DB docker service. That has all the required databases with their respective schemas and initial data.
 
-pull the maria db docker image and create a docker volume
+pull the maria db docker image
 ```
 docker pull mariadb:10.3.5
-docker volume create mysql-data
 ```
 
 create the database root password as docker secret.
