@@ -23,15 +23,13 @@ First, Docker has to be setup in the host machine. Then two services need to be 
 2. RMS Donation Manager
 
 #### Getting Docker Ready
-First install Oracle's jre. Access to Oracle's docker repository will be needed (ie. a username and password)
+This assumes you have docker pre installed. First create a docker swarm
 
 ```
-docker login container-registry.oracle.com
-docker pull container-registry.oracle.com/java/serverjre:8
+docker swarm init
 ```
 
 Next, create docker networks for dev, qa, ppe, prod environments
-
 ```
 docker network create -d overlay dev
 docker network create -d overlay qa
@@ -113,14 +111,18 @@ mariadb:10.3.5
 #### Deploying RMS Donation Manager
 The end result will be a docker service of the RMS Donation Manager application.
 
-pull the RMS Donation Manager from docker hub
+First pull Oracle's jre. Access to Oracle's docker repository will be needed (ie. a username and password)
+```
+docker login container-registry.oracle.com
+docker pull container-registry.oracle.com/java/serverjre:8
+```
 
+pull the RMS Donation Manager from docker hub
 ```
 docker pull darknite12/donation-manager
 ```
 
 create the application properties file for the dev and qa environments. They should look something like this
-
 ```
 spring.datasource.url=jdbc:mysql://mariadb:3306/rmsdbdev?serverTimezone=UTC&useSSL=false
 spring.datasource.username=rmsuserdev
@@ -132,7 +134,6 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 *Note: the name of the datasource url matters. It is named "mariadb" because that is the docker service name created in the previous section*
 
 There should be two files
-
 ```
 dev-application.properties
 qa-application.properties
