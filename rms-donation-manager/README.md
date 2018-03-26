@@ -101,6 +101,8 @@ docker service create --name mariadb --replicas=1 --network dev --network qa \
 --config src=databases-and-users,target=/docker-entrypoint-initdb.d/01-create-databases-and-users.sql \
 --config src=dev.schema.sql,target=/docker-entrypoint-initdb.d/02-dev-schema.sql \
 --config src=dev.data.sql,target=/docker-entrypoint-initdb.d/03-data-schema.sql \
+--config src=qa.schema.sql,target=/docker-entrypoint-initdb.d/04-dev-schema.sql \
+--config src=qa.data.sql,target=/docker-entrypoint-initdb.d/05-data-schema.sql \
 -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root-password \
 --secret mysql-root-password \
 --mount type=volume,src=mysql-data,dst=/var/lib/mysql \
