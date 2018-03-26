@@ -119,7 +119,7 @@ docker pull container-registry.oracle.com/java/serverjre:8
 
 pull the RMS Donation Manager from docker hub
 ```
-docker pull darknite12/donation-manager
+docker pull darknite12/donation-manager:0.0.1-SNAPSHOT
 ```
 
 create the application properties file for the dev and qa environments. They should look something like this
