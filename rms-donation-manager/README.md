@@ -106,5 +106,6 @@ docker service create --name mariadb --replicas=1 --network dev --network qa \
 --mount type=volume,src=mysql-data,dst=/var/lib/mysql \
 mariadb:10.3.5
 ```
+*NOTE: The target name of the config files matter. The files need to be in alphabetical order, 01-create-databases-and-users.sql needs to run before 02-dev-schema.sql and it needs to run before 03-data-schema.sql*
 
 #### Deploying RMS Donation Manager
