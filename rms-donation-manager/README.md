@@ -139,22 +139,22 @@ dev-application.properties
 qa-application.properties
 ```
 
-create docker configs out of the above properties files
+create docker secrets out of the above properties files
 ```
-docker config create dev.application.properties dev-application.properties
-docker config create qa.application.properties qa-application.properties
+docker secret create dev.application.properties dev-application.properties
+docker secret create qa.application.properties qa-application.properties
 ```
 
 create the RMS Donation Manager docker service for dev
 ```
 docker service create --name dev-rms-donation-manager --replicas=1 --network dev \
---config src=dev.application.properties,target=/application.properties \
+--secret source=dev.application.properties,target=/application.properties \
 -p8081:80 darknite12/donation-manager:0.0.1-SNAPSHOT
 ```
 
 create the RMS Dontation Manager docker service for qa
 ```
 docker service create --name qa-rms-donation-manager --replicas=1 --network qa \
---config src=qa.application.properties,target=/application.properties \
+--secret source=qa.application.properties,target=/application.properties \
 -p8082:80 darknite12/donation-manager:0.0.1-SNAPSHOT
 ```
