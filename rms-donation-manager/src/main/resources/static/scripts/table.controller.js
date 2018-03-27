@@ -289,6 +289,7 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 				}
 			});
 		}
+		$scope.searchValue = "";
 		$scope.addTicketElem = false;
 	}
 	
