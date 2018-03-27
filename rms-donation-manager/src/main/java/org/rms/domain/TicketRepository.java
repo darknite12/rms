@@ -9,13 +9,10 @@ import org.springframework.data.repository.query.Param;
 public interface TicketRepository extends PagingAndSortingRepository<Ticket, Integer> {
 
 	Ticket findByTicketNumber(@Param("ticketNumber") String ticketNumber);
-	
+
 	Page<Ticket> findByYear(@Param("year") Integer year, Pageable page);
-	
-	@Query("select t from Ticket t where t.ticketNumber like %:searchParameter% or t.soldBy like %:searchParameter% or "
-			+ "t.info like %:searchParameter%")
+
+	@Query("select t from Ticket t where cast(t.ticketNumber as string) like %:searchParameter% or t.soldBy like %:searchParameter% or "
+			+ "t.formOfPayment like %:searchParameter% or t.event.name like %:searchParameter% ")
 	Page<Ticket> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
-	
-	/*or t.soldBy like %:searchParameter% or "
-			+ "CONCAT(t.person.firstName, ' ', t.person.lastName) like %:searchParameter% or t.organization.name like %:searchParameter%*/
 }

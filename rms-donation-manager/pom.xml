@@ -13,6 +13,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<docker.image.prefix>rms</docker.image.prefix>
 	</properties>
 
 	<dependencies>
@@ -53,6 +54,25 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.24.0</version>
+				<configuration>
+					<images>
+						<image>
+							<name>${docker.image.prefix}/${project.artifactId}:${project.version}</name>
+							<alias>dockerfile</alias>
+							<build>
+								<dockerFileDir>${project.basedir}/src/main/docker</dockerFileDir>
+								<assembly>
+									<descriptorRef>artifact</descriptorRef>
+								</assembly>
+							</build>
+						</image>
+					</images>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
