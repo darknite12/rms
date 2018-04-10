@@ -229,9 +229,19 @@ app.controller('NewTicketController',
 				if($scope.newTicket.ticketNumber == ""){
 					alert("Please insert a ticket number");
 				} else {
-					$scope.newTicket.ticketPrice = priceUrl;
-					$scope.newTickets.push($scope.newTicket);
-					$scope.addTicketElem = false;
+					var ticketAdded = false;
+					$scope.newTickets.forEach(function (element) {
+						if(element.ticketNumber == $scope.newTicket.ticketNumber) {
+							ticketAdded = true;
+						}
+					});
+					if(ticketAdded){
+						alert("Ticket number " + $scope.newTicket.ticketNumber + " has been added already");
+					} else {
+						$scope.newTicket.ticketPrice = priceUrl;
+						$scope.newTickets.push($scope.newTicket);
+						$scope.addTicketElem = false;
+					}
 				}
 				break;
 			}
