@@ -4,7 +4,7 @@ app.controller('NewPersonController', ['$scope', '$location', 'PersonService', '
 	function($scope, $location, PersonService, AddressService, OrganizationService, PagerService){
 	
 	$scope.newPersonView = true;
-	
+	$scope.searchValue = "";
 	$scope.person = {};
 	
 	$scope.personAddress = {addresses : [], exist : []};
@@ -14,6 +14,7 @@ app.controller('NewPersonController', ['$scope', '$location', 'PersonService', '
 	$scope.newPersonOrganization = {};
 	
 	$scope.pager = {};
+	$scope.addressPager = {};
 	
 	$scope.addPerson = function () {
 		PersonService.addPerson($scope.person)
@@ -107,28 +108,47 @@ app.controller('NewPersonController', ['$scope', '$location', 'PersonService', '
 		$scope.addPersonOrganizationElem = false;
 	}
 	
-	$scope.getAddresses = function () {
-		$scope.addPersonAddressElem = true;
-		
-		$scope.newPersonAddress = {};
-		
-		AddressService.getAllAddresses()
-		.then(function success(response) {
-			$scope.addresses = response.data;
-			$scope.message='Good';
-			$scope.errorMessage = '';
-		}, function error (response) {
-			$scope.message='';
-			$scope.errorMessage = 'Error getting addresses!';
-		});
-	}
-	
 	$scope.getOrganizations = function () {
 		$scope.addPersonOrganizationElem = true;
 		$scope.newPersonOrganization = {};
 		$scope.searchValue = "";
 		$scope.pager.totalPages = 2;
 		$scope.setPage(1);
+	}
+	
+	$scope.setPaginatedAddresses = function (page) {
+		$scope.addPersonAddressElem = true;
+		$scope.newPersonAddress = {};
+		var pageSize = 15;
+		
+		if($scope.searchValue == "") {
+			AddressService.getPaginatedAddress(pageSize, (page - 1))
+			.then(function success(response) {
+				$scope.addresses = response.data;
+				$scope.addressPager.currentPage = response.data.page.number + 1;
+				$scope.addressPager.totalPages = response.data.page.totalPages;
+				$scope.addressPager.pages = PagerService.createSlideRange($scope.addressPager.currentPage, $scope.addressPager.totalPages);
+				$scope.message='Good';
+				$scope.errorMessage = '';
+			}, function error(response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting addresses!';
+			});
+		} else {
+			AddressService.searchAddress($scope.searchValue, pageSize, (page - 1))
+			.then(function success(response) {
+				$scope.addresses = response.data;
+				$scope.addressPager.currentPage = response.data.page.number + 1;
+				$scope.addressPager.totalPages = response.data.page.totalPages;
+				$scope.addressPager.pages = PagerService.createSlideRange($scope.addressPager.currentPage, $scope.addressPager.totalPages);
+				$scope.message='Good';
+				$scope.errorMessage = '';
+			}, function error(response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting addresses!';
+			});
+		}
+		
 	}
 	
 	$scope.setPage = function (page) {

@@ -76,9 +76,11 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	
 	var addressExists = false;
 	var organizationExists = false;
+	$scope.searchValue = "";
 	$scope.personAddress = [];
 	$scope.personOrganization = [];
 	$scope.pager = {};
+	$scope.addressPager = {};
 	
 	$scope.person = PersonService.getPerson($routeParams.id)
 	.then(function success(response) {
@@ -184,8 +186,15 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	}
 	
 	$scope.setPersonAddress = function (address) {
-		addressExists = true;
+		/*addressExists = true;
 		$scope.newPersonAddress = address;
+		*/
+		PersonService.addPersonAddress($routeParams.id, address._links.self.href)
+		.then(function success(response) {
+			//refreshPersonAddress();
+			$scope.personAddress.addresses.push(address);
+			$scope.addPersonAddressElem = false;
+		});
 	}
 	
 	$scope.setPersonOrganization = function (organization) {
@@ -195,29 +204,21 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 	
 	$scope.addPersonAddress = function () {
 		
-		if(!addressExists){
-			AddressService.addAddress($scope.newPersonAddress)
+		AddressService.addAddress($scope.newPersonAddress)
+		.then(function success(response) {
+			var addressAdded = response.data;
+			PersonService.addPersonAddress($routeParams.id, response.data._links.self.href)
 			.then(function success(response) {
-				PersonService.addPersonAddress($routeParams.id, response.data._links.self.href)
-				.then(function success(response) {
-					refreshPersonAddress();
-					//$scope.personAddress.push(response.data._embedded);
-				});
-				$scope.message='';
-				$scope.errorMessage = '';
-			}, function error (response) {
-				$scope.message='';
-				$scope.errorMessage = 'Error adding address!';
+				//refreshPersonAddress();
+				$scope.personAddress.addresses.push(addressAdded);
 			});
-		} else if (addressExists) {
-			PersonService.addPersonAddress($routeParams.id, $scope.newPersonAddress._links.self.href)
-			.then(function success(response) {
-				refreshPersonAddress();
-				//$scope.personAddress.push(response.data._embedded);
-			});
-		}
+			$scope.message='';
+			$scope.errorMessage = '';
+		}, function error (response) {
+			$scope.message='';
+			$scope.errorMessage = 'Error adding address!';
+		});
 		
-		addressExists = false;
 		$scope.addPersonAddressElem = false;
 	}
 	
@@ -249,28 +250,47 @@ app.controller('PersonController', ['$scope', 'PersonService', 'AddressService',
 		$scope.addPersonOrganizationElem = false;
 	}
 	
-	$scope.getAddresses = function () {
-		$scope.addPersonAddressElem = true;
-		
-		$scope.newPersonAddress = {};
-		
-		AddressService.getAllAddresses()
-		.then(function success(response) {
-			$scope.addresses = response.data;
-			$scope.message='Good';
-			$scope.errorMessage = '';
-		}, function error (response) {
-			$scope.message='';
-			$scope.errorMessage = 'Error getting addresses!';
-		});
-	}
-	
 	$scope.getOrganizations = function () {
 		$scope.addPersonOrganizationElem = true;
 		$scope.newPersonOrganization = {};
 		$scope.searchValue = "";
 		$scope.pager.totalPages = 2;
 		$scope.setPage(1);
+	}
+	
+	$scope.setPaginatedAddresses = function (page) {
+		$scope.addPersonAddressElem = true;
+		$scope.newPersonAddress = {};
+		var pageSize = 15;
+		
+		if($scope.searchValue == "") {
+			AddressService.getPaginatedAddress(pageSize, (page - 1))
+			.then(function success(response) {
+				$scope.addresses = response.data;
+				$scope.addressPager.currentPage = response.data.page.number + 1;
+				$scope.addressPager.totalPages = response.data.page.totalPages;
+				$scope.addressPager.pages = PagerService.createSlideRange($scope.addressPager.currentPage, $scope.addressPager.totalPages);
+				$scope.message='Good';
+				$scope.errorMessage = '';
+			}, function error(response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting addresses!';
+			});
+		} else {
+			AddressService.searchAddress($scope.searchValue, pageSize, (page - 1))
+			.then(function success(response) {
+				$scope.addresses = response.data;
+				$scope.addressPager.currentPage = response.data.page.number + 1;
+				$scope.addressPager.totalPages = response.data.page.totalPages;
+				$scope.addressPager.pages = PagerService.createSlideRange($scope.addressPager.currentPage, $scope.addressPager.totalPages);
+				$scope.message='Good';
+				$scope.errorMessage = '';
+			}, function error(response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting addresses!';
+			});
+		}
+		
 	}
 	
 	$scope.setPage = function (page) {
