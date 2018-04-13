@@ -33,7 +33,7 @@ app.service('TableService', ['$http', function($http) {
 	this.getTablesOfEvent = function(eventId) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/' + id + '/search/findByEventEventId=?event=' + eventId
+			url : 'http://' + location.host + '/sittingTables/search/findByEventEventId?event=' + eventId
 		});
 	}
 	
