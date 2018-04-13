@@ -158,3 +158,14 @@ docker service create --name qa-rms-donation-manager --replicas=1 --network qa \
 --secret source=qa.application.properties,target=/application.properties \
 -p8082:80 darknite12/donation-manager:0.0.1-SNAPSHOT
 ```
+
+##### Deploying By Updating the Service With an Updated Image
+First get the newly updated image by pulling
+```
+docker pull darknite12/donation-manager:1.0.1-SNAPSHOT
+```
+
+Now simply update the service using the new image
+```
+docker service update dev-rms-donation-manager --image darknite12/donation-manager:1.0.1-SNAPSHOT
+```
