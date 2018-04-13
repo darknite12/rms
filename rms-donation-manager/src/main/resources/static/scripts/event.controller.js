@@ -93,7 +93,6 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	
 	TicketService.getTicketsOfEvent(eventId)
 	.then(function success(response) {
-		//ask to put pagination in this serve response
 		$scope.eventStats.totalTickets = response.data.page.totalElements;
 	}, function error(response) {
 		switch(response.status) {
@@ -106,7 +105,7 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	TicketService.getPaidTicketsOfEvent(eventId)
 	.then(function success(response) {
 		//ask to put pagination in this serve response
-		$scope.eventStats.paidTickets = response.data._embedded.tickets.length;
+		$scope.eventStats.paidTickets = response.data.page.totalElements;
 	}, function error(response) {
 		switch(response.status) {
 		case 404:
@@ -118,7 +117,7 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	TicketService.getUnpaidTicketsOfEvent(eventId)
 	.then(function success(response) {
 		//ask to put pagination in this serve response
-		$scope.eventStats.unpaidTickets = response.data._embedded.tickets.length;
+		$scope.eventStats.unpaidTickets = response.data.page.totalElements;
 	}, function error(response) {
 		switch(response.status) {
 		case 404:
@@ -127,10 +126,10 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 		}
 	});
 	
-	EventService.getFreeTickets(eventId)
+	TicketService.getFreeTickets(eventId)
 	.then(function success(response) {
 		//ask to put pagination in this serve response
-		$scope.eventStats.freeTickets = response.data._embedded.tickets.length;
+		$scope.eventStats.freeTickets = response.data.page.totalElements;
 	}, function error(response) {
 		switch(response.status) {
 		case 404:
