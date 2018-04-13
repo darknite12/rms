@@ -24,11 +24,16 @@ app.service('TicketService', [ '$http', function($http) {
 	}
 	
 	this.getTicketsAtEvent = function(eventId) {
-		//Change to the right url
 		return $http({
 			method : 'GET',
-			//url : 'http://' + location.host + '/tickets/search/findByAtEvent?event=' + eventId
-			url : 'http://' + location.host + '/tickets?sort=ticketNumber'
+			url : 'http://' + location.host + '/tickets/search/findByIsAtEventTrueAndEventEventId?event=' + eventId
+		});
+	}
+	
+	this.getTicketsOfEvent = function(eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByEventEventId?event=' + eventId
 		});
 	}
 	
