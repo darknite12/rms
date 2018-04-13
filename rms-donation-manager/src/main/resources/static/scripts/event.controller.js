@@ -80,9 +80,9 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 		}
 	});
 	
-	TableService.getTables(eventId)
+	TableService.getTablesOfEvent(eventId)
 	.then(function success(response) {
-		$scope.eventStats.numberOfTables = response.data._embedded.sittingTables.length;
+		$scope.eventStats.numberOfTables = response.data.page.totalElements;
 	}, function error(response) {
 		switch(response.status) {
 		case 404:
