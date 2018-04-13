@@ -23,6 +23,15 @@ app.service('TicketService', [ '$http', function($http) {
 		});
 	}
 	
+	this.getTicketsAtEvent = function(eventId) {
+		//Change to the right url
+		return $http({
+			method : 'GET',
+			//url : 'http://' + location.host + '/tickets/search/findByAtEvent?event=' + eventId
+			url : 'http://' + location.host + '/tickets?sort=ticketNumber'
+		});
+	}
+	
 	this.getEvent = function(id) {
 		return $http({
 			method : 'GET',
@@ -121,7 +130,6 @@ app.service('TicketService', [ '$http', function($http) {
 	}
 	
 	this.searchTicket = function(searchValue, size, page) {
-		//There is an error here
 		return $http({
 			method : 'GET',
 			url : 'http://' + location.host + '/tickets/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'

@@ -7,6 +7,7 @@ angular.module('rmsdmgui', ['ngRoute',
 	'rmsdmgui.organization.services',
 	'rmsdmgui.general.services',
 	'rmsdmgui.price.services',
+	'rmsdmgui.event.controllers',
 	'rmsdmgui.event.services',
 	'rmsdmgui.table.controllers',
 	'rmsdmgui.table.services'])
@@ -46,6 +47,14 @@ angular.module('rmsdmgui', ['ngRoute',
     }).when('/newsittingTable', {
     	templateUrl : '../table.html',
     	controller : 'NewTableController',
+    	controllerAs : 'controller'
+    }).when('/events', {
+    	templateUrl : '../events.html',
+    	controller : 'EventsController',
+    	controllerAs : 'controller'
+    }).when('/events/:id', {
+    	templateUrl : '../event.html',
+    	controller : 'EventController',
     	controllerAs : 'controller'
     }).otherwise('/');
 });
