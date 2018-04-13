@@ -34,8 +34,7 @@ app.service('AddressService', ['$http', function($http) {
 	this.searchAddress = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',
-			//url : 'http://' + location.host + '/addresses/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=address'
-			url : 'http://' + location.host + '/addresses/search/findByAddress?address=' + searchValue + '&size=' + size + '&page=' + page + '&sort=address'
+			url : 'http://' + location.host + '/addresses/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=address'
 		});
 	}
 }]);
