@@ -103,7 +103,7 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 		}
 	});
 	
-	EventService.getPaidTickets(eventId)
+	TicketService.getPaidTicketsOfEvent(eventId)
 	.then(function success(response) {
 		//ask to put pagination in this serve response
 		$scope.eventStats.paidTickets = response.data._embedded.tickets.length;
@@ -115,7 +115,7 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 		}
 	});
 	
-	EventService.getUnpaidTickets(eventId)
+	TicketService.getUnpaidTicketsOfEvent(eventId)
 	.then(function success(response) {
 		//ask to put pagination in this serve response
 		$scope.eventStats.unpaidTickets = response.data._embedded.tickets.length;
