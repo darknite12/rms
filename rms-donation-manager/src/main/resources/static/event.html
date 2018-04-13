@@ -1,0 +1,106 @@
+<div class="container-fluid">
+	<h1 ng-hide="newEventView">{{event.name}} {{event.year}}</h1>
+	<div class="panel panel-default">
+		<div class='well'>
+			<form name="eventForm">
+				<div class='row'>
+					<div class='col-sm-4'>
+						<div class='form-group'>
+							<label for="eventName">Event Name</label>
+							<input type="text" id="eventName" class='form-control' ng-model="event.name" placeholder="Event Name"/>
+						</div>
+					</div>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<label for="year">Year</label>
+							<input type="text" id="year" class='form-control' ng-model="event.year" placeholder="Year"/>
+						</div>
+					</div>
+					<div class='col-sm-4'>
+						<div class='form-group'>
+							<label for="mastersOfCeremony">Masters of Ceremony</label>
+							<input type="text" id="mastersOfCeremony" class='form-control' ng-model="event.mastersOfCeremony" placeholder="Masters of Ceremony"/>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-sm-4'>
+						<div class='form-group'>
+							<label for="venue">Venue</label>
+							<input type="text" id="venue" class='form-control' ng-model="event.venue" placeholder="Venue"/>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='form-group'>
+							<label for="location">Location</label>
+							<input type="text" id="location" class='form-control' ng-model="event.address" placeholder="Location"/>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-sm-12'>
+						<div ng-hide="newEventView" class='text-right'>
+							<a ng-click="cancel()" class="btn btn-small">cancel</a>
+							<a ng-click="updateEvent()" class="btn btn-small btn-primary">update</a>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="well">
+			<h2>Event Statistics</h2>
+			<div class="row">
+				<div class="col-sm-1">
+				</div>
+				<div class="col-sm-3">
+					<h3>People at Event:</h3>
+				</div>
+				<div class="col-sm-2">
+					<h3 class="panel panel-default">{{eventStats.peopleAtEvent}}</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1">
+				</div>
+				<div class="col-sm-3">
+					<h3>Number of Tables:</h3>
+				</div>
+				<div class="col-sm-2">
+					<h3 class="panel panel-default">{{eventStats.numberOfTables}}</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1">
+				</div>
+				<div class="col-sm-2">
+					<h3>Total Tickets:</h3>
+				</div>
+				<div class="col-sm-2">
+					<h3 class="panel panel-default">{{eventStats.totalTickets}}</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-1">
+				</div>
+				<div class="col-sm-1">
+					<h3>Paid:</h3>
+				</div>
+				<div class="col-sm-2">
+					<h3 class="panel panel-default">{{eventStats.paidTickets}}</h3>
+				</div>
+				<div class="col-sm-1">
+					<h3>Unpaid:</h3>
+				</div>
+				<div class="col-sm-2">
+					<h3 class="panel panel-default">{{eventStats.unpaidTickets}}</h3>
+				</div>
+				<div class="col-sm-1">
+					<h3>Free:</h3>
+				</div>
+				<div class="col-sm-2">
+					<h3 class="panel panel-default">{{eventStats.freeTickets}}</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

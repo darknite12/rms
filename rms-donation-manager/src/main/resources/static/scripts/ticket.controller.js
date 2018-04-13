@@ -3,13 +3,16 @@ var app = angular.module('rmsdmgui.ticket.controllers', []);
 app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '$location', function ($scope, TicketService, PagerService, $location) {
 	
 	$scope.tickets = [];
-	var allTickets = [];
 	
 	$scope.pager = {};
 	//This is to make possible the first entrance to setPage function (look if there is a better solution)
 	$scope.pager.totalPages = 2;
 	$scope.searchValue = "";
 	var pageSize = 15;
+	
+	$scope.checkKey = function(key) {
+		alert('you pressed: ' + key);
+	}
 	
 	$scope.setPage = function(page) {
 		if(page <= $scope.pager.totalPages) {
