@@ -91,10 +91,10 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 		}
 	});
 	
-	EventService.getTickets(eventId)
+	TicektService.getTicketsOfEvent(eventId)
 	.then(function success(response) {
 		//ask to put pagination in this serve response
-		$scope.eventStats.totalTickets = response.data._embedded.tickets.length;
+		$scope.eventStats.totalTickets = response.data.page.totalElements;
 	}, function error(response) {
 		switch(response.status) {
 		case 404:
