@@ -80,7 +80,7 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 		}
 	});
 	
-	EventService.getTables(eventId)
+	TableService.getTables(eventId)
 	.then(function success(response) {
 		$scope.eventStats.numberOfTables = response.data._embedded.sittingTables.length;
 	}, function error(response) {
