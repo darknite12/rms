@@ -135,7 +135,7 @@
 					</div>
 					<div ng-show="addPersonAddressElem" class="row">
 						<div class="form-group col-sm-4">
-							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert address"/>
+							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert address" dl-enter-key="setPaginatedAddresses(1)"/>
 						</div>
 						<div class="form-group col-sm-6">
 							<a ng-click="setPaginatedAddresses(1)" class="btn btn-small btn-primary">Search</a>

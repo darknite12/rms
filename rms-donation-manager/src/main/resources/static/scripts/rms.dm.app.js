@@ -9,6 +9,7 @@ angular.module('rmsdmgui', ['ngRoute',
 	'rmsdmgui.price.services',
 	'rmsdmgui.event.controllers',
 	'rmsdmgui.event.services',
+	'rmsdmgui.directives',
 	'rmsdmgui.table.controllers',
 	'rmsdmgui.table.services'])
 .config(function($routeProvider, $httpProvider) {

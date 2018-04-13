@@ -138,10 +138,10 @@
 					</div>
 					<div ng-show="addTicketElem" class="row">
 						<div class="form-group col-sm-4">
-							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert number"/>
+							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert number" dl-enter-key="setPaginatedTickets(1)"/>
 						</div>
 						<div class="form-group col-sm-6">
-							<a ng-click="setPaginatedTickets()" class="btn btn-small btn-primary">Search</a>
+							<a ng-click="setPaginatedTickets(1)" class="btn btn-small btn-primary">Search</a>
 						</div>
 					</div>
 					<table ng-show="addTicketElem" class="table table-striped">
