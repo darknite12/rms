@@ -37,6 +37,27 @@ app.service('TicketService', [ '$http', function($http) {
 		});
 	}
 	
+	this.getPaidTicketsOfEvent = function(eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByIsPaidTrueAndEventEventId?event=' + eventId
+		});
+	}
+	
+	this.getUnpaidTicketsOfEvent = function(eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByIsPaidFalseAndEventEventId?event=' + eventId
+		});
+	}
+	
+	this.getFreeTickets = function(eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByIsPaidTrueAndEventEventIdAndFormOfPaymentContaining?formOfPayment=Free&event=' + eventId
+		});
+	}
+	
 	this.getEvent = function(id) {
 		return $http({
 			method : 'GET',
