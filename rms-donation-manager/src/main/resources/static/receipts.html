@@ -1,0 +1,79 @@
+<div class="container-fluid">
+	<h1>Receipts Finder</h1>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Search</h3>
+		</div>
+		<div class="panel-body">
+			<form name="ticketSearch">
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<label for="search" class="control-label">Search:</label> 
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-6">
+						<input type="text" class="form-control" ng-model="searchValue"  dl-enter-key="setPage(1)"/>
+					</div>
+					<div class="form-group col-sm-6">
+						<a ng-click="setPage(1)" class="btn btn-small btn-primary">Search</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="panel-body">
+			<form name="ticketFilter">
+				<div class="form-group col-sm-4">
+					<label for="search" class="control-label">Filter:</label> <input
+						type="text" class="form-control" ng-model="searchKeyword" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Receipt Number</th>
+				<th>Tax Receipt Name</th>
+				<th>Amount</th>
+				<th>Number of Tickets</th>
+				<th>Year</th>
+				<th><a href="generateReceipts()">+ Generate Receipts</a></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr
+				ng-repeat="r in receipts | filter: searchKeyword ">
+				<td>{{r.receiptNumber}}</td>
+				<td>{{r.taxReceiptName}}</td>
+				<td>{{r.amount}}</td>
+				<td>{{r.numberOfTickets}}</td>
+				<td>{{r.year}}</td>
+				<td><a ng-click="downloadReceipt(r._links.self.href)" class="btn btn-small btn-primary">download</a></td>
+
+			</tr>
+		</tbody>
+	</table>
+	<!-- Pager -->
+	<div class="text-center">
+		<ul ng-if="pager.totalPages" class="pagination">
+		    <li ng-class="{disabled:pager.currentPage === 1}">
+		        <a ng-click="setPage(1)">First</a>
+		    </li>
+		    <li ng-class="{disabled:pager.currentPage === 1}">
+		        <a ng-click="setPage(pager.currentPage - 1)">Previous</a>
+		    </li>
+		    <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+		        <a ng-click="setPage(page)">{{page}}</a>
+		    </li>                
+		    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+		        <a ng-click="setPage(pager.currentPage + 1)">Next</a>
+		    </li>
+		    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+		        <a ng-click="setPage(pager.totalPages)">Last</a>
+		    </li>
+		</ul>
+	</div>
+	
+</div>
