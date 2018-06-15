@@ -16,11 +16,11 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
-	this.generateReceipts = function() {
+	this.generateReceipts = function(year) {
 		return $http({
 			method : 'POST',
-			url : //'http://' + location.host + '/tickets/',
-			data : //ticket
+			url : 'http://' + location.host + '/receipts/generate',
+			data : {'year' : year}
 		});
 	}
 }]);

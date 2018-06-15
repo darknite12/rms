@@ -43,7 +43,8 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'PagerService'
 	$scope.setPage(1);
 	
 	$scope.generateReceipts = function() {
-		ReceiptService.generateReceipts()
+		var year = 2018;
+		ReceiptService.generateReceipts(year)
 		.then(function success(response) {
 			
 		}, function error(response) {
