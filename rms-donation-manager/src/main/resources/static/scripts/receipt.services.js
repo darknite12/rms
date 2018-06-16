@@ -8,11 +8,11 @@ app.service('ReceiptService', ['$http', function($http) {
 			url : 'http://' + location.host + '/receipts?size=' + size + '&page=' + page + '&sort=ticketNumber'
 		});
 	}
-	//I need to create this searching method in the repository
+	
 	this.searchReceipt = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/receipts/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+			url : 'http://' + location.host + '/receipts/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=receiptNumber'
 		});
 	}
 	

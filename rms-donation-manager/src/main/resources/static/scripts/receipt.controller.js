@@ -22,7 +22,14 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'PagerService'
 					$scope.message='';
 					$scope.errorMessage = '';
 				}, function error(response) {
-					
+					switch(response.status) {
+					case 409:
+						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+						break;
+					case 500:
+						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+						break;
+					}
 				});
 			} else {
 				ReceiptService.searchReceipt($scope.searchValue, pageSize, (page - 1))
@@ -31,10 +38,23 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'PagerService'
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
+					if($scope.pager.totalPages <= 0) {
+						alert("No receipts found");
+						$scope.pager.totalPages = 2;
+						$scope.searchValue = "";
+						$scope.setPage(1);
+					}
 					$scope.message='';
 					$scope.errorMessage = '';
 				}, function error(response) {
-					
+					switch(response.status) {
+					case 409:
+						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+						break;
+					case 500:
+						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+						break;
+					}
 				});
 			}
 		}
