@@ -30,6 +30,20 @@
 			</form>
 		</div>
 	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<form name="filterByYear">
+				<div class="form-group col-sm-2">
+					<label for="search" class="control-label">Year:</label>
+					<select id="yearSelect" ng-model="selectedYear" class='form-control' ng-change="setPage(1)">
+				      <option ng-repeat="y in years" value="{{y}}">{{y}}</option>
+				    </select>
+				</div>
+			</form>
+		</div>
+		
+	</div>
 
 	<table class="table table-striped">
 		<thead>
@@ -39,7 +53,7 @@
 				<th>Amount</th>
 				<th>Number of Tickets</th>
 				<th>Year</th>
-				<th><a href="generateReceipts()">+ Generate Receipts</a></th>
+				<th><a ng-show="selectedYear != 'All'" href="generateReceipts()">+ Generate Receipts</a></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -50,7 +64,7 @@
 				<td>{{r.amount}}</td>
 				<td>{{r.numberOfTickets}}</td>
 				<td>{{r.year}}</td>
-				<td><a ng-click="downloadReceipt(r._links.self.href)" class="btn btn-small btn-primary">download</a></td>
+				<td><a ng-click="downloadReceipt(r)" class="btn btn-small btn-primary">download</a></td>
 
 			</tr>
 		</tbody>

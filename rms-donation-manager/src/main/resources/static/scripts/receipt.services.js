@@ -9,6 +9,13 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
+	this.getPaginatedReceiptByYear = function (year, size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/receipts/search/findByYear?year=' + year + '&size=' + size + '&page=' + page + '&sort=receiptNumber'
+		});
+	}
+	
 	this.searchReceipt = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',
