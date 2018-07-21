@@ -16,6 +16,13 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
+	this.getTickets = function (id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/receipts/' + id + '/tickets'
+		});
+	}
+	
 	this.searchReceipt = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',
@@ -23,11 +30,14 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
-	this.generateReceipts = function(year) {
+	this.generateReceipts = function(year, lastReceiptNumber) {
 		return $http({
 			method : 'POST',
 			url : 'http://' + location.host + '/receipts/generate',
-			data : {'year' : year}
+			data : {
+				'year' : year,
+				'lastReceiptNumber' : lastReceiptNumber
+			}
 		});
 	}
 }]);

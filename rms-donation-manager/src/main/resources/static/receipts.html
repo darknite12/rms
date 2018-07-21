@@ -24,8 +24,8 @@
 		<div class="panel-body">
 			<form name="ticketFilter">
 				<div class="form-group col-sm-4">
-					<label for="search" class="control-label">Filter:</label> <input
-						type="text" class="form-control" ng-model="searchKeyword" />
+					<label for="search" class="control-label">Filter:</label> 
+					<input type="text" class="form-control" ng-model="searchKeyword" />
 				</div>
 			</form>
 		</div>
@@ -39,6 +39,10 @@
 					<select id="yearSelect" ng-model="selectedYear" class='form-control' ng-change="setPage(1)">
 				      <option ng-repeat="y in years" value="{{y}}">{{y}}</option>
 				    </select>
+				</div>
+				<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
+					<label for="lastReceiptNumber" class="control-label">Last receipt number:</label>
+					<input type="text" class="form-control" ng-model="lastReceiptNumber" />
 				</div>
 			</form>
 		</div>

@@ -1,6 +1,7 @@
 var app = angular.module('rmsdmgui.receipt.controllers', []);
 
-app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'PagerService', 'PDFService', function ($scope, ReceiptService, PagerService, PDFService) {
+app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService', 'PersonService', 'PagerService', 'PDFService', 
+	function ($scope, ReceiptService, TicketService, PersonService, PagerService, PDFService) {
 
 	$scope.receipts = [];
 	
@@ -8,6 +9,7 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'PagerService'
 	//This is to make possible the first entrance to setPage function (look if there is a better solution)
 	$scope.pager.totalPages = 2;
 	$scope.searchValue = "";
+	$scope.lastReceiptNumber = "";
 	$scope.years = ["All"];
 	$scope.selectedYear = "All";
 	var date = new Date();
@@ -97,38 +99,38 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'PagerService'
 	
 	$scope.generateReceipts = function() {
 
-		ReceiptService.generateReceipts($scope.selectedYear)
+		ReceiptService.generateReceipts($scope.selectedYear, $scope.lastReceiptNumber)
 		.then(function success(response) {
-			
+			$scope.setPage(1);
 		}, function error(response) {
 			
-		})
+		});
 	}
 	
 	$scope.downloadReceipt = function(receipt) {
 		
-		PDFService.generateReceipt(receipt, {
-		      "address" : "2661 Kingston Rd.",
-		      "address2" : null,
-		      "city" : "Scarborough",
-		      "country" : null,
-		      "poBox" : null,
-		      "postalCode" : "M1M 1M3",
-		      "province" : "Ontario",
-		      "_links" : {
-		        "self" : {
-		          "href" : "http://localhost:8080/addresses/1"
-		        },
-		        "address" : {
-		          "href" : "http://localhost:8080/addresses/1"
-		        },
-		        "persons" : {
-		          "href" : "http://localhost:8080/addresses/1/persons"
-		        },
-		        "organizations" : {
-		          "href" : "http://localhost:8080/addresses/1/organizations"
-		        }
-		      }
-		    });
+		var receiptId = receipt._links.self.href.split('http://' + location.host + '/receipts/')[1];
+		var receiptAdderess = [];
+		
+		ReceiptService.getTickets(receiptId)
+		.then(function success(response) {
+			var ticketId = response.data._embedded.tickets[0]._links.self.href.split('http://' + location.host + '/tickets/')[1];
+			TicketService.getPerson(ticketId)
+			.then(function success(response) {
+				var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+				PersonService.getPersonAddress(personId)
+				.then(function success(response) {
+					var address = response.data._embedded.addresses[0];
+					PDFService.generateReceipt(receipt, address);
+				}, function error(response) {
+					
+				});
+			}, function error(response) {
+				
+			});
+		}, function error(response) {
+			alert("error")
+		});
+		
 	}
 }]);

@@ -42,7 +42,7 @@ app.service('PDFService', [function () {
 			receiptPdf.text('Receipt No.:	   ' + receipt.receiptNumber, 125, (startingYPoint + 53));
 			receiptPdf.text('Taxation Year:	' + receipt.year, 125, (startingYPoint + 63));
 			receiptPdf.setFontSize(11);
-			receiptPdf.text('Amount Issued:	' + receipt.amountIssued, 125, (startingYPoint + 43));
+			receiptPdf.text('Amount Issued:	' + receipt.amount, 125, (startingYPoint + 43));
 			receiptPdf.setFontSize(10);
 			receiptPdf.setFontStyle('normal');
 			receiptPdf.text([receipt.taxReceiptName,

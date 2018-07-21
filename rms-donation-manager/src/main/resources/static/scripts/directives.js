@@ -15,3 +15,5 @@ app.directive('dlEnterKey', function() {
 		});
 	}
 });
+
+var module = angular.module('myModule', ['ui.bootstrap']);
