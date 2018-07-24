@@ -131,6 +131,5 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 		}, function error(response) {
 			alert("error")
 		});
-		
 	}
 }]);
