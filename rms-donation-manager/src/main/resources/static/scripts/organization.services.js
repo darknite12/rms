@@ -31,10 +31,10 @@ app.service('OrganizationService', ['$http', function($http){
 		});
 	}
 	
-	this.deleteOrganization = function deleteOrganization(id) {
+	this.deleteOrganization = function deleteOrganization(organizationUrl) {
 		return $http({
 			method: 'DELETE',
-	        url: 'http://' + location.host + '/organizations/' + id
+	        url: organizationUrl
 	    });
 	}
 }]);

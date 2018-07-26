@@ -56,10 +56,10 @@ app.controller('PersonsController', ['$scope','PersonService', 'PagerService', '
 		}, function error(response) {
 			switch(response.status) {
 			case 409:
-				alert("Error deleting ticket: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+				alert("Error deleting person: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
 				break;
 			case 500:
-				alert("Error deleting ticket: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+				alert("Error deleting person: \nStatus: " + response.status + "\nMessage: " + response.data.message);
 				break;
 			}
 		});

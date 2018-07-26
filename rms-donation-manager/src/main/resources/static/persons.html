@@ -34,7 +34,7 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th>Name</a></th>
+				<th>Name</th>
 				<th>Parish</th>
 				<th>Language</th>
 				<th>Phone Number</th>
@@ -46,7 +46,7 @@
 			<tr
 				ng-repeat="p in persons._embedded.persons | filter: searchKeyword ">
 				<td><a ng-click="modifyPerson(p._links.self.href)">{{p.title}}
-						{{ p.firstName }} {{p.lastName}}</a>
+						{{ p.firstName }} {{p.lastName}}</a></td>
 				<td>{{p.parish}}</td>
 				<td>{{p.language}}</td>
 				<td>h:{{p.homePhoneNumber}}, c:{{p.cellPhoneNumber}},
