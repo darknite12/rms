@@ -1,0 +1,196 @@
+<div class="container-fluid">
+	<h1 ng-hide="newOrganizationView">{{organizationName}}</h1>
+	<div class="panel panel-default">
+		<div class='well'>
+			<h2 ng-show="newOrganizationView">New Organization</h2>
+			<form name="organizationForm">
+				<div class='row'>
+					<div class='col-sm-6'>
+						<div class='form-group'>
+							<label for="organizationName">Organization Name</label>
+							<input type="text" id="organizationName" class='form-control' ng-model="organization.name" placeholder="Organization Name"/>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		
+		<div class='well'>
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Address</h2>
+				</div>
+			</div>
+			<form name="organizationAddressesForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Address</th>
+								<th>Address2</th>
+								<th>City</th>
+								<th>P.O. Box</th>
+								<th>Postal Code</th>
+								<th>Province</th>
+								<th>Country</th>
+								<th><a ng-hide="addOrganizationAddressElem" ng-click="setPaginatedAddresses(1)">+ Address</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="organizationAddressForm" ng-repeat="oa in organizationAddress.addresses">
+								<ng-form name="organizationAddressForm">
+									<td><input type="text" id="address" class='form-control' ng-model="oa.address" /></td>
+									<td><input type="text" id="address2" class='form-control' ng-model="oa.address2" /></td>
+									<td><input type="text" id="city" class='form-control' ng-model="oa.city" /></td>
+									<td><input type="text" id="poBox" class='form-control' ng-model="oa.poBox" /></td>
+									<td><input type="text" id="postalCode" class='form-control' ng-model="oa.postalCode" /></td>
+									<td><input type="text" id="province" class='form-control' ng-model="oa.province" /></td>
+									<td><input type="text" id="country" class='form-control' ng-model="oa.country" /></td>
+									<td><a ng-click="updateOrganizationAddress(oa)" class="btn btn-small btn-primary">update</a></td>
+									<td><a ng-click="deleteOrganizationAddress(oa._links.self.href)" ng-hide="newOrganizationView" class="btn btn-small btn-primary">delete</a></td>
+								</ng-form>
+							</tr>
+							<tr ng-show="addOrganizationAddressElem">
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.address"/></th>
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.address2"/></th>
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.city"/></th>
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.poBox"/></th>
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.postalCode"/></th>
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.province"/></th>
+								<th><input type="text" class='form-control' ng-model="newOrganizationAddress.country"/></th>
+								<th><a ng-click="addOrganizationAddress()" class="btn btn-small btn-primary">add</a></th>
+								<th><a ng-click="addOrganizationAddressElem=false" class="btn btn-small btn-primary">cancel</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<div ng-show="addOrganizationAddressElem" class="row">
+						<div class="form-group col-sm-6">
+							<label for="search" class="control-label">Search:</label> 
+						</div>
+					</div>
+					<div ng-show="addOrganizationAddressElem" class="row">
+						<div class="form-group col-sm-4">
+							<input type="text" class="form-control" ng-model="addressSearchValue" placeholder="Insert address" dl-enter-key="setPaginatedAddresses(1)"/>
+						</div>
+						<div class="form-group col-sm-6">
+							<a ng-click="setPaginatedAddresses(1)" class="btn btn-small btn-primary">Search</a>
+						</div>
+					</div>
+					<table ng-show="addOrganizationAddressElem" class="table table-striped">
+						<tr ng-show="addOrganizationAddressElem" ng-repeat="a in addresses._embedded.addresses | filter: newOrganizationAddress.address">
+							<td><a ng-click="setOrganizationAddress(a)">{{a.address}}</a></td>
+							<td>{{a.address2}}</td>
+							<td>{{a.city}}</td>
+							<td>{{a.poBox}}</td>
+							<td>{{a.postalCode}}</td>
+							<td>{{a.province}}</td>
+							<td>{{a.country}}</td>
+						</tr>
+					</table>
+					<div class="text-center" ng-show="addOrganizationAddressElem">
+						<ul ng-if="addressPager.totalPages" class="pagination">
+						    <li ng-class="{disabled:addressPager.currentPage === 1}">
+						        <a ng-click="setPaginatedAddresses(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:addressPager.currentPage === 1}">
+						        <a ng-click="setPaginatedAddresses(addressPager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in addressPager.pages" ng-class="{active:addressPager.currentPage === page}">
+						        <a ng-click="setPaginatedAddresses(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:addressPager.currentPage === addressPager.totalPages}">
+						        <a ng-click="setPaginatedAddresses(addressPager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:addressPager.currentPage === addressPager.totalPages}">
+						        <a ng-click="setPaginatedAddresses(addressPager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class='well'>
+			<h2>People in the Organization</h2>
+			<form name="boughtByForm">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Language</th>
+							<th>Phone Number</th>
+							<th>Email</th>
+							<th><a ng-click="setPaginatedPersons(1)">+ Person</a></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr	ng-repeat="p in organizationPersons.persons | filter: searchKeyword ">
+							<td>{{p.title}}	{{ p.firstName }} {{p.lastName}}</td>
+							<td>{{p.language}}</td>
+							<td>h:{{p.homePhoneNumber}}, c:{{p.cellPhoneNumber}}, w:{{workPhoneNumber}}</td>
+							<td>{{p.email}}</td>
+							<td><a ng-click="unlinkPerson(p._links.self.href)" class="btn btn-small btn-primary">unlink</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class='col-sm-14'>
+					<div ng-show="addPersonElem" class="row">
+						<div class="form-group col-sm-6">
+							<label for="search" class="control-label">Search:</label> 
+						</div>
+					</div>
+					<div ng-show="addPersonElem" class="row">
+						<div class="form-group col-sm-6">
+							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert name" dl-enter-key="setPaginatedPersons()"/>
+						</div>
+						<div class="form-group col-sm-6">
+							<a ng-click="setPaginatedPersons()" class="btn btn-small btn-primary">Search</a>
+						</div>
+					</div>
+					<table ng-show="addPersonElem" class="table table-striped">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Name</th>
+								<th>Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="p in persons">
+								<td ng-show="addPersonElem"><a ng-click="linkPerson(p[0])">{{p[0].firstName}} {{p[0].lastName}}</a></td>
+								<td ng-show="addPersonElem"><a ng-click="linkPerson(p[1])">{{p[1].firstName}} {{p[1].lastName}}</a></td>
+								<td ng-show="addPersonElem"><a ng-click="linkPerson(p[2])">{{p[2].firstName}} {{p[2].lastName}}</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="text-center" ng-show="addPersonElem">
+						<ul ng-if="personPager.totalPages" class="pagination">
+						    <li ng-class="{disabled:personPager.currentPage === 1}">
+						        <a ng-click="setPage(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:personPager.currentPage === 1}">
+						        <a ng-click="setPage(personPager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in personPager.pages" ng-class="{active:personPager.currentPage === page}">
+						        <a ng-click="setPage(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:personPager.currentPage === personPager.totalPages}">
+						        <a ng-click="setPage(personPager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:personPager.currentPage === personPager.totalPages}">
+						        <a ng-click="setPage(personPager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
+				</div>
+			</form>
+			<div ng-show="newOrganizationView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="addPerson()" class="btn btn-small btn-primary">Add</a>
+			</div>
+			<div ng-hide="newOrganizationView" class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="updateOrganization()" class="btn btn-small btn-primary">Done</a>
+			</div>
+		</div>
+	</div>
+</div>
