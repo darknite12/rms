@@ -168,5 +168,10 @@ app.controller('NewOrganizationController', ['$scope', '$location', 'Organizatio
 		}, function error(response) {
 			alert('Error adding organization');
 		});
+		$location.path('/organizations');
 	}
+	
+	$scope.cancel = function () {
+		$location.path('/organizations');
+	};
 }]);

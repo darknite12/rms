@@ -321,7 +321,7 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 	}
 	
 	$scope.cancel = function () {
-		
+		$location.path('/organizations');
 	};
 	//Bug: the same address can be added more than once
 }]);
