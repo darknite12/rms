@@ -46,7 +46,7 @@
 									<td><input type="text" id="postalCode" class='form-control' ng-model="oa.postalCode" /></td>
 									<td><input type="text" id="province" class='form-control' ng-model="oa.province" /></td>
 									<td><input type="text" id="country" class='form-control' ng-model="oa.country" /></td>
-									<td><a ng-click="updateOrganizationAddress(oa)" class="btn btn-small btn-primary">update</a></td>
+									<td><a ng-click="updateOrganizationAddress(oa, $index)" class="btn btn-small btn-primary">update</a></td>
 									<td><a ng-click="deleteOrganizationAddress(oa._links.self.href)" ng-hide="newOrganizationView" class="btn btn-small btn-primary">delete</a></td>
 								</ng-form>
 							</tr>
@@ -123,7 +123,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr	ng-repeat="p in organizationPersons.persons | filter: searchKeyword ">
+						<tr	ng-repeat="p in organizationPerson.persons | filter: searchKeyword ">
 							<td>{{p.title}}	{{ p.firstName }} {{p.lastName}}</td>
 							<td>{{p.language}}</td>
 							<td>h:{{p.homePhoneNumber}}, c:{{p.cellPhoneNumber}}, w:{{workPhoneNumber}}</td>
@@ -140,10 +140,10 @@
 					</div>
 					<div ng-show="addPersonElem" class="row">
 						<div class="form-group col-sm-6">
-							<input type="text" class="form-control" ng-model="searchValue" placeholder="Insert name" dl-enter-key="setPaginatedPersons()"/>
+							<input type="text" class="form-control" ng-model="personSearchValue" placeholder="Insert name" dl-enter-key="setPaginatedPersons()"/>
 						</div>
 						<div class="form-group col-sm-6">
-							<a ng-click="setPaginatedPersons()" class="btn btn-small btn-primary">Search</a>
+							<a ng-click="setPaginatedPersons(1)" class="btn btn-small btn-primary">Search</a>
 						</div>
 					</div>
 					<table ng-show="addPersonElem" class="table table-striped">
@@ -183,13 +183,10 @@
 					</div>
 				</div>
 			</form>
-			<div ng-show="newOrganizationView" class='text-right'>
+			<div class='text-right'>
 				<a ng-click="cancel()" class="btn btn-small">cancel</a>
-				<a ng-click="addPerson()" class="btn btn-small btn-primary">Add</a>
-			</div>
-			<div ng-hide="newOrganizationView" class='text-right'>
-				<a ng-click="cancel()" class="btn btn-small">cancel</a>
-				<a ng-click="updateOrganization()" class="btn btn-small btn-primary">Done</a>
+				<a ng-show="newOrganizationView" ng-click="addOrganization()" class="btn btn-small btn-primary">Add</a>
+				<a ng-hide="newOrganizationView" ng-click="updateOrganization()" class="btn btn-small btn-primary">Done</a>
 			</div>
 		</div>
 	</div>

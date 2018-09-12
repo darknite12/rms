@@ -24,6 +24,10 @@ angular.module('rmsdmgui', ['ngRoute',
         templateUrl : '../person.html',
         controller : 'PersonController',
         controllerAs: 'controller'
+    }).when('/newperson', {
+    	templateUrl : '../person.html',
+    	controller : 'NewPersonController',
+    	controllerAs : 'controller'
     }).when('/organizations', {
         templateUrl : '../organizations.html',
         controller : 'OrganizationsController',

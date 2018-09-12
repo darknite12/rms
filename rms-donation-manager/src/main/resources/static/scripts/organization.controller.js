@@ -78,7 +78,7 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 	$scope.addressSearchValue = "";
 	$scope.personSearchValue = "";
 	$scope.organizationAddress = [];
-	$scope.organizationPersons = [];
+	$scope.organizationPerson = [];
 	$scope.addressPager = {};
 	$scope.personPager = {};
 	var organizationId = $routeParams.id;
@@ -97,7 +97,7 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 	refreshOrganizationPerson = function () {
 		OrganizationService.getOrganizationPersons(organizationId)
 		.then(function success(response) {
-			$scope.organizationPersons = response.data._embedded;
+			$scope.organizationPerson = response.data._embedded;
 			$scope.message = '';
 			$scope.errorMessage = '';
 		}, function error(response) {
@@ -130,6 +130,7 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 		}, function error(response) {
 			
 		});
+		$scope.addressSearchValue = "";
 	}
 	
 	$scope.addOrganizationAddress = function () {
@@ -212,7 +213,6 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 	
 	$scope.setPaginatedPersons = function (page) {
 		
-		$scope.personSearchValue = "";
 		$scope.addPersonElem = true;
 		$scope.persons = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = [], c6 = [], c7 = [], c8 = [],
 			c9 = [], c10 = [], c11 = [], c12 = [], c13 = [], c14 = [], c15 = []];
@@ -260,7 +260,7 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 		var personId = person._links.self.href.split('http://' + location.host + '/persons/')[1];
 		var personExists = false;
 		
-		$scope.organizationPersons.persons.forEach(function (element) {
+		$scope.organizationPerson.persons.forEach(function (element) {
 			var actualPersonId = element._links.self.href.split('http://' + location.host + '/persons/')[1];
 			personExists = (personId == actualPersonId) ? true : false;
 		});
@@ -270,19 +270,20 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 		} else {
 			PersonService.addPersonOrganization(personId, 'http://' + location.host + '/organizations/' + organizationId)
 			.then(function success(response) {
-				$scope.organizationPersons.persons.push(person);
+				$scope.organizationPerson.persons.push(person);
 				
 			}, function error(response) {
 				alert("error adding a person to the organization");
 			});
 		}
+		$scope.personSearchValue = "";
 		$scope.addPersonElem = false;
 		
 		/*For some reason this is not working properly: the info is send to the DB, and it answers as if the operation was complete
 		 * nevertheless no real changes were performed in the DB
 		 * OrganizationService.addOrganizationPerson(organizationId, person._links.self.href)
 		.then(function success(response) {
-			$scope.organizationPersons.persons.push(person);
+			$scope.organizationPerson.persons.push(person);
 			$scope.addPersonElem = false;
 		}, function error(response) {
 			alert("error adding a person to the organization");
@@ -305,14 +306,12 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 	
 	$scope.updateOrganization = function () {
 		
-		if (organizationName == "") {
+		if ($scope.organization.name == "") {
 			alert('The field for the organization name cannot be empty');
 		} else {
-			$scope.organization.name = $scope.organizationName;
-			
 			OrganizationService.updateOrganization(organizationId, $scope.organization)
 			.then(function(response) {
-				alert('Organization updated');
+				//alert('Organization updated');
 				$location.path('/organizations');
 			}, function error(response) {
 				alert('Error Updating organization');
@@ -324,7 +323,5 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 	$scope.cancel = function () {
 		
 	};
-	
-	//unlink buttonis working, but the same person can be added more than once, a check for this needes to be added
-	//Remember to set the button to delete addresses, at the moment is not working
+	//Bug: the same address can be added more than once
 }]);
