@@ -40,10 +40,10 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				}, function error(response) {
 					switch(response.status) {
 					case 409:
-						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+						alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
 						break;
 					case 500:
-						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+						alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.message);
 						break;
 					}
 				});
@@ -59,10 +59,10 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				}, function error(response) {
 					switch(response.status) {
 					case 409:
-						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+						alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
 						break;
 					case 500:
-						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+						alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.message);
 						break;
 					}
 				});
@@ -84,10 +84,10 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				}, function error(response) {
 					switch(response.status) {
 					case 409:
-						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+						alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
 						break;
 					case 500:
-						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+						alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.message);
 						break;
 					}
 				});
@@ -110,26 +110,82 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 	$scope.downloadReceipt = function(receipt) {
 		
 		var receiptId = receipt._links.self.href.split('http://' + location.host + '/receipts/')[1];
-		var receiptAdderess = [];
 		
-		ReceiptService.getTickets(receiptId)
-		.then(function success(response) {
-			var ticketId = response.data._embedded.tickets[0]._links.self.href.split('http://' + location.host + '/tickets/')[1];
-			TicketService.getPerson(ticketId)
+		if (receipt.taxReceiptName == "" || receipt.taxReceiptName == null) {
+			alert('The receipt does not have a name:\nIt cannot be downloaded without it.');
+		} else {
+			ReceiptService.getTickets(receiptId)
 			.then(function success(response) {
-				var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
-				PersonService.getPersonAddress(personId)
+				var ticketId = response.data._embedded.tickets[0]._links.self.href.split('http://' + location.host + '/tickets/')[1];
+				TicketService.getPerson(ticketId)
 				.then(function success(response) {
-					var address = response.data._embedded.addresses[0];
-					PDFService.generateReceipt(receipt, address);
+					var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+					PersonService.getPersonAddress(personId)
+					.then(function success(response) {
+						var address = response.data._embedded.addresses[0];
+						PDFService.generateReceipt(receipt, address);
+					}, function error(response) {
+						
+					});
 				}, function error(response) {
 					
 				});
 			}, function error(response) {
-				
+				alert("error")
 			});
-		}, function error(response) {
-			alert("error")
-		});
+		}
+		
+	}
+	
+	$scope.downloadAllReceipts = function() {
+		var receiptsArray = {receipt : [], address : []}; //This array contains the receipts with their corresponding addresses
+		for (var i = 0; i <= $scope.pager.totalPages; i++) {
+			ReceiptService.getPaginatedReceipt(pageSize, i)
+			.then(function success(response) {
+				var totalElements = response.data.page.totalElements;
+				response.data._embedded.receipts.forEach(function(element) {
+					var receiptId = element._links.self.href.split('http://' + location.host + '/receipts/')[1];
+					
+					if (element.taxReceiptName == "" || element.taxReceiptName == null) {
+						alert('The receipt N. ' + element.receiptNumber + ' does not have a name:\nIt cannot be downloaded without it.');
+					} else {
+						ReceiptService.getTickets(receiptId)
+						.then(function success(response) {
+							var ticketId = response.data._embedded.tickets[0]._links.self.href.split('http://' + location.host + '/tickets/')[1];
+							TicketService.getPerson(ticketId)
+							.then(function success(response) {
+								var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+								PersonService.getPersonAddress(personId)
+								.then(function success(response) {
+									var address = response.data._embedded.addresses[0];
+									receiptsArray.receipt.push(element);
+									receiptsArray.address.push(address);
+									//Be careful when a receipt cannot be added: it would cause this if clause not to work
+									if (receiptsArray.receipt.length >= totalElements) {
+										PDFService.generateAllReceipts(receiptsArray);
+									}
+								}, function error(response) {
+									
+								});
+							}, function error(response) {
+								
+							});
+						}, function error(response) {
+							alert("error")
+						});
+					}
+					
+				});
+			}, function error(response) {
+				switch(response.status) {
+				case 409:
+					alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+					break;
+				case 500:
+					alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+					break;
+				}
+			});
+		}
 	}
 }]);

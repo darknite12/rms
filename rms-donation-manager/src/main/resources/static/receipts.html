@@ -44,6 +44,9 @@
 					<label for="lastReceiptNumber" class="control-label">Last receipt number:</label>
 					<input type="text" class="form-control" ng-model="lastReceiptNumber" />
 				</div>
+				<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
+					<a class="table table-striped" ng-show="selectedYear != 'All'" href="generateReceipts()">+ Generate Receipts</a>
+				</div>
 			</form>
 		</div>
 		
@@ -57,7 +60,7 @@
 				<th>Amount</th>
 				<th>Number of Tickets</th>
 				<th>Year</th>
-				<th><a ng-show="selectedYear != 'All'" href="generateReceipts()">+ Generate Receipts</a></th>
+				<th><a ng-click="downloadAllReceipts()" class="btn btn-small btn-primary">download all</a></th>
 			</tr>
 		</thead>
 		<tbody>
