@@ -25,7 +25,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 						TicketService.getPerson(ticketId)
 						.then(function success(response) {
 							element.buyer = response.data.firstName + " " + response.data.lastName;
-						}, function(response) {
+						}, function error(response) {
 							switch(response.status) {
 							case 404:
 								TicketService.getOrganization(ticketId)

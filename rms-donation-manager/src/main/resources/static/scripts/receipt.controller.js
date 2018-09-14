@@ -1,7 +1,7 @@
 var app = angular.module('rmsdmgui.receipt.controllers', []);
 
-app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService', 'PersonService', 'PagerService', 'PDFService', 
-	function ($scope, ReceiptService, TicketService, PersonService, PagerService, PDFService) {
+app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService', 'PersonService', 'OrganizationService', 'PagerService', 'PDFService', 
+	function ($scope, ReceiptService, TicketService, PersonService, OrganizationService, PagerService, PDFService) {
 
 	$scope.receipts = [];
 	
@@ -128,7 +128,23 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 						
 					});
 				}, function error(response) {
-					
+					switch(response.status) {
+					case 404:
+						TicketService.getOrganization(ticketId)
+						.then(function success(response) {
+							var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+							OrganizationService.getOrganizationAddress(organizationId)
+							.then(function success(response) {
+								var address = response.data._embedded.addresses[0];
+								PDFService.generateReceipt(receipt, address);
+							}, function error (response) {
+								
+							});
+						}, function error(response) {
+							
+						});
+						break;
+					}
 				});
 			}, function error(response) {
 				alert("error")
@@ -168,7 +184,28 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 									
 								});
 							}, function error(response) {
-								
+								switch(response.status) {
+								case 404:
+									TicketService.getOrganization(ticketId)
+									.then(function success(response) {
+										var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+										OrganizationService.getOrganizationAddress(organizationId)
+										.then(function success(response) {
+											var address = response.data._embedded.addresses[0];
+											receiptsArray.receipt.push(element);
+											receiptsArray.address.push(address);
+											//Be careful when a receipt cannot be added: it would cause this if clause not to work
+											if (receiptsArray.receipt.length >= totalElements) {
+												PDFService.generateAllReceipts(receiptsArray);
+											}
+										}, function error (response) {
+											
+										});
+									}, function error(response) {
+										
+									});
+									break;
+								}
 							});
 						}, function error(response) {
 							alert("error")
