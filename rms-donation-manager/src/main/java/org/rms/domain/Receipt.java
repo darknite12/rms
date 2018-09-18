@@ -18,6 +18,16 @@ public class Receipt implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="receipt_id")
 	private int receiptId;
+	
+	// bi-directional many-to-one association to Organization
+	@ManyToOne
+	@JoinColumn(name = "organization_id")
+	private Organization organization;
+
+	// bi-directional many-to-one association to Person
+	@ManyToOne
+	@JoinColumn(name = "person_id")
+	private Person person;
 
 	private double amount;
 
@@ -55,6 +65,22 @@ public class Receipt implements Serializable {
 
 	public void setReceiptId(int receiptId) {
 		this.receiptId = receiptId;
+	}
+	
+	public Organization getOrganization() {
+		return this.organization;
+	}
+
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
+	}
+
+	public Person getPerson() {
+		return this.person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 
 	public double getAmount() {
@@ -156,5 +182,13 @@ public class Receipt implements Serializable {
 
 		return ticket;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + receiptId;
+		return result;
+	}	
 
 }

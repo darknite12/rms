@@ -67,6 +67,10 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy="person")
 	private List<Ticket> tickets;
 	
+	//bi-directional many-to-one association to Ticket
+	@OneToMany(mappedBy="person")
+	private List<Receipt> receipts;
+	
 	//bi-directional many-to-many association to Address
 	@ManyToMany
 	@JoinTable(
@@ -266,6 +270,28 @@ public class Person implements Serializable {
 		ticket.setPerson(null);
 
 		return ticket;
+	}
+	
+	public List<Receipt> getReceipts() {
+		return this.receipts;
+	}
+
+	public void setReceipts(List<Receipt> receipts) {
+		this.receipts = receipts;
+	}
+
+	public Receipt addReceipt(Receipt receipt) {
+		getReceipts().add(receipt);
+		receipt.setPerson(this);
+
+		return receipt;
+	}
+
+	public Receipt removeReceipt(Receipt receipt) {
+		getReceipts().remove(receipt);
+		receipt.setPerson(null);
+
+		return receipt;
 	}
 
 	public List<Address> getAddresses() {

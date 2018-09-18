@@ -39,6 +39,8 @@ ENGINE = InnoDB DEFAULT CHARACTER SET = latin1;
 
 CREATE TABLE IF NOT EXISTS `receipt` (
   `receipt_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `person_id` INT(11) NULL,
+  `organization_id` INT(11) NULL,
   `receipt_number` VARCHAR(50) NULL DEFAULT NULL,
   `amount` DOUBLE NULL DEFAULT NULL,
   `year` INT(11) NULL DEFAULT NULL,
@@ -47,7 +49,17 @@ CREATE TABLE IF NOT EXISTS `receipt` (
   `first_of_year` INT(11) NULL DEFAULT NULL,
   `info` LONGTEXT NULL DEFAULT NULL,
   UNIQUE KEY`uc_receipt_number`(receipt_number),
-  PRIMARY KEY (`receipt_id`))
+  PRIMARY KEY (`receipt_id`),
+  CONSTRAINT `fk_receipt_person`
+    FOREIGN KEY (`person_id`)
+    REFERENCES `person` (`person_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_receipt_organization`
+    FOREIGN KEY (`organization_id`)
+    REFERENCES `organization` (`organization_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
