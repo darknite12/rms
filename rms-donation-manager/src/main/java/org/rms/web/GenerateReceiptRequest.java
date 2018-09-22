@@ -3,6 +3,7 @@ package org.rms.web;
 public class GenerateReceiptRequest {
 
 	Integer year;
+	Integer lastReceiptNumber;
 
 	public Integer getYear() {
 		return year;
@@ -12,9 +13,17 @@ public class GenerateReceiptRequest {
 		this.year = year;
 	}
 
+	public Integer getLastReceiptNumber() {
+		return lastReceiptNumber;
+	}
+
+	public void setLastReceiptNumber(Integer lastReceiptNumber) {
+		this.lastReceiptNumber = lastReceiptNumber;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("GenerateReceiptRequest [year=%s]", year);
+		return "GenerateReceiptRequest [year=" + year + ", lastReceiptNumber=" + lastReceiptNumber + "]";
 	}
 
 }
