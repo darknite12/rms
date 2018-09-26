@@ -1,6 +1,6 @@
 package org.rms.domain;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,5 +41,7 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
 	 * Dinner' and e.`year`=2018;
 	 * 
 	 */
-	Collection<Ticket> findByPersonNotNullAndIsPaidTrueAndReceiptIsNullAndYear(@Param("year") Integer year);
+	List<Ticket> findByPersonNotNullAndIsPaidTrueAndReceiptIsNullAndYear(Integer year);
+
+	List<Ticket> findByOrganizationNotNullAndIsPaidTrueAndReceiptIsNullAndYear(Integer year);
 }

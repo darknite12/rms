@@ -1,5 +1,7 @@
 package org.rms.domain;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +17,7 @@ public interface ReceiptRepository extends PagingAndSortingRepository<Receipt, I
 	@Query("select r from Receipt r where r.receiptNumber like %:searchParameter% or r.amount like %:searchParameter% or "
 			+ "r.year like %:searchParameter% or r.taxReceiptName like %:searchParameter% or r.numberOfTickets like %:searchParameter%")
 	Page<Receipt> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
+
+	List<Receipt> findByPerson(Person person);
 
 }
