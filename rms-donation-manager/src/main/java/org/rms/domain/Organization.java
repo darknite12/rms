@@ -6,6 +6,7 @@ import javax.persistence.*;
 import org.rms.domain.Person;
 import org.rms.domain.Ticket;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -122,6 +123,9 @@ public class Organization implements Serializable {
 	}
 
 	public Ticket addTicket(Ticket ticket) {
+		if (getTickets() == null) {
+			setTickets(new ArrayList<Ticket>());
+		}
 		getTickets().add(ticket);
 		ticket.setOrganization(this);
 

@@ -1,11 +1,10 @@
 package org.rms.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
-
+import javax.persistence.*;
 /**
  * The persistent class for the person database table.
  * 
@@ -259,6 +258,9 @@ public class Person implements Serializable {
 	}
 
 	public Ticket addTicket(Ticket ticket) {
+		if (getTickets() == null) {
+			setTickets(new ArrayList<Ticket>());
+		}
 		getTickets().add(ticket);
 		ticket.setPerson(this);
 
@@ -281,6 +283,9 @@ public class Person implements Serializable {
 	}
 
 	public Receipt addReceipt(Receipt receipt) {
+		if (getReceipts() == null) {
+			setReceipts(new ArrayList<Receipt>());
+		}
 		getReceipts().add(receipt);
 		receipt.setPerson(this);
 
