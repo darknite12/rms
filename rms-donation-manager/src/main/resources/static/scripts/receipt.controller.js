@@ -114,40 +114,35 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 		if (receipt.taxReceiptName == "" || receipt.taxReceiptName == null) {
 			alert('The receipt does not have a name:\nIt cannot be downloaded without it.');
 		} else {
-			ReceiptService.getTickets(receiptId)
+			
+			ReceiptService.getPerson(receiptId)
 			.then(function success(response) {
-				var ticketId = response.data._embedded.tickets[0]._links.self.href.split('http://' + location.host + '/tickets/')[1];
-				TicketService.getPerson(ticketId)
+				var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+				PersonService.getPersonAddress(personId)
 				.then(function success(response) {
-					var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
-					PersonService.getPersonAddress(personId)
+					var address = response.data._embedded.addresses[0];
+					PDFService.generateReceipt(receipt, address);
+				}, function error(response) {
+					
+				});
+			}, function error(response) {
+				switch(response.status) {
+				case 404:
+					ReceiptService.getOrganization(receiptId)
 					.then(function success(response) {
-						var address = response.data._embedded.addresses[0];
-						PDFService.generateReceipt(receipt, address);
+						var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+						OrganizationService.getOrganizationAddress(organizationId)
+						.then(function success(response) {
+							var address = response.data._embedded.addresses[0];
+							PDFService.generateReceipt(receipt, address);
+						}, function error (response) {
+							
+						});
 					}, function error(response) {
 						
 					});
-				}, function error(response) {
-					switch(response.status) {
-					case 404:
-						TicketService.getOrganization(ticketId)
-						.then(function success(response) {
-							var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
-							OrganizationService.getOrganizationAddress(organizationId)
-							.then(function success(response) {
-								var address = response.data._embedded.addresses[0];
-								PDFService.generateReceipt(receipt, address);
-							}, function error (response) {
-								
-							});
-						}, function error(response) {
-							
-						});
-						break;
-					}
-				});
-			}, function error(response) {
-				alert("error")
+					break;
+				}
 			});
 		}
 		
@@ -165,53 +160,46 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 					if (element.taxReceiptName == "" || element.taxReceiptName == null) {
 						alert('The receipt N. ' + element.receiptNumber + ' does not have a name:\nIt cannot be downloaded without it.');
 					} else {
-						ReceiptService.getTickets(receiptId)
+						ReceiptService.getPerson(receiptId)
 						.then(function success(response) {
-							var ticketId = response.data._embedded.tickets[0]._links.self.href.split('http://' + location.host + '/tickets/')[1];
-							TicketService.getPerson(ticketId)
+							var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+							PersonService.getPersonAddress(personId)
 							.then(function success(response) {
-								var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
-								PersonService.getPersonAddress(personId)
+								var address = response.data._embedded.addresses[0];
+								receiptsArray.receipt.push(element);
+								receiptsArray.address.push(address);
+								//Be careful when a receipt cannot be added: it would cause this if clause not to work
+								if (receiptsArray.receipt.length >= totalElements) {
+									PDFService.generateAllReceipts(receiptsArray);
+								}
+							}, function error(response) {
+								
+							});
+						}, function error(response) {
+							switch(response.status) {
+							case 404:
+								ReceiptService.getOrganization(receiptId)
 								.then(function success(response) {
-									var address = response.data._embedded.addresses[0];
-									receiptsArray.receipt.push(element);
-									receiptsArray.address.push(address);
-									//Be careful when a receipt cannot be added: it would cause this if clause not to work
-									if (receiptsArray.receipt.length >= totalElements) {
-										PDFService.generateAllReceipts(receiptsArray);
-									}
+									var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+									OrganizationService.getOrganizationAddress(organizationId)
+									.then(function success(response) {
+										var address = response.data._embedded.addresses[0];
+										receiptsArray.receipt.push(element);
+										receiptsArray.address.push(address);
+										//Be careful when a receipt cannot be added: it would cause this if clause not to work
+										if (receiptsArray.receipt.length >= totalElements) {
+											PDFService.generateAllReceipts(receiptsArray);
+										}
+									}, function error (response) {
+										
+									});
 								}, function error(response) {
 									
 								});
-							}, function error(response) {
-								switch(response.status) {
-								case 404:
-									TicketService.getOrganization(ticketId)
-									.then(function success(response) {
-										var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
-										OrganizationService.getOrganizationAddress(organizationId)
-										.then(function success(response) {
-											var address = response.data._embedded.addresses[0];
-											receiptsArray.receipt.push(element);
-											receiptsArray.address.push(address);
-											//Be careful when a receipt cannot be added: it would cause this if clause not to work
-											if (receiptsArray.receipt.length >= totalElements) {
-												PDFService.generateAllReceipts(receiptsArray);
-											}
-										}, function error (response) {
-											
-										});
-									}, function error(response) {
-										
-									});
-									break;
-								}
-							});
-						}, function error(response) {
-							alert("error")
+								break;
+							}
 						});
 					}
-					
 				});
 			}, function error(response) {
 				switch(response.status) {

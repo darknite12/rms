@@ -23,6 +23,20 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
+	this.getPerson = function (id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/receipts/' + id + '/person'
+		});
+	}
+	
+	this.getOrganization = function (id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/receipts/' + id + '/organization'
+		});
+	}
+	
 	this.searchReceipt = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',
