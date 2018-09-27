@@ -45,7 +45,7 @@
 					<input type="text" class="form-control" ng-model="lastReceiptNumber" />
 				</div>
 				<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
-					<a class="table table-striped" ng-show="selectedYear != 'All'" href="generateReceipts()">+ Generate Receipts</a>
+					<a class="table table-striped" ng-show="selectedYear != 'All'" ng-click="generateReceipts()">+ Generate Receipts</a>
 				</div>
 			</form>
 		</div>
