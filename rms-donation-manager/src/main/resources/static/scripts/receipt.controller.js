@@ -107,6 +107,18 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 		});
 	}
 	
+	$scope.updateTaxReceiptName = function(receipt) {
+		var receiptId = receipt._links.self.href.split('http://' + location.host + '/receipts/')[1];
+		var newName = receipt.taxReceiptName;
+		
+		ReceiptService.updateTaxReceiptName(receiptId, newName)
+		.then(function success(response) {
+
+		}, function error(response) {
+			
+		});
+	}
+	
 	$scope.downloadReceipt = function(receipt) {
 		
 		var receiptId = receipt._links.self.href.split('http://' + location.host + '/receipts/')[1];

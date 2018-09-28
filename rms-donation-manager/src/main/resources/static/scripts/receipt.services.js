@@ -37,6 +37,16 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
+	this.updateTaxReceiptName = function (id, newName) {
+		return $http({
+			method : 'PATCH',
+			url : 'http://' + location.host + '/receipts/' + id,
+			data : {
+				'taxReceiptName' : newName
+			}
+		});
+	}
+	
 	this.searchReceipt = function (searchValue, size, page) {
 		return $http({
 			method : 'GET',

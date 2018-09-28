@@ -34,18 +34,29 @@
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<form name="filterByYear">
-				<div class="form-group col-sm-2">
-					<label for="search" class="control-label">Year:</label>
-					<select id="yearSelect" ng-model="selectedYear" class='form-control' ng-change="setPage(1)">
-				      <option ng-repeat="y in years" value="{{y}}">{{y}}</option>
-				    </select>
+				<div class="row">
+					<div class="form-group col-sm-2">
+						<label for="search" class="control-label">Year:</label>
+					</div>
+					<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
+						<label for="lastReceiptNumber" class="control-label">Last receipt number:</label>
+					</div>
 				</div>
-				<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
-					<label for="lastReceiptNumber" class="control-label">Last receipt number:</label>
-					<input type="text" class="form-control" ng-model="lastReceiptNumber" />
-				</div>
-				<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
-					<a class="table table-striped" ng-show="selectedYear != 'All'" ng-click="generateReceipts()">+ Generate Receipts</a>
+				<div class="row">
+					<div class="form-group col-sm-2">
+						<select id="yearSelect" ng-model="selectedYear" class='form-control' ng-change="setPage(1)">
+							<option ng-repeat="y in years" value="{{y}}">{{y}}</option>
+					    </select>
+					</div>
+					<div ng-show="selectedYear == 'All'" class="form-group col-sm-6">
+						<h5 style="color:#337ab7;"><i>To generate receipts please select a year</i></h5>
+					</div>
+					<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
+						<input type="text" class="form-control" ng-model="lastReceiptNumber" />
+					</div>
+					<div ng-show="selectedYear != 'All'" class="form-group col-sm-2">
+						<a class="btn btn-small btn-primary" ng-show="selectedYear != 'All'" ng-click="generateReceipts()">Generate Receipts</a>
+					</div>
 				</div>
 			</form>
 		</div>
@@ -64,15 +75,13 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr
-				ng-repeat="r in receipts | filter: searchKeyword ">
-				<td>{{r.receiptNumber}}</td>
-				<td>{{r.taxReceiptName}}</td>
-				<td>{{r.amount}}</td>
-				<td>{{r.numberOfTickets}}</td>
-				<td>{{r.year}}</td>
-				<td><a ng-click="downloadReceipt(r)" class="btn btn-small btn-primary">download</a></td>
-
+			<tr	ng-repeat="r in receipts | filter: searchKeyword">
+				<td style="vertical-align:middle">{{r.receiptNumber}}</td>
+				<td style="vertical-align:middle"><input type="text" class="form-control" ng-model="r.taxReceiptName" ng-blur="updateTaxReceiptName(r)"/></td>
+				<td style="vertical-align:middle">{{r.amount}}</td>
+				<td style="vertical-align:middle">{{r.numberOfTickets}}</td>
+				<td style="vertical-align:middle">{{r.year}}</td>
+				<td style="vertical-align:middle"><a ng-click="downloadReceipt(r)" class="btn btn-small btn-primary">download</a></td>
 			</tr>
 		</tbody>
 	</table>
