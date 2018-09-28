@@ -133,7 +133,12 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				PersonService.getPersonAddress(personId)
 				.then(function success(response) {
 					var address = response.data._embedded.addresses[0];
-					PDFService.generateReceipt(receipt, address);
+					if (response.data._embedded.addresses.length <= 0) {
+						alert("There is no address related to this receipt:\nThe receipt cannot be printed without an address");
+					} else {
+						var address = response.data._embedded.addresses[0];
+						PDFService.generateReceipt(receipt, address);
+					}
 				}, function error(response) {
 					
 				});
@@ -145,8 +150,12 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 						var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
 						OrganizationService.getOrganizationAddress(organizationId)
 						.then(function success(response) {
-							var address = response.data._embedded.addresses[0];
-							PDFService.generateReceipt(receipt, address);
+							if (response.data._embedded.addresses.length <= 0) {
+								alert("There is no address related to this receipt:\nThe receipt cannot be printed without an address");
+							} else {
+								var address = response.data._embedded.addresses[0];
+								PDFService.generateReceipt(receipt, address);
+							}
 						}, function error (response) {
 							
 						});
@@ -162,10 +171,12 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 	
 	$scope.downloadAllReceipts = function() {
 		var receiptsArray = {receipt : [], address : []}; //This array contains the receipts with their corresponding addresses
+		var notAddedElements = 0; //This can be use for information in the future
 		for (var i = 0; i <= $scope.pager.totalPages; i++) {
 			ReceiptService.getPaginatedReceipt(pageSize, i)
 			.then(function success(response) {
 				var totalElements = response.data.page.totalElements;
+				var elementCounter = 0;
 				response.data._embedded.receipts.forEach(function(element) {
 					var receiptId = element._links.self.href.split('http://' + location.host + '/receipts/')[1];
 					
@@ -177,11 +188,17 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 							var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
 							PersonService.getPersonAddress(personId)
 							.then(function success(response) {
-								var address = response.data._embedded.addresses[0];
-								receiptsArray.receipt.push(element);
-								receiptsArray.address.push(address);
-								//Be careful when a receipt cannot be added: it would cause this if clause not to work
-								if (receiptsArray.receipt.length >= totalElements) {
+								if (response.data._embedded.addresses.length <= 0) {
+									notAddedElements ++;
+									elementCounter ++;
+								} else {
+									var address = response.data._embedded.addresses[0];
+									receiptsArray.receipt.push(element);
+									receiptsArray.address.push(address);
+									elementCounter ++;
+								}
+								
+								if (elementCounter == totalElements) {
 									PDFService.generateAllReceipts(receiptsArray);
 								}
 							}, function error(response) {
@@ -195,11 +212,17 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 									var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
 									OrganizationService.getOrganizationAddress(organizationId)
 									.then(function success(response) {
-										var address = response.data._embedded.addresses[0];
-										receiptsArray.receipt.push(element);
-										receiptsArray.address.push(address);
-										//Be careful when a receipt cannot be added: it would cause this if clause not to work
-										if (receiptsArray.receipt.length >= totalElements) {
+										if (response.data._embedded.addresses.length <= 0) {
+											notAddedElements ++;
+											elementCounter ++;
+										} else {
+											var address = response.data._embedded.addresses[0];
+											receiptsArray.receipt.push(element);
+											receiptsArray.address.push(address);
+											elementCounter ++;
+										}
+										
+										if (elementCounter == totalElements) {
 											PDFService.generateAllReceipts(receiptsArray);
 										}
 									}, function error (response) {
