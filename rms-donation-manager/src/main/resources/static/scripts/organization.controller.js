@@ -151,7 +151,7 @@ app.controller('OrganizationController', ['$scope', 'PersonService', 'AddressSer
 			$scope.errorMessage = 'Error adding address!';
 		});
 		
-		$scope.addPersonAddressElem = false;
+		$scope.addOrganizationAddressElem = false;
 	}
 	
 	$scope.updateOrganizationAddress = function (address) {
