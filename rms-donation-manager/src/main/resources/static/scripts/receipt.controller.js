@@ -113,9 +113,13 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 		
 		ReceiptService.updateTaxReceiptName(receiptId, newName)
 		.then(function success(response) {
-
+			$scope.alertKind = 'success';
+			$scope.message = 'The tax receipt name has been updated to: ' + newName;
+			$scope.showAlert = true;
 		}, function error(response) {
-			
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error updating the tax receipt name';
+			$scope.showAlert = true;
 		});
 	}
 	
@@ -124,7 +128,9 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 		var receiptId = receipt._links.self.href.split('http://' + location.host + '/receipts/')[1];
 		
 		if (receipt.taxReceiptName == "" || receipt.taxReceiptName == null) {
-			alert('The receipt does not have a name:\nIt cannot be downloaded without it.');
+			$scope.alertKind = 'danger';
+			$scope.message = 'The receipt does not have a name:\nIt cannot be downloaded without it.';
+			$scope.showAlert = true;
 		} else {
 			
 			ReceiptService.getPerson(receiptId)
@@ -134,7 +140,9 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				.then(function success(response) {
 					var address = response.data._embedded.addresses[0];
 					if (response.data._embedded.addresses.length <= 0) {
-						alert("There is no address related to this receipt:\nThe receipt cannot be printed without an address");
+						$scope.alertKind = 'danger';
+						$scope.message = 'There is no address related to ' + receipt.taxReceiptName + ':\nThe receipt cannot be printed without an address';
+						$scope.showAlert = true;
 					} else {
 						var address = response.data._embedded.addresses[0];
 						PDFService.generateReceipt(receipt, address);
@@ -151,7 +159,9 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 						OrganizationService.getOrganizationAddress(organizationId)
 						.then(function success(response) {
 							if (response.data._embedded.addresses.length <= 0) {
-								alert("There is no address related to this receipt:\nThe receipt cannot be printed without an address");
+								$scope.alertKind = 'danger';
+								$scope.message = 'There is no address related to ' + receipt.taxReceiptName + ' organization: The receipt cannot be printed without an address';
+								$scope.showAlert = true;
 							} else {
 								var address = response.data._embedded.addresses[0];
 								PDFService.generateReceipt(receipt, address);
@@ -181,7 +191,9 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 					var receiptId = element._links.self.href.split('http://' + location.host + '/receipts/')[1];
 					
 					if (element.taxReceiptName == "" || element.taxReceiptName == null) {
-						alert('The receipt N. ' + element.receiptNumber + ' does not have a name:\nIt cannot be downloaded without it.');
+						$scope.alertKind = 'danger';
+						$scope.message = 'The receipt N. ' + element.receiptNumber + ' does not have a name:\nIt cannot be downloaded without it.';
+						$scope.showAlert = true;
 					} else {
 						ReceiptService.getPerson(receiptId)
 						.then(function success(response) {
@@ -200,6 +212,11 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 								
 								if (elementCounter == totalElements) {
 									PDFService.generateAllReceipts(receiptsArray);
+									if (notAddedElements != 0) {
+										$scope.alertKind = 'danger';
+										$scope.message = notAddedElements + ' receipts could not be downloanded for lacking of address';
+										$scope.showAlert = true;
+									}
 								}
 							}, function error(response) {
 								
@@ -224,6 +241,11 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 										
 										if (elementCounter == totalElements) {
 											PDFService.generateAllReceipts(receiptsArray);
+											if (notAddedElements != 0) {
+												$scope.alertKind = 'danger';
+												$scope.message = notAddedElements + ' receipt(s) could not be downloaded for lacking of address';
+												$scope.showAlert = true;
+											}
 										}
 									}, function error (response) {
 										
