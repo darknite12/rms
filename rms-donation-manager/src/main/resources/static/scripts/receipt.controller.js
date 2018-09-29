@@ -103,7 +103,9 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 		.then(function success(response) {
 			$scope.setPage(1);
 		}, function error(response) {
-			
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error number: ' + response.data.status + '. ' + response.data.error + ". It was not posible to generate the receipts: " + response.data.exception;
+			$scope.showAlert = true;
 		});
 	}
 	
