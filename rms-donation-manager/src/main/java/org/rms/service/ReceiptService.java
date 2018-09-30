@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.rms.domain.Organization;
 import org.rms.domain.Person;
 import org.rms.domain.Receipt;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class ReceiptService {
 
 	@Autowired
@@ -35,19 +38,40 @@ public class ReceiptService {
 
 		if (receiptsOfTheYear.hasContent()) {
 			List<Receipt> receipts = receiptsOfTheYear.getContent();
+			List<Ticket> ticketsBoughtByEntitiesWithReceipts = new ArrayList<Ticket>();
 			for (Receipt receipt : receipts) {
 				for (Ticket ticket : ticketsBoughtWithoutAReceipt) {
-					if (receipt.getPerson().getPersonId() == ticket.getPerson().getPersonId()) {
-						System.out.println("add a ticket to an existing receipt");
+					if (ticket.getPerson() != null && receipt.getPerson() != null) {
+						if (receipt.getPerson().getPersonId() == ticket.getPerson().getPersonId()) {
+							addTicketToReceipt(ticketsBoughtByEntitiesWithReceipts, receipt, ticket);
+						}
+					} else if (ticket.getOrganization() != null && receipt.getOrganization() != null) {
+						if (receipt.getOrganization().getOrganizationId() == ticket.getOrganization()
+								.getOrganizationId()) {
+							addTicketToReceipt(ticketsBoughtByEntitiesWithReceipts, receipt, ticket);
+						}
 					}
 				}
 			}
-		} else {
-			createReceiptsForTheFirstTime(request, ticketsBoughtWithoutAReceipt);
+			ticketsBoughtWithoutAReceipt.removeAll(ticketsBoughtByEntitiesWithReceipts);
 		}
+		generateNewReceipts(request, ticketsBoughtWithoutAReceipt);
+
 	}
 
-	private void createReceiptsForTheFirstTime(GenerateReceiptRequest request,
+	private void addTicketToReceipt(List<Ticket> ticketsBoughtByEntitiesWithReceipts, Receipt receipt, Ticket ticket) {
+		ticketsBoughtByEntitiesWithReceipts.add(ticket);
+		double amount = receipt.getAmount()
+				+ (ticket.getTicketPrice().getPrice() - ticket.getTicketPrice().getCost());
+		receipt.setAmount(amount);
+		ticket.setReceipt(receipt);
+		int numberOfTickets = receipt.getNumberOfTickets() + 1;
+		receipt.setNumberOfTickets(numberOfTickets);
+		receipt.getTickets().add(ticket);
+		receiptRepo.save(receipt);
+	}
+
+	private void generateNewReceipts(GenerateReceiptRequest request,
 			List<Ticket> ticketsBoughtWithoutAReceipt) {
 		Integer lastReceiptNumber = request.getLastReceiptNumber();
 		Map<Object, List<Ticket>> ticketMap = new HashMap<Object, List<Ticket>>();
