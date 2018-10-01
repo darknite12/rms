@@ -70,6 +70,7 @@ DEFAULT CHARACTER SET = latin1;
 CREATE TABLE IF NOT EXISTS `organization` (
   `organization_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL DEFAULT NULL,
+  `is_non_profit` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`organization_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;

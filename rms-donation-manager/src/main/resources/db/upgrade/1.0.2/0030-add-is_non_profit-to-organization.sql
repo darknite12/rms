@@ -1,0 +1,1 @@
+ALTER TABLE `organization` ADD `is_non_profit` tinyint(1) DEFAULT 0;

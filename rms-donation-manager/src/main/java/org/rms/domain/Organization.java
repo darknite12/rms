@@ -1,14 +1,19 @@
 package org.rms.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
-
-import org.rms.domain.Person;
-import org.rms.domain.Ticket;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  * The persistent class for the organization database table.
@@ -56,7 +61,9 @@ public class Organization implements Serializable {
 	@OneToMany(mappedBy="person")
 	private List<Receipt> receipts;
 
-		
+	@Column(name = "is_non_profit")
+	private boolean isNonProfit;
+
 	public Organization() {
 	}
 
@@ -159,6 +166,14 @@ public class Organization implements Serializable {
 		receipt.setOrganization(null);
 
 		return receipt;
+	}
+
+	public boolean isNonProfit() {
+		return isNonProfit;
+	}
+
+	public void setNonProfit(boolean isNonProfit) {
+		this.isNonProfit = isNonProfit;
 	}
 
 }
