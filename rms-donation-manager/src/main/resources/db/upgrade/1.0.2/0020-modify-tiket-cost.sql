@@ -1,0 +1,1 @@
+update ticket_price set cost = 58;
