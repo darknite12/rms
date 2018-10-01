@@ -41,7 +41,9 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
 	 * Dinner' and e.`year`=2018;
 	 * 
 	 */
-	List<Ticket> findByPersonNotNullAndIsPaidTrueAndReceiptIsNullAndYear(Integer year);
+	List<Ticket> findByPersonNotNullAndIsPaidTrueAndFormOfPaymentNotAndReceiptIsNullAndYear(String formOfPaymentNot,
+			Integer year);
 
-	List<Ticket> findByOrganizationNotNullAndIsPaidTrueAndReceiptIsNullAndYear(Integer year);
+	List<Ticket> findByOrganizationNotNullAndIsPaidTrueAndFormOfPaymentNotAndReceiptIsNullAndYear(
+			String formOfPaymentNot, Integer year);
 }

@@ -30,10 +30,11 @@ public class ReceiptService {
 
 	public void generateReceipts(GenerateReceiptRequest request) {
 		List<Ticket> ticketsBoughtWithoutAReceipt = new ArrayList<Ticket>();
-		ticketsBoughtWithoutAReceipt
-				.addAll(ticketRepo.findByPersonNotNullAndIsPaidTrueAndReceiptIsNullAndYear(request.getYear()));
-		ticketsBoughtWithoutAReceipt
-				.addAll(ticketRepo.findByOrganizationNotNullAndIsPaidTrueAndReceiptIsNullAndYear(request.getYear()));
+		ticketsBoughtWithoutAReceipt.addAll(ticketRepo
+				.findByPersonNotNullAndIsPaidTrueAndFormOfPaymentNotAndReceiptIsNullAndYear("Free", request.getYear()));
+		ticketsBoughtWithoutAReceipt.addAll(
+				ticketRepo.findByOrganizationNotNullAndIsPaidTrueAndFormOfPaymentNotAndReceiptIsNullAndYear("Free",
+						request.getYear()));
 		Page<Receipt> receiptsOfTheYear = receiptRepo.findByYear(request.getYear(), null);
 
 		if (receiptsOfTheYear.hasContent()) {
@@ -61,8 +62,7 @@ public class ReceiptService {
 
 	private void addTicketToReceipt(List<Ticket> ticketsBoughtByEntitiesWithReceipts, Receipt receipt, Ticket ticket) {
 		ticketsBoughtByEntitiesWithReceipts.add(ticket);
-		double amount = receipt.getAmount()
-				+ (ticket.getTicketPrice().getPrice() - ticket.getTicketPrice().getCost());
+		double amount = receipt.getAmount() + (ticket.getTicketPrice().getPrice() - ticket.getTicketPrice().getCost());
 		receipt.setAmount(amount);
 		ticket.setReceipt(receipt);
 		int numberOfTickets = receipt.getNumberOfTickets() + 1;
@@ -71,8 +71,7 @@ public class ReceiptService {
 		receiptRepo.save(receipt);
 	}
 
-	private void generateNewReceipts(GenerateReceiptRequest request,
-			List<Ticket> ticketsBoughtWithoutAReceipt) {
+	private void generateNewReceipts(GenerateReceiptRequest request, List<Ticket> ticketsBoughtWithoutAReceipt) {
 		Integer lastReceiptNumber = request.getLastReceiptNumber();
 		Map<Object, List<Ticket>> ticketMap = new HashMap<Object, List<Ticket>>();
 		for (Ticket ticket : ticketsBoughtWithoutAReceipt) {
