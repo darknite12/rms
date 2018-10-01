@@ -47,9 +47,11 @@ public class ReceiptService {
 							addTicketToReceipt(ticketsBoughtByEntitiesWithReceipts, receipt, ticket);
 						}
 					} else if (ticket.getOrganization() != null && receipt.getOrganization() != null) {
-						if (receipt.getOrganization().getOrganizationId() == ticket.getOrganization()
-								.getOrganizationId()) {
-							addTicketToReceipt(ticketsBoughtByEntitiesWithReceipts, receipt, ticket);
+						if (!ticket.getOrganization().isNonProfit()) {
+							if (receipt.getOrganization().getOrganizationId() == ticket.getOrganization()
+									.getOrganizationId()) {
+								addTicketToReceipt(ticketsBoughtByEntitiesWithReceipts, receipt, ticket);
+							}
 						}
 					}
 				}
@@ -72,7 +74,6 @@ public class ReceiptService {
 	}
 
 	private void generateNewReceipts(GenerateReceiptRequest request, List<Ticket> ticketsBoughtWithoutAReceipt) {
-		Integer lastReceiptNumber = request.getLastReceiptNumber();
 		Map<Object, List<Ticket>> ticketMap = new HashMap<Object, List<Ticket>>();
 		for (Ticket ticket : ticketsBoughtWithoutAReceipt) {
 			Object key = ticket.getOrganization();
@@ -89,31 +90,43 @@ public class ReceiptService {
 				ticketMap.put(key, initialisedList);
 			}
 		}
+		Integer lastReceiptNumber = request.getLastReceiptNumber();
 		for (Map.Entry<Object, List<Ticket>> entry : ticketMap.entrySet()) {
-			Receipt receipt = new Receipt();
-			for (Ticket ticket : entry.getValue()) {
-				double amount = receipt.getAmount()
-						+ (ticket.getTicketPrice().getPrice() - ticket.getTicketPrice().getCost());
-				receipt.setAmount(amount);
-				ticket.setReceipt(receipt);
+			if (entry.getKey() instanceof Person
+					|| (entry.getKey() instanceof Organization) && !((Organization) entry.getKey()).isNonProfit()) {
+				createReceipt(request, entry, lastReceiptNumber);
+				lastReceiptNumber++;
+
 			}
-			receipt.setNumberOfTickets(entry.getValue().size());
-			receipt.setReceiptNumber(String.valueOf(lastReceiptNumber));
-			if (entry.getKey() instanceof Organization) {
-				Organization organization = (Organization) entry.getKey();
+		}
+	}
+
+	private void createReceipt(GenerateReceiptRequest request, Map.Entry<Object, List<Ticket>> entry,
+			Integer lastReceiptNumber) {
+		Receipt receipt = new Receipt();
+		for (Ticket ticket : entry.getValue()) {
+			double amount = receipt.getAmount()
+					+ (ticket.getTicketPrice().getPrice() - ticket.getTicketPrice().getCost());
+			receipt.setAmount(amount);
+			ticket.setReceipt(receipt);
+		}
+		receipt.setNumberOfTickets(entry.getValue().size());
+		receipt.setReceiptNumber(String.valueOf(lastReceiptNumber));
+		if (entry.getKey() instanceof Organization) {
+			Organization organization = (Organization) entry.getKey();
+			if (!organization.isNonProfit()) {
 				receipt.setTaxReceiptName(organization.getName());
 				receipt.setOrganization(organization);
-			} else if (entry.getKey() instanceof Person) {
-				Person person = (Person) entry.getKey();
-				receipt.setTaxReceiptName(person.getFirstName() + " " + person.getLastName());
-				receipt.setPerson(person);
 			}
-			receipt.setFirstOfYear(1);
-			receipt.setTickets(entry.getValue());
-			receipt.setYear(request.getYear());
-			lastReceiptNumber++;
-			receiptRepo.save(receipt);
+		} else if (entry.getKey() instanceof Person) {
+			Person person = (Person) entry.getKey();
+			receipt.setTaxReceiptName(person.getFirstName() + " " + person.getLastName());
+			receipt.setPerson(person);
 		}
+		receipt.setFirstOfYear(1);
+		receipt.setTickets(entry.getValue());
+		receipt.setYear(request.getYear());
+		receiptRepo.save(receipt);
 	}
 
 }
