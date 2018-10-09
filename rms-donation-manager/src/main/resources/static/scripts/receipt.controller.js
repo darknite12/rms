@@ -34,6 +34,7 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 					$scope.receipts = response.data._embedded.receipts;
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
+					$scope.pager.totalElements = response.data.page.totalElements
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
 					$scope.message='';
 					$scope.errorMessage = '';
@@ -134,7 +135,6 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 			$scope.message = 'The receipt does not have a name:\nIt cannot be downloaded without it.';
 			$scope.showAlert = true;
 		} else {
-			
 			ReceiptService.getPerson(receiptId)
 			.then(function success(response) {
 				var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
@@ -182,94 +182,82 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 	}
 	
 	$scope.downloadAllReceipts = function() {
+		console.log($scope.pager);
 		var receiptsArray = {receipt : [], address : []}; //This array contains the receipts with their corresponding addresses
 		var notAddedElements = 0; //This can be use for information in the future
-		for (var i = 0; i <= $scope.pager.totalPages; i++) {
-			ReceiptService.getPaginatedReceipt(pageSize, i)
-			.then(function success(response) {
-				var totalElements = response.data.page.totalElements;
-				var elementCounter = 0;
-				response.data._embedded.receipts.forEach(function(element) {
-					var receiptId = element._links.self.href.split('http://' + location.host + '/receipts/')[1];
-					
-					if (element.taxReceiptName == "" || element.taxReceiptName == null) {
-						$scope.alertKind = 'danger';
-						$scope.message = 'The receipt N. ' + element.receiptNumber + ' does not have a name:\nIt cannot be downloaded without it.';
-						$scope.showAlert = true;
-					} else {
-						ReceiptService.getPerson(receiptId)
+		ReceiptService.getPaginatedReceipt($scope.pager.totalElements, 0)
+		.then(function success(response) {
+			var totalElements = response.data.page.totalElements;
+			var elementCounter = 0;
+			response.data._embedded.receipts.forEach(function(element) {
+				var receiptId = element._links.self.href.split('http://' + location.host + '/receipts/')[1];
+				if (element.taxReceiptName == "" || element.taxReceiptName == null) {
+					$scope.alertKind = 'danger';
+					$scope.message = 'The receipt N. ' + element.receiptNumber + ' does not have a name:\nIt cannot be downloaded without it.';
+					$scope.showAlert = true;
+				} else {
+					ReceiptService.getPerson(receiptId)
+					.then(function success(response) {
+						var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+						PersonService.getPersonAddress(personId)
 						.then(function success(response) {
-							var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
-							PersonService.getPersonAddress(personId)
-							.then(function success(response) {
-								if (response.data._embedded.addresses.length <= 0) {
-									notAddedElements ++;
-									elementCounter ++;
-								} else {
-									var address = response.data._embedded.addresses[0];
-									receiptsArray.receipt.push(element);
-									receiptsArray.address.push(address);
-									elementCounter ++;
+							if (response.data._embedded.addresses.length <= 0) {
+								notAddedElements ++;									
+							} else {
+								var address = response.data._embedded.addresses[0];
+								receiptsArray.receipt.push(element);
+								receiptsArray.address.push(address);
+							}
+							elementCounter ++;
+							if (elementCounter == totalElements) {
+								PDFService.generateAllReceipts(receiptsArray);
+								if (notAddedElements != 0) {
+									$scope.alertKind = 'danger';
+									$scope.message = notAddedElements + ' receipts could not be downloanded for lacking of address';
+									$scope.showAlert = true;
 								}
-								
-								if (elementCounter == totalElements) {
-									PDFService.generateAllReceipts(receiptsArray);
-									if (notAddedElements != 0) {
-										$scope.alertKind = 'danger';
-										$scope.message = notAddedElements + ' receipts could not be downloanded for lacking of address';
-										$scope.showAlert = true;
-									}
-								}
-							}, function error(response) {
-								
-							});
-						}, function error(response) {
-							switch(response.status) {
-							case 404:
-								ReceiptService.getOrganization(receiptId)
-								.then(function success(response) {
-									var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
-									OrganizationService.getOrganizationAddress(organizationId)
-									.then(function success(response) {
-										if (response.data._embedded.addresses.length <= 0) {
-											notAddedElements ++;
-											elementCounter ++;
-										} else {
-											var address = response.data._embedded.addresses[0];
-											receiptsArray.receipt.push(element);
-											receiptsArray.address.push(address);
-											elementCounter ++;
-										}
-										
-										if (elementCounter == totalElements) {
-											PDFService.generateAllReceipts(receiptsArray);
-											if (notAddedElements != 0) {
-												$scope.alertKind = 'danger';
-												$scope.message = notAddedElements + ' receipt(s) could not be downloaded for lacking of address';
-												$scope.showAlert = true;
-											}
-										}
-									}, function error (response) {
-										
-									});
-								}, function error(response) {
-									
-								});
-								break;
 							}
 						});
-					}
-				});
-			}, function error(response) {
-				switch(response.status) {
-				case 409:
-					alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
-					break;
-				case 500:
-					alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.message);
-					break;
+					}, function error(response) {
+						switch(response.status) {
+						case 404:
+							ReceiptService.getOrganization(receiptId)
+							.then(function success(response) {
+								var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+								OrganizationService.getOrganizationAddress(organizationId)
+								.then(function success(response) {
+									if (response.data._embedded.addresses.length <= 0) {
+										notAddedElements ++;
+									} else {
+										var address = response.data._embedded.addresses[0];
+										receiptsArray.receipt.push(element);
+										receiptsArray.address.push(address);										
+									}
+									elementCounter ++;
+									if (elementCounter == totalElements) {
+										PDFService.generateAllReceipts(receiptsArray);
+										if (notAddedElements != 0) {
+											$scope.alertKind = 'danger';
+											$scope.message = notAddedElements + ' receipt(s) could not be downloaded for lacking of address';
+											$scope.showAlert = true;
+										}
+									}
+								});
+							});
+							break;
+						}
+					});
 				}
 			});
-		}
+		}, function error(response) {
+			switch(response.status) {
+			case 409:
+				alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+				break;
+			case 500:
+				alert("Error searching receipt: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+				break;
+			}
+		});		
 	}
 }]);
