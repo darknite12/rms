@@ -1,8 +1,8 @@
 # RMS Donation Manager
 This is a donation management system. It features:
   * An event manager for organizing fundraising events
-   * Tickets
-   * Sitting Tables
+   * Tickets - ticket management
+   * Sitting Tables - Table management 
   * Donation manager
   * Receipt manager
 
