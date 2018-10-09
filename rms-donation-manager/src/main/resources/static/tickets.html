@@ -48,7 +48,7 @@
 		<tbody>
 			<tr
 				ng-repeat="t in tickets | filter: searchKeyword ">
-				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a>
+				<td><a ng-click="modifyTicket(t._links.self.href)">{{t.ticketNumber}}</a></td>
 				<td>{{t.info}}</td>
 				<td>{{t.buyer}}</td>
 				<td>{{t.event}}</td>

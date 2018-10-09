@@ -76,5 +76,9 @@ angular.module('rmsdmgui', ['ngRoute',
     	templateUrl : '../receipts.html',
     	controller : 'ReceiptsController',
     	controllerAs : 'controller'
+    }).when('/receipts/:id', {
+    	templateUrl : '../receipt.html',
+    	controller : 'ReceiptController',
+    	controllerAs : 'controller'
     }).otherwise('/');
 });

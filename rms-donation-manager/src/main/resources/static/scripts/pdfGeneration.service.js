@@ -50,7 +50,7 @@ app.service('PDFService', [function () {
 			receiptPdf.text('Receipt No.:	   ' + receipt.receiptNumber, 125, (startingYPoint + 53));
 			receiptPdf.text('Taxation Year:	' + receipt.year, 125, (startingYPoint + 63));
 			receiptPdf.setFontSize(11);
-			receiptPdf.text('Amount Issued:	' + 'CAD ' + receipt.amount + '.00', 125, (startingYPoint + 43));
+			receiptPdf.text('Amount Issued:	' + '$ ' + receipt.amount + '.00', 125, (startingYPoint + 43));
 			receiptPdf.setFontSize(10);
 			receiptPdf.setFontStyle('normal');
 			//This is the address of the receipt
@@ -111,7 +111,7 @@ app.service('PDFService', [function () {
 				receiptPdf.text('Receipt No.:	   ' + receiptsArray.receipt[i].receiptNumber, 125, (startingYPoint + 53));
 				receiptPdf.text('Taxation Year:	' + receiptsArray.receipt[i].year, 125, (startingYPoint + 63));
 				receiptPdf.setFontSize(11);
-				receiptPdf.text('Amount Issued:	' + 'CAD ' + receiptsArray.receipt[i].amount + '.00', 125, (startingYPoint + 43));
+				receiptPdf.text('Amount Issued:	' + '$ ' + receiptsArray.receipt[i].amount + '.00', 125, (startingYPoint + 43));
 				receiptPdf.setFontSize(10);
 				receiptPdf.setFontStyle('normal');
 				//This is the address of the receipt

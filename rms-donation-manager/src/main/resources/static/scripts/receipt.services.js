@@ -16,6 +16,13 @@ app.service('ReceiptService', ['$http', function($http) {
 		});
 	}
 	
+	this.getReceipt = function (id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/receipts/' + id
+		});
+	}
+	
 	this.getTickets = function (id) {
 		return $http({
 			method : 'GET',

@@ -78,8 +78,8 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr	ng-repeat="r in receipts | filter: searchKeyword">
-				<td style="vertical-align:middle">{{r.receiptNumber}}</td>
+			<tr	style="background-color: {{r.background}};" ng-repeat="r in receipts | filter: searchKeyword">
+				<td style="vertical-align:middle"><a ng-click="modifyReceipt(r._links.self.href)">{{r.receiptNumber}}</a></td>
 				<td style="vertical-align:middle"><input type="text" class="form-control" ng-model="r.taxReceiptName" ng-blur="updateTaxReceiptName(r)"/></td>
 				<td style="vertical-align:middle">{{r.amount}}</td>
 				<td style="vertical-align:middle">{{r.numberOfTickets}}</td>

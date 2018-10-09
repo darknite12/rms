@@ -1,0 +1,146 @@
+<div class="container-fluid">
+	<h1>Receipt Number: {{receipt.receiptNumber}}</h1>
+	<div class="panel panel-default">
+		<div class="well">
+			<form name="receiptForm">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="taxReceiptName">Tax Receipt Name</label>
+							<input type="text" class="form-control" ng-model="receipt.taxReceiptName" placeholder="Tax Receipt Name"/>
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<div class="form-group">
+							<label for="amount">Amount</label>
+							<input type="text" class="form-control" ng-model="receipt.amount" ng-disabled="true"/>
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<div class="form-group">
+							<label for="numberOfTickets">Number of Tickets</label>
+							<input type="text" class="form-control" ng-model="receipt.numberOfTickets" ng-disabled="true"/>
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<div class="form-group">
+							<label for="year">Year</label>
+							<input type="text" class="form-control" ng-model="receipt.year" ng-disabled="true"/>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="well">
+			<h2>Person or Organization Linked</h2>
+			<form name="personOrOrganizationLinkedForm">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="name">Name</label>
+							<input type="text" class="form-control" ng-model="personOrOrganizationName" ng-disabled="true"/>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class='well'>
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Address</h2>
+				</div>
+			</div>
+			<form name="receiptAddressesForm">
+				<div class='col-sm-14'>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Address</th>
+								<th>Address2</th>
+								<th>City</th>
+								<th>P.O. Box</th>
+								<th>Postal Code</th>
+								<th>Province</th>
+								<th>Country</th>
+								<th><a ng-hide="addReceiptAddressElem" ng-click="setPaginatedAddresses(1)">+ Address</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="form-group" ng-form="receiptAddressForm" ng-repeat="ra in receiptAddress.addresses">
+								<ng-form name="receiptAddressForm">
+									<td><input type="text" id="address" class='form-control' ng-model="ra.address" /></td>
+									<td><input type="text" id="address2" class='form-control' ng-model="ra.address2" /></td>
+									<td><input type="text" id="city" class='form-control' ng-model="ra.city" /></td>
+									<td><input type="text" id="poBox" class='form-control' ng-model="ra.poBox" /></td>
+									<td><input type="text" id="postalCode" class='form-control' ng-model="ra.postalCode" /></td>
+									<td><input type="text" id="province" class='form-control' ng-model="ra.province" /></td>
+									<td><input type="text" id="country" class='form-control' ng-model="ra.country" /></td>
+									<td><a ng-click="updateReceiptAddress(ra, $index)" class="btn btn-small btn-primary" ng-disabled="true">update</a></td>
+									<td><a ng-click="deleteReceiptAddress(ra._links.self.href)" class="btn btn-small btn-primary">delete</a></td>
+								</ng-form>
+							</tr>
+							<tr ng-show="addReceiptAddressElem">
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.address"/></th>
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.address2"/></th>
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.city"/></th>
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.poBox"/></th>
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.postalCode"/></th>
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.province"/></th>
+								<th><input type="text" class='form-control' ng-model="newReceiptAddress.country"/></th>
+								<th><a ng-click="addReceiptAddress()" class="btn btn-small btn-primary">add</a></th>
+								<th><a ng-click="addReceiptAddressElem=false" class="btn btn-small btn-primary">cancel</a></th>
+							</tr>
+						</tbody>
+					</table>
+					<div ng-show="addReceiptAddressElem" class="row">
+						<div class="form-group col-sm-6">
+							<label for="search" class="control-label">Search:</label> 
+						</div>
+					</div>
+					<div ng-show="addReceiptAddressElem" class="row">
+						<div class="form-group col-sm-4">
+							<input type="text" class="form-control" ng-model="addressSearchValue" placeholder="Insert address" dl-enter-key="setPaginatedAddresses(1)"/>
+						</div>
+						<div class="form-group col-sm-6">
+							<a ng-click="setPaginatedAddresses(1)" class="btn btn-small btn-primary">Search</a>
+						</div>
+					</div>
+					<table ng-show="addReceiptAddressElem" class="table table-striped">
+						<tr ng-show="addReceiptAddressElem" ng-repeat="a in addresses._embedded.addresses | filter: newReceiptAddress.address">
+							<td><a ng-click="setReceiptAddress(a)">{{a.address}}</a></td>
+							<td>{{a.address2}}</td>
+							<td>{{a.city}}</td>
+							<td>{{a.poBox}}</td>
+							<td>{{a.postalCode}}</td>
+							<td>{{a.province}}</td>
+							<td>{{a.country}}</td>
+						</tr>
+					</table>
+					<div class="text-center" ng-show="addReceiptAddressElem">
+						<ul ng-if="addressPager.totalPages" class="pagination">
+						    <li ng-class="{disabled:addressPager.currentPage === 1}">
+						        <a ng-click="setPaginatedAddresses(1)">First</a>
+						    </li>
+						    <li ng-class="{disabled:addressPager.currentPage === 1}">
+						        <a ng-click="setPaginatedAddresses(addressPager.currentPage - 1)">Previous</a>
+						    </li>
+						    <li ng-repeat="page in addressPager.pages" ng-class="{active:addressPager.currentPage === page}">
+						        <a ng-click="setPaginatedAddresses(page)">{{page}}</a>
+						    </li>                
+						    <li ng-class="{disabled:addressPager.currentPage === addressPager.totalPages}">
+						        <a ng-click="setPaginatedAddresses(addressPager.currentPage + 1)">Next</a>
+						    </li>
+						    <li ng-class="{disabled:addressPager.currentPage === addressPager.totalPages}">
+						        <a ng-click="setPaginatedAddresses(addressPager.totalPages)">Last</a>
+						    </li>
+						</ul>
+					</div>
+				</div>
+			</form>
+			<div class='text-right'>
+				<a ng-click="cancel()" class="btn btn-small">cancel</a>
+				<a ng-click="cancel()" class="btn btn-small btn-primary">Done</a>
+			</div>
+		</div>
+	</div>
+</div>
