@@ -108,6 +108,26 @@ mariadb:10.3.5
 ```
 *NOTE: The target name of the config files matter. The files need to be in alphabetical order, 01-create-databases-and-users.sql needs to run before 02-dev-schema.sql and it needs to run before 03-data-schema.sql*
 
+##### Creating a Database Dump
+At some point you may want to extract the data from the database. To do this, just create a database dump. First get the docker container id by doing
+
+```
+docker ps
+```
+This should result in something like
+
+```
+CONTAINER ID  IMAGE            COMMAND                  CREATED     STATUS     PORTS               NAMES
+cd7bb4b4d46c  mariadb:10.3.5   "docker-entrypoint.s…"   9 days ago  Up 9 days  3306/tcp            mariadb.1.5toseu6yhis70tjikj2uu4oep
+
+```
+Now run the following command.
+```
+docker exec cd7bb4b4d46c sh -c 'exec mysqldump --all-databases -uroot -pROOT_PASSWORD' > /home/<user>/all-databases.sql
+```
+
+A file all-databases.sql will be created. You can extract the insert statements to put into your local db.
+
 #### Deploying RMS Donation Manager
 The end result will be a docker service of the RMS Donation Manager application.
 
