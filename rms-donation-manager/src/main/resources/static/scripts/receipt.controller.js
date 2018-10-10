@@ -1,7 +1,7 @@
 var app = angular.module('rmsdmgui.receipt.controllers', []);
 
-app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService', 'PersonService', 'OrganizationService', 'PagerService', 'PDFService', 
-	function ($scope, ReceiptService, TicketService, PersonService, OrganizationService, PagerService, PDFService) {
+app.controller('ReceiptsController', ['$scope', '$location', 'ReceiptService', 'TicketService', 'PersonService', 'OrganizationService', 'PagerService', 'PDFService', 
+	function ($scope, $location, ReceiptService, TicketService, PersonService, OrganizationService, PagerService, PDFService) {
 
 	$scope.receipts = [];
 	
@@ -26,12 +26,59 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 	
 	initializeYear();
 	
+	var checkReceiptAddress = function () {
+		var receiptWithNoAddress = 0;
+		$scope.receipts.forEach(function (element) {
+			var receiptId = element._links.self.href.split('http://' + location.host + '/receipts/')[1];
+			ReceiptService.getPerson(receiptId)
+			.then(function success(response) {
+				var personId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+				PersonService.getPersonAddress(personId)
+				.then(function success(response) {
+					if (response.data._embedded.addresses.length <= 0) {
+						element.background = "infobackground";
+						receiptWithNoAddress++;
+						$scope.alertKind = 'info';
+						$scope.message = 'Hilighted receipts do not have an address. There is(are) ' + receiptWithNoAddress + ' receipt(s) with no address';
+						$scope.showAlert = true;
+					}
+				}, function error(response) {
+					
+				});
+			}, function error(response) {
+				switch(response.status) {
+				case 404:
+					ReceiptService.getOrganization(receiptId)
+					.then(function success(response) {
+						var organizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+						OrganizationService.getOrganizationAddress(organizationId)
+						.then(function success(response) {
+							if (response.data._embedded.addresses.length <= 0) {
+								element.background = "infobackground";
+								receiptWithNoAddress++;
+								$scope.alertKind = 'info';
+								$scope.message = 'Hilighted receipts do not have an address. There is (are) ' + receiptWithNoAddress + ' receipt(s) with no address';
+								$scope.showAlert = true;
+							}
+						}, function error (response) {
+							
+						});
+					}, function error(response) {
+						
+					});
+					break;
+				}
+			});
+		});
+	}
+	
 	$scope.setPage = function(page) {
 		if(page <= $scope.pager.totalPages) {
 			if($scope.searchValue == "" && $scope.selectedYear == "All") {
 				ReceiptService.getPaginatedReceipt(pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.receipts = response.data._embedded.receipts;
+					checkReceiptAddress();
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.totalElements = response.data.page.totalElements
@@ -52,6 +99,7 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				ReceiptService.getPaginatedReceiptByYear($scope.selectedYear, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.receipts = response.data._embedded.receipts;
+					checkReceiptAddress();
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
@@ -71,6 +119,7 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 				ReceiptService.searchReceipt($scope.searchValue, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.receipts = response.data._embedded.receipts;
+					checkReceiptAddress();
 					$scope.pager.currentPage = response.data.page.number + 1;
 					$scope.pager.totalPages = response.data.page.totalPages;
 					$scope.pager.pages = PagerService.createSlideRange($scope.pager.currentPage, $scope.pager.totalPages);
@@ -212,8 +261,8 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 							if (elementCounter == totalElements) {
 								PDFService.generateAllReceipts(receiptsArray);
 								if (notAddedElements != 0) {
-									$scope.alertKind = 'danger';
-									$scope.message = notAddedElements + ' receipts could not be downloanded for lacking of address';
+									$scope.alertKind = 'info';
+									$scope.message = notAddedElements + ' receipt(s) could not be downloanded for lacking of address';
 									$scope.showAlert = true;
 								}
 							}
@@ -237,7 +286,7 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 									if (elementCounter == totalElements) {
 										PDFService.generateAllReceipts(receiptsArray);
 										if (notAddedElements != 0) {
-											$scope.alertKind = 'danger';
+											$scope.alertKind = 'info';
 											$scope.message = notAddedElements + ' receipt(s) could not be downloaded for lacking of address';
 											$scope.showAlert = true;
 										}
@@ -260,4 +309,185 @@ app.controller('ReceiptsController', ['$scope', 'ReceiptService', 'TicketService
 			}
 		});		
 	}
+	
+	$scope.modifyReceipt = function (receiptUrl) {
+		$location.path(receiptUrl.split(location.host)[1]);
+	}
+}]);
+
+app.controller('ReceiptController', ['$scope', '$location', '$routeParams', 'ReceiptService', 'TicketService', 'PersonService', 'OrganizationService', 'AddressService', 'PagerService',
+	function ($scope, $location, $routeParams, ReceiptService, TicketService, PersonService, OrganizationService, AddressService, PagerService, PDFService) {
+	
+	$scope.receipt = {};
+	$scope.personOrOrganizationName = "";
+	$scope.addressSearchValue = "";
+	$scope.receiptAddress = [];
+	$scope.addressPager = {};
+	var receiptId = $routeParams.id;
+	var isPerson = false;
+	var personOrOrganizationId = "";
+	
+	ReceiptService.getReceipt(receiptId)
+	.then(function success(response) {
+		$scope.receipt = response.data;
+	}, function error(response) {
+		
+	});
+	
+	ReceiptService.getPerson(receiptId)
+	.then(function success(response) {
+		isPerson = true;
+		$scope.personOrOrganizationName = response.data.firstName + " " + response.data.lastName;
+		personOrOrganizationId = response.data._links.self.href.split('http://' + location.host + '/persons/')[1];
+		PersonService.getPersonAddress(personOrOrganizationId)
+		.then(function success(response) {
+			$scope.receiptAddress = response.data._embedded;
+		}, function error(response) {
+			
+		});
+	}, function error(response) {
+		switch(response.status) {
+		case 404:
+			isPerson = false;
+			ReceiptService.getOrganization(receiptId)
+			.then(function success(response) {
+				$scope.personOrOrganizationName = response.data.name;
+				personOrOrganizationId = response.data._links.self.href.split('http://' + location.host + '/organizations/')[1];
+				OrganizationService.getOrganizationAddress(personOrOrganizationId)
+				.then(function success(response) {
+					$scope.receiptAddress = response.data._embedded;
+				}, function error (response) {
+					
+				});
+			}, function error(response) {
+				
+			});
+			break;
+		}
+	});
+	
+	var refreshReceiptAddress = function () {
+		if (isPerson) {
+			PersonService.getPersonAddress(personOrOrganizationId)
+			.then(function success(response) {
+				$scope.receiptAddress = response.data._embedded;
+			}, function error(response) {
+				
+			});
+		} else {
+			OrganizationService.getOrganizationAddress(personOrOrganizationId)
+			.then(function success(response) {
+				$scope.receiptAddress = response.data._embedded;
+			}, function error (response) {
+				
+			});
+		}
+	}
+	
+	$scope.setPaginatedAddresses = function (page) {
+		$scope.addReceiptAddressElem = true;
+		$scope.newReceiptAddress = {};
+		var pageSize = 15;
+		
+		if($scope.addressSearchValue == "") {
+			AddressService.getPaginatedAddress(pageSize, (page - 1))
+			.then(function success(response) {
+				$scope.addresses = response.data;
+				$scope.addressPager.currentPage = response.data.page.number + 1;
+				$scope.addressPager.totalPages = response.data.page.totalPages;
+				$scope.addressPager.pages = PagerService.createSlideRange($scope.addressPager.currentPage, $scope.addressPager.totalPages);
+				$scope.message='Good';
+				$scope.errorMessage = '';
+			}, function error(response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting addresses!';
+			});
+		} else {
+			AddressService.searchAddress($scope.addressSearchValue, pageSize, (page - 1))
+			.then(function success(response) {
+				$scope.addresses = response.data;
+				$scope.addressPager.currentPage = response.data.page.number + 1;
+				$scope.addressPager.totalPages = response.data.page.totalPages;
+				$scope.addressPager.pages = PagerService.createSlideRange($scope.addressPager.currentPage, $scope.addressPager.totalPages);
+				$scope.message='Good';
+				$scope.errorMessage = '';
+			}, function error(response) {
+				$scope.message='';
+				$scope.errorMessage = 'Error getting addresses!';
+			});
+		}
+	}
+	
+	$scope.setReceiptAddress = function (address) {
+		if (isPerson) {
+			PersonService.addPersonAddress(personOrOrganizationId, address._links.self.href)
+			.then(function success(response) {
+				$scope.receiptAddress.addresses.push(address);
+			}, function error(response) {
+				
+			});
+		} else {
+			OrganizationService.addOrganizationAddress(personOrOrganizationId, address._links.self.href)
+			.then(function success(response) {
+				$scope.receiptAddress.addresses.push(address);
+			}, function error(response) {
+				
+			});
+		}
+		
+		$scope.addressSearchValue = "";
+		$scope.addReceiptAddressElem = false;
+	}
+	
+	$scope.addReceiptAddress = function () {
+		AddressService.addAddress($scope.newReceiptAddress)
+		.then(function success(response) {
+			var addressAdded = response.data;
+			if (isPerson) {
+				PersonService.addPersonAddress(personOrOrganizationId, addressAdded._links.self.href)
+				.then(function success(response) {
+					$scope.receiptAddress.addresses.push(addressAdded);
+				}, function error(response) {
+					
+				});
+			} else {
+				OrganizationService.addOrganizationAddress(personOrOrganizationId, addressAdded._links.self.href)
+				.then(function success(response) {
+					$scope.receiptAddress.addresses.push(addressAdded);
+				}, function error(response) {
+					
+				});
+			}
+		}, function error(response) {
+			
+		});
+		
+		$scope.addReceiptAddressElem = false;
+	}
+	
+	//Updates will probably not be done from this UI
+	
+	$scope.deleteReceiptAddress = function (addressUrl) {
+		var addressId = addressUrl.split('http://' + location.host + '/addresses/')[1];
+		
+		if (isPerson) {
+			PersonService.deletePersonAddress(personOrOrganizationId, addressId)
+			.then(function success(response) {
+				refreshReceiptAddress();
+			}, function error(response) {
+				
+			});
+		} else {
+			OrganizationService.deleteOrganizationAddress(personOrOrganizationId, addressId)
+			.then(function success(response) {
+				refreshReceiptAddress();
+			}, function error(response) {
+				
+			});
+		}
+	}
+	
+	$scope.cancel = function () {
+		$location.path('/receipts');
+	};
 }]);
