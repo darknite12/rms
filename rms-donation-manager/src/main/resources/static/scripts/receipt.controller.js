@@ -465,8 +465,6 @@ app.controller('ReceiptController', ['$scope', '$location', '$routeParams', 'Rec
 		$scope.addReceiptAddressElem = false;
 	}
 	
-	//Updates will probably not be done from this UI
-	
 	$scope.deleteReceiptAddress = function (addressUrl) {
 		var addressId = addressUrl.split('http://' + location.host + '/addresses/')[1];
 		
