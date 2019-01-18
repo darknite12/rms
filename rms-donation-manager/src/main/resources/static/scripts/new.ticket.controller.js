@@ -23,11 +23,17 @@ app.controller('NewTicketController',
 	$scope.tablePager = {};
 	$scope.eventPager = {};
 	
+	//the error in this GUI is because the price has not been create for the current year
 	PriceService.getPriceByYear(date.getFullYear())
 	.then(function success(response) {
 		priceUrl = response.data._links.self.href;
 	}, function error(response) {
-		alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
+		alert("Error \n\nStatus: " + response.status + "\nCause:\nThe prices for this year have not been initialized");
+		switch(response.status) {
+		case 404:
+			
+			break;
+		}
 	});
 	
 	$scope.setPage = function (page) {
