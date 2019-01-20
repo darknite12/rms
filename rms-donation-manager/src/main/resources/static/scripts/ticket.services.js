@@ -127,6 +127,14 @@ app.service('TicketService', [ '$http', function($http) {
 	    });
 	}
 	
+	this.updateValue = function(id, data) {
+		return $http({
+	        method : 'PATCH',
+	        url : 'http://' + location.host + '/tickets/' + id,
+	        data : data
+	    });
+	}
+	
 	this.deleteTicket = function(id) {
 		return $http({
 			method: 'DELETE',

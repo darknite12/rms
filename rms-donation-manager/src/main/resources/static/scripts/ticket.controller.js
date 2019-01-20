@@ -10,8 +10,34 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.searchValue = "";
 	var pageSize = 15;
 	
-	$scope.checkKey = function(key) {
-		alert('you pressed: ' + key);
+	$scope.updateValue = function(valueName, value, ticketUrl) {
+		var ticketId = ticketUrl.split('http://' + location.host + '/tickets/')[1];
+		var data = {};
+		
+		switch(valueName) {
+		case 'paid':
+			data = {
+				paid : value
+			}
+			break;
+		case 'formOfPayment':
+			data = {
+				formOfPayment : value
+			}
+			break;
+		case 'atEvent':
+			data = {
+				atEvent : value
+			}
+			break;
+		}
+		
+		TicketService.updateValue(ticketId, data)
+		.then(function success(response) {
+			alert('done');
+		}, function error(response) {
+			alert('not doen');
+		});
 	}
 	
 	$scope.setPage = function(page) {
