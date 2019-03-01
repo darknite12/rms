@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -37,9 +39,10 @@ public class Event implements Serializable {
 	@OneToMany(mappedBy = "event")
 	private List<Ticket> tickets;
 
-	// bi-directional many-to-one association to Sitting Table
-	@OneToMany(mappedBy = "event")
-	private List<SittingTable> sittingTables;
+	// bi-directional many-to-one association to TicketPrice
+	@ManyToOne
+	@JoinColumn(name = "ticket_price_id")
+	private TicketPrice ticketPrice;
 
 	public Event() {
 	}
@@ -96,16 +99,12 @@ public class Event implements Serializable {
 		return tickets;
 	}
 
-	public void setTickets(List<Ticket> tickets) {
-		this.tickets = tickets;
+	public TicketPrice getTicketPrice() {
+		return this.ticketPrice;
 	}
 
-	public List<SittingTable> getSittingTables() {
-		return sittingTables;
-	}
-
-	public void setSittingTables(List<SittingTable> sittingTables) {
-		this.sittingTables = sittingTables;
+	public void setTicketPrice(TicketPrice ticketPrice) {
+		this.ticketPrice = ticketPrice;
 	}
 
 }
