@@ -39,6 +39,10 @@ public class Event implements Serializable {
 	@OneToMany(mappedBy = "event")
 	private List<Ticket> tickets;
 
+	// bi-directional many-to-one association to Sitting Table
+	@OneToMany(mappedBy = "event")
+	private List<SittingTable> sittingTables;
+
 	// bi-directional many-to-one association to TicketPrice
 	@ManyToOne
 	@JoinColumn(name = "ticket_price_id")
@@ -97,6 +101,18 @@ public class Event implements Serializable {
 
 	public List<Ticket> getTickets() {
 		return tickets;
+	}
+
+	public void setTickets(List<Ticket> tickets) {
+		this.tickets = tickets;
+	}
+
+	public List<SittingTable> getSittingTables() {
+		return sittingTables;
+	}
+
+	public void setSittingTables(List<SittingTable> sittingTables) {
+		this.sittingTables = sittingTables;
 	}
 
 	public TicketPrice getTicketPrice() {
