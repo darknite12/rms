@@ -257,7 +257,10 @@ CREATE TABLE IF NOT EXISTS `event` (
   `venue` VARCHAR(255) NULL,
   `address` VARCHAR(255) NULL,
   `masters_of_ceremony` VARCHAR(255) NULL,
-  PRIMARY KEY (`event_id`))
+  `ticket_price_id` INT(11) NOT NULL,
+  PRIMARY KEY (`event_id`),
+  KEY `event_ticket_price_fk` (`ticket_price_id`),
+  CONSTRAINT `event_ticket_price_fk` FOREIGN KEY (`ticket_price_id`) REFERENCES `ticket_price` (`ticket_price_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
