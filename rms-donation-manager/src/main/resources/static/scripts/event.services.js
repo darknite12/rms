@@ -16,6 +16,13 @@ app.service('EventService', [ '$http', function($http) {
 		});
 	}
 	
+	this.getEventTicketPrice = function(id) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/events/' + id + '/ticketPrice'
+		});
+	}
+	
 	this.getTickets = function(id) {
 		return $http({
 			method : 'GET',
@@ -27,6 +34,14 @@ app.service('EventService', [ '$http', function($http) {
 		return $http({
 			method : 'GET',
 			url : 'http://' + location.host + '/events/' + id + '/sittingTables'
+		});
+	}
+	
+	this.addEvent = function(event) {
+		return $http({
+			method : 'POST',
+			url : 'http://' + location.host + '/events/',
+			data : event
 		});
 	}
 	

@@ -50,10 +50,11 @@ app.controller('EventsController', ['$scope', 'EventService', 'PagerService', '$
 	}
 }]);
 
-app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'TableService', '$location', '$routeParams',
-	function($scope, EventService, TicketService, TableService, $location, $routeParams) {
+app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'TableService', '$location', '$routeParams', 'PriceService',
+	function($scope, EventService, TicketService, TableService, $location, $routeParams, PriceService) {
 	
 	var eventId = $routeParams.id;
+	var ticketPriceId = '';
 	
 	$scope.event = {};
 	$scope.eventStats = {};
@@ -67,6 +68,16 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 			alert("No event found");
 			break;
 		}
+	});
+	
+	EventService.getEventTicketPrice(eventId)
+	.then(function success(response) {
+		ticketPriceId = response.data._links.self.href.split('http://' + location.host + '/ticketPrices/')[1];
+		$scope.ticketPrice = response.data;
+	}, function error(response) {
+		$scope.message = '';
+		$scope.errorMessage = 'error getting the ticket price for this event';
+		$location.path('/events');
 	});
 	
 	TicketService.getTicketsAtEvent(eventId)
@@ -141,7 +152,14 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	$scope.updateEvent = function() {
 		EventService.updateEvent(eventId, $scope.event)
 		.then(function success(response) {
-			$scope.message = 'Person data updated!';
+			//remember to check that the fields are not empty
+			PriceService.updateTicketPrice(ticketPriceId, $scope.ticketPrice)
+			.then(function success(response) {
+				
+			}, function error(response) {
+				
+			});
+			$scope.message = 'Event data updated!';
 			$scope.errorMessage = '';
 			$location.path('/events');
 		}, function error(response) {

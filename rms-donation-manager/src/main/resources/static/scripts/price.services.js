@@ -9,4 +9,20 @@ app.service('PriceService', ['$http', function($http) {
 		});
 	}
 	
+	this.addTicketPrice = function(price){
+		return $http({
+			method : 'POST',
+			url : 'http://' + location.host + '/ticketPrices/',
+			data : price
+		});
+	}
+	
+	this.updateTicketPrice = function(id, ticketPrice) {
+		return $http({
+	        method : 'PATCH',
+	        url : 'http://' + location.host + '/ticketPrices/' + id,
+	        data : ticketPrice
+	    });
+	}
+	
 }]);

@@ -72,6 +72,10 @@ angular.module('rmsdmgui', ['ngRoute',
     	templateUrl : '../event.html',
     	controller : 'EventController',
     	controllerAs : 'controller'
+    }).when('/newevent', {
+    	templateUrl : '../event.html',
+    	controller : 'NewEventController',
+    	controllerAs : 'controller'
     }).when('/receipts', {
     	templateUrl : '../receipts.html',
     	controller : 'ReceiptsController',
