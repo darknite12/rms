@@ -220,7 +220,8 @@ CREATE TABLE IF NOT EXISTS `ticket_price` (
   `ticket_price_id` INT(11) NOT NULL AUTO_INCREMENT,
   `price` DOUBLE NOT NULL,
   `cost` DOUBLE NOT NULL,
-  PRIMARY KEY (`ticket_price_id`))
+  PRIMARY KEY (`ticket_price_id`),
+  UNIQUE KEY `ticket_price_cost_unique` (`price`,`cost`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
