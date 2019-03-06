@@ -1,6 +1,10 @@
 <div class="container-fluid">
 	<h1 ng-hide="newTicketView">Ticket Number: {{ticketNumber}}</h1>
 	<h2 ng-show="newTicketView">New Tickets</h2>
+	<div ng-show="showAlert" class="alert alert-{{alertKind}} alert-dismissible fade in">
+		<a ng-click="showAlert=false" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		{{message}}
+	</div>
 	<div class="panel panel-default">
 		<div class='well'>
 			<form name="ticketForm">

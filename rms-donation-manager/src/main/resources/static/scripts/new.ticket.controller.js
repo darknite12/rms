@@ -9,10 +9,10 @@ app.controller('NewTicketController',
 	var buyerKind = "";
 	var dBTable = "";
 	var tableUrl = "";
-	var priceUrl = "";
 	var buyerAdded = false;
 	var sittingTableAdded = false;
 	var date = new Date();
+	var eventId = null;
 	$scope.sittingTable = {number : ""};
 	$scope.buyer = {name : ""};
 	$scope.event = {name : ""};
@@ -22,19 +22,6 @@ app.controller('NewTicketController',
 	$scope.pager = {};
 	$scope.tablePager = {};
 	$scope.eventPager = {};
-	
-	//the error in this GUI is because the price has not been create for the current year
-	PriceService.getPriceByYear(date.getFullYear())
-	.then(function success(response) {
-		priceUrl = response.data._links.self.href;
-	}, function error(response) {
-		alert("Error \n\nStatus: " + response.status + "\nCause:\nThe prices for this year have not been initialized");
-		switch(response.status) {
-		case 404:
-			
-			break;
-		}
-	});
 	
 	$scope.setPage = function (page) {
 		$scope.buyer = {name : ""}; {};
@@ -153,16 +140,22 @@ app.controller('NewTicketController',
 			var ticketsToBeAdded = $scope.newTickets.length;
 			if (existingTickets >= maxTickets) {
 				$scope.sittingTable = {number : ""};
-				alert("This table is full. Please select another table");
+				$scope.alertKind = 'warning';
+				$scope.message = 'This table is full. Please select another table.';
+				$scope.showAlert = true;
 			}else if((existingTickets + ticketsToBeAdded) > maxTickets) {
 				$scope.sittingTable = {number : ""};
-				alert("This table is almost full.\nYou can add only " + (maxTickets - existingTickets) + " to this table");
+				$scope.alertKind = 'warning';
+				$scope.message = 'This table is almost full.\nYou can add only ' + (maxTickets - existingTickets) + ' Ticket(s) to this table.';
+				$scope.showAlert = true;
 			} else if (existingTickets < maxTickets) {
 				$scope.sittingTable = table;
 				sittingTableAdded = true;
 			}
 		}, function error(response) {
-			alert("Error \n\nStatus: " + response.data.status + "\nCause: " + response.data.message);
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error \n\nStatus: ' + response.data.status + '\nCause: ' + response.data.message;
+			$scope.showAlert = true;
 		});
 		$scope.addTableElem = false;
 	}
@@ -195,20 +188,29 @@ app.controller('NewTicketController',
 	}
 	
 	$scope.selectEvent = function (event) {
+		eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
 		$scope.event = event;
 		$scope.event.nameToShow = event.name + " " + event.year;
 		$scope.addEventElem = false;
 	}
 	
 	$scope.unlinkEvent = function () {
+		eventId = null;
 		$scope.event = {name : ""};
 	}
 	
 	$scope.showTicketForm = function () {
-		$scope.newTicket = {};
-		$scope.newTicket.ticketNumber = "";
-		$scope.newTicket.year = date.getFullYear();
-		$scope.addTicketElem = true;
+		if(eventId == null) {
+			$scope.alertKind = 'info';
+			$scope.message = 'Please select an event.';
+			$scope.showAlert = true;
+		} else {
+			$scope.newTicket = {};
+			$scope.newTicket.ticketNumber = "";
+			$scope.newTicket.year = date.getFullYear();
+			$scope.addTicketElem = true;
+		}
+		
 	}
 	
 	$scope.getPersons = function () {
@@ -226,14 +228,18 @@ app.controller('NewTicketController',
 	}
 	
 	$scope.validateTicket = function () {
-		TicketService.searchTicketByNumber($scope.newTicket.ticketNumber)
+		TicketService.searchTicketByNumberAndEventId($scope.newTicket.ticketNumber, eventId)
 		.then(function success(response) {
-				alert("Ticket number: " + response.data.ticketNumber + " already exists");
+			$scope.alertKind = 'danger';
+			$scope.message = 'Ticket number: ' + response.data.ticketNumber + ' already exists.';
+			$scope.showAlert = true;
 		}, function error(response) {
 			switch(response.status){
 			case 404:
 				if($scope.newTicket.ticketNumber == ""){
-					alert("Please insert a ticket number");
+					$scope.alertKind = 'warning';
+					$scope.message = 'Please insert a ticket number.';
+					$scope.showAlert = true;
 				} else {
 					var ticketAdded = false;
 					$scope.newTickets.forEach(function (element) {
@@ -242,11 +248,19 @@ app.controller('NewTicketController',
 						}
 					});
 					if(ticketAdded){
-						alert("Ticket number " + $scope.newTicket.ticketNumber + " has been added already");
+						$scope.alertKind = 'danger';
+						$scope.message = 'Ticket number ' + $scope.newTicket.ticketNumber + ' has been added already.';
+						$scope.showAlert = true;
 					} else {
-						$scope.newTicket.ticketPrice = priceUrl;
-						$scope.newTickets.push($scope.newTicket);
-						$scope.addTicketElem = false;
+						EventService.getEventTicketPrice(eventId)
+						.then(function success(response) {
+							var priceUrl = response.data._links.self.href;
+							$scope.newTicket.ticketPrice = priceUrl;
+							$scope.newTickets.push($scope.newTicket);
+							$scope.addTicketElem = false;
+						}, function error(response) {
+							
+						});
 					}
 				}
 				break;
@@ -261,57 +275,61 @@ app.controller('NewTicketController',
 		var counter = 0;
 		var event = $scope.event;
 		
-		if(event.name == "") {
-			alert("Please select an event");
+		if($scope.newTickets.length <= 0) {
+			$scope.alertKind = 'warning';
+			$scope.message = 'Please add a ticket.';
+			$scope.showAlert = true;
 		} else {
-			if($scope.newTickets.length <= 0) {
-				alert("Please add a ticket");
-			} else {
-				$scope.newTickets.forEach(function (element) {
-					element.event = event._links.self.href;
-					TicketService.addTicket(element)
-					.then(function success(response) {
-						ticketId = response.data._links.self.href.split('http://' + location.host + '/tickets/')[1];
-						ticketIds.push(ticketId);
-						if(sittingTableAdded && !buyerAdded){
-							TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
+			$scope.newTickets.forEach(function (element) {
+				element.event = event._links.self.href;
+				TicketService.addTicket(element)
+				.then(function success(response) {
+					ticketId = response.data._links.self.href.split('http://' + location.host + '/tickets/')[1];
+					ticketIds.push(ticketId);
+					if(sittingTableAdded && !buyerAdded){
+						TicketService.addSittingTable(ticketId, $scope.sittingTable._links.self.href)
+						.then(function success(response) {
+							
+						}, function error(response) {
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding sittingTable to ticket.';
+							$scope.showAlert = true;
+						});
+					} else if (!sittingTableAdded && buyerAdded) {
+						TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+						.then(function success(response) {
+							
+						}, function error(response) {
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding buyer to ticket.';
+							$scope.showAlert = true;
+						});
+					} else if (sittingTableAdded && buyerAdded) {
+						TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
+						.then(function success(response) {
+							TicketService.addSittingTable(ticketIds[counter], $scope.sittingTable._links.self.href)
 							.then(function success(response) {
 								
 							}, function error(response) {
-								alert("Error adding sittingTable to ticket");
+								$scope.alertKind = 'danger';
+								$scope.message = 'Error adding sittingTable to ticket.';
+								$scope.showAlert = true;
 							});
-						} else if (!sittingTableAdded && buyerAdded) {
-							TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
-							.then(function success(response) {
-								
-							}, function error(response) {
-								alert("Error adding buyer");
-							});
-						} else if (sittingTableAdded && buyerAdded) {
-							TicketService.addBuyer(ticketId, buyerKind, $scope.buyer._links.self.href)
-							.then(function success(response) {
-								TicketService.addSittingTable(ticketIds[counter], $scope.sittingTable._links.self.href)
-								.then(function success(response) {
-									
-								}, function error(response) {
-									alert("Error adding sittingTable to ticket");
-								});
-								counter++;
-							}, function error(response) {
-								alert("Error adding buyer");
-							});
-						}
-					}, function error(response) {
-						alert("Error adding ticket");
-					});
+							counter++;
+						}, function error(response) {
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding buyer to ticket.';
+							$scope.showAlert = true;
+						});
+					}
+				}, function error(response) {
+					$scope.alertKind = 'danger';
+					$scope.message = 'Error adding ticket.';
+					$scope.showAlert = true;
 				});
+			});
 			$location.path('/tickets');
-			}
-			
-			
 		}
-		
-		
 	}
 	
 	$scope.updateTicket = function (ticket, index) {

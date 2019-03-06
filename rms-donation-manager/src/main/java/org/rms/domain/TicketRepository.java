@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.Param;
 public interface TicketRepository extends PagingAndSortingRepository<Ticket, Integer> {
 
 	Ticket findByTicketNumber(@Param("ticketNumber") String ticketNumber);
+	//Ask permission to modify this file
+	Ticket findByTicketNumberAndEventEventId(@Param("ticketNumber") String ticketNumber, @Param("event") Integer event);
 
 	Page<Ticket> findByYear(@Param("year") Integer year, Pageable page);
 

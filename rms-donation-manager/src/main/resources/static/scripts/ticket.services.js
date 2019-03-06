@@ -176,4 +176,11 @@ app.service('TicketService', [ '$http', function($http) {
 			url : 'http://' + location.host + '/tickets/search/findByTicketNumber?ticketNumber=' + ticketNumber
 		});
 	}
+	
+	this.searchTicketByNumberAndEventId = function(ticketNumber, eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByTicketNumberAndEventEventId?ticketNumber=' + ticketNumber + '&event=' + eventId
+		});
+	}
 }]);
