@@ -31,8 +31,6 @@ public class TicketPrice implements Serializable {
 
 	private double price;
 
-	private int year;
-
 	// bi-directional many-to-one association to Ticket
 	@OneToMany(mappedBy = "ticketPrice")
 	private List<Ticket> tickets;
@@ -66,14 +64,6 @@ public class TicketPrice implements Serializable {
 
 	public void setPrice(double price) {
 		this.price = price;
-	}
-
-	public int getYear() {
-		return this.year;
-	}
-
-	public void setYear(int year) {
-		this.year = year;
 	}
 
 	public List<Ticket> getTickets() {
