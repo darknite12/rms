@@ -77,7 +77,6 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	}, function error(response) {
 		$scope.message = '';
 		$scope.errorMessage = 'error getting the ticket price for this event';
-		$location.path('/events');
 	});
 	
 	TicketService.getTicketsAtEvent(eventId)
@@ -150,22 +149,55 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	});
 	
 	$scope.updateEvent = function() {
-		EventService.updateEvent(eventId, $scope.event)
-		.then(function success(response) {
-			//remember to check that the fields are not empty
-			PriceService.updateTicketPrice(ticketPriceId, $scope.ticketPrice)
+		if(($scope.event.name == null) || ($scope.event.name == "") 
+				|| ($scope.event.year == null)
+				|| ($scope.event.year == "")
+				|| ($scope.ticketPrice.price == null)
+				|| ($scope.ticketPrice.price == "")
+				|| ($scope.ticketPrice.cost == null)
+				|| ($scope.ticketPrice.cost == "")) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Fields marked with * are obligatory: please fill them in.';
+			$scope.showAlert = true;
+		} else {
+			PriceService.getPriceByCostAndPrice($scope.ticketPrice.cost, $scope.ticketPrice.price)
 			.then(function success(response) {
-				
+				var priceUrl = response.data._links.self.href;
+				$scope.event.ticketPrice = priceUrl;
+				EventService.updateEvent(eventId, $scope.event)
+				.then(function success(response) {
+					$scope.message = 'Event data updated!';
+					$scope.errorMessage = '';
+					$location.path('/events');
+				}, function error(response) {
+					$scope.message = 'Event data update error!';
+					$scope.errorMessage = '';
+				});
 			}, function error(response) {
-				
+				switch(response.status) {
+				case 404:
+					PriceService.addPrice($scope.ticketPrice)
+					.then(function success(response) {
+						var priceUrl = response.data._links.self.href;
+						$scope.event.ticketPrice = priceUrl;
+						EventService.updateEvent(eventId, $scope.event)
+						.then(function success(response) {
+							$scope.message = 'Event data updated!';
+							$scope.errorMessage = '';
+							$location.path('/events');
+						}, function error(response) {
+							$scope.message = 'Event data update error!';
+							$scope.errorMessage = '';
+						});
+					}, function error(response) {
+						$scope.alertKind = 'danger';
+						$scope.message = 'Error adding new Ticket Price';
+						$scope.showAlert = true;
+					});
+					break;
+				}
 			});
-			$scope.message = 'Event data updated!';
-			$scope.errorMessage = '';
-			$location.path('/events');
-		}, function error(response) {
-			$scope.message = 'Person data updated!';
-			$scope.errorMessage = '';
-		});
+		}
 	}
 	
 	$scope.cancel = function () {

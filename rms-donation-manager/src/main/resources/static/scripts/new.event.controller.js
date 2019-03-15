@@ -19,8 +19,7 @@ app.controller('NewEventController', ['$scope', '$location', 'EventService', 'Pr
 			$scope.message = 'Fields marked with * are obligatory: please fill them in.';
 			$scope.showAlert = true;
 		} else {
-			$scope.ticketPrice.year = $scope.event.year;
-			PriceService.addTicketPrice($scope.ticketPrice)
+			PriceService.getPriceByCostAndPrice($scope.ticketPrice.cost, $scope.ticketPrice.price)
 			.then(function success(response) {
 				var priceUrl = response.data._links.self.href;
 				$scope.event.ticketPrice = priceUrl;
@@ -33,9 +32,27 @@ app.controller('NewEventController', ['$scope', '$location', 'EventService', 'Pr
 					$scope.showAlert = true;
 				});
 			}, function error(response) {
-				$scope.alertKind = 'danger';
-				$scope.message = 'Error adding new Ticket Price';
-				$scope.showAlert = true;
+				switch(response.status) {
+				case 404:
+					PriceService.addPrice($scope.ticketPrice)
+					.then(function success(response) {
+						var priceUrl = response.data._links.self.href;
+						$scope.event.ticketPrice = priceUrl;
+						EventService.addEvent($scope.event)
+						.then(function success(response) {
+							$location.path('/events');
+						}, function error(success) {
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding new Event';
+							$scope.showAlert = true;
+						});
+					}, function error(response) {
+						$scope.alertKind = 'danger';
+						$scope.message = 'Error adding new Ticket Price';
+						$scope.showAlert = true;
+					});
+					break;
+				}
 			});
 		}
 		
