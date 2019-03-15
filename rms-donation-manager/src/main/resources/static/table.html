@@ -1,6 +1,10 @@
 <div class="container-fluid">
 	<h1 ng-hide="newTableView">Table Number: {{sittingTableNumber}}</h1>
 	<h2 ng-show="newTableView">New Table</h2>
+	<div ng-show="showAlert" class="alert alert-{{alertKind}} alert-dismissible fade in">
+		<a ng-click="showAlert=false" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		{{message}}
+	</div>
 	<div class="panel panel-default">
 		<div class='well'>
 			<form name="tableForm">
@@ -92,6 +96,10 @@
 		
 		<div ng-hide="newTableView" class='well'>
 			<h2 ng-hide="newTableView">Linked Tickets</h2>
+			<div ng-show="showAlert2" class="alert alert-{{alertKind}} alert-dismissible fade in">
+				<a ng-click="showAlert2=false" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				{{message}}
+			</div>
 			<form ng-hide="newTableView" name="linkedTicketsForm">
 				<div class='col-sm-14'>
 					<table class="table table-striped">
@@ -106,15 +114,19 @@
 								<th><a ng-hide="addTicketElem" ng-click="setPaginatedTickets()">+ Ticket</a></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody ng-init="selectOptions = [{option : 'Cash'}, {option : 'Check'}, {option : 'Free'}]">
 							<tr class="form-group" ng-form="linkedTicketsForm" ng-repeat="t in tickets">
 								<ng-form name="linkedTicketsForm">
 									<td>{{t.ticketNumber}}</td>
 									<td>{{t.info}}</td>
 									<td>{{t.buyer}}</td>
-									<td><input type="checkbox" id="paid" class='form-group' ng-model="t.paid" ng-disabled="true"/></td>
-									<td>{{t.formOfPayment}}</td>
-									<td><input type="checkbox" id="atEvent" class='form-group' ng-model="t.atEvent" ng-disabled="true"/></td>
+									<td><input type="checkbox" id="paid" class='form-group' ng-model="t.paid" ng-change="updateTicketValue('paid', t.paid, t._links.self.href, t.ticketNumber)"/></td>
+									<td>
+										<select ng-model="t.formOfPayment" class='form-control' ng-change="updateTicketValue('formOfPayment', t.formOfPayment, t._links.self.href, t.ticketNumber)">
+											<option ng-repeat="option in selectOptions" value="{{option.option}}">{{option.option}}</option>
+										</select>
+									</td>
+									<td><input type="checkbox" id="atEvent" class='form-group' ng-model="t.atEvent" ng-change="updateTicketValue('atEvent', t.atEvent, t._links.self.href, t.ticketNumber)"/></td>
 									<td><a ng-click="unlinkTicket(t._links.self.href)" class="btn btn-small btn-primary">unlink</a></td>
 								</ng-form>
 							</tr>

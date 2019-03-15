@@ -309,7 +309,8 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 		} else if (updatingTable.peoplePerTable < updatingTable.peopleInTable) {
 			alert("People per table cannot be less than people in table:\nPlease delete tickets to fit in the capacity of the table");
 		} else {
-			TableService.searchTableByNumber(updatingTable.number)
+			var eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
+			TableService.searchTableByNumberAndEventId(updatingTable.number, eventId)
 			.then(function success(response) {
 				if(updatingTable.number == $scope.sittingTableNumber) {
 					updatingTable.event = event._links.self.href;
@@ -319,29 +320,40 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 					}, function error(response) {
 						switch(response.status) {
 						case 409:
-							alert("Error updating table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding table: \nStatus: ' + response.status + '\nMessage: ' + response.data.cause.cause.message;
+							$scope.showAlert = true;
 							break;
 						case 500:
-							alert("Error updating table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding table: \nStatus: ' + response.status + '\nMessage: ' + response.data.message;
+							$scope.showAlert = true;
 							break;
 						}
 					});
 				} else {
-					alert("Table number: " + response.data.number + " already exists");
+					$scope.alertKind = 'danger';
+					$scope.message = 'Table number: ' + response.data.number + ' already exists.';
+					$scope.showAlert = true;
 				}
 			}, function error(response) {
 				switch(response.status){
 				case 404:
+					updatingTable.event = event._links.self.href;
 					TableService.updateTable(tableId, updatingTable)
 					.then(function success(response) {
 						$location.path('/sittingTables');
 					}, function error(response) {
 						switch(response.status) {
 						case 409:
-							alert("Error updating table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding table: \nStatus: ' + response.status + '\nMessage: ' + response.data.cause.cause.message;
+							$scope.showAlert = true;
 							break;
 						case 500:
-							alert("Error updating table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding table: \nStatus: ' + response.status + '\nMessage: ' + response.data.message;
+							$scope.showAlert = true;
 							break;
 						}
 					});
@@ -354,10 +366,51 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 				.then(function success(response) {
 					
 				}, function error(response) {
+					$scope.alertKind = 'danger';
+					$scope.message = 'Errors linking tickets.';
+					$scope.showAlert = true;
 					alert("Errors linking tickets");
 				});
 			});
 		}
+	}
+	
+	$scope.updateTicketValue = function (valueName, value, ticketUrl, ticketNumber) {
+		var ticketId = ticketUrl.split('http://' + location.host + '/tickets/')[1];
+		var data = {};
+		var valueNameToShow = '';
+		
+		switch(valueName) {
+		case 'paid':
+			valueNameToShow = 'Paid';
+			data = {
+				paid : value
+			}
+			break;
+		case 'formOfPayment':
+			valueNameToShow = 'Form of Payment';
+			data = {
+				formOfPayment : value
+			}
+			break;
+		case 'atEvent':
+			valueNameToShow = 'Is At Event';
+			data = {
+				atEvent : value
+			}
+			break;
+		}
+		
+		TicketService.updateValue(ticketId, data)
+		.then(function success(response) {
+			$scope.alertKind = 'success';
+			$scope.message = valueNameToShow + ' modified to ' + value + ' on ticket number ' + ticketNumber;
+			$scope.showAlert2 = true;
+		}, function error(response) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Not able to modify ticket number ' + ticketNumber;
+			$scope.showAlert2 = true;
+		});
 	}
 	
 	$scope.unlinkTicket = function (ticketUrl) {

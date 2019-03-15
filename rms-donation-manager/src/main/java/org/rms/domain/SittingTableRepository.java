@@ -8,7 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface SittingTableRepository extends PagingAndSortingRepository<SittingTable, Integer> {
 
-	SittingTable findByNumber(@Param("number") int number);
+	SittingTable findByNumber(@Param("number") Integer number);
+	
+	SittingTable findByNumberAndEventEventId(@Param("number") Integer number, @Param("event") Integer event);
 
 	Page<SittingTable> findByEventEventId(@Param("event") Integer event, Pageable page);
 

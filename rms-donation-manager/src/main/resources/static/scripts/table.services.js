@@ -81,4 +81,11 @@ app.service('TableService', ['$http', function($http) {
 			url : 'http://' + location.host + '/sittingTables/search/findByNumber?number=' + tableNumber
 		});
 	}
+	
+	this.searchTableByNumberAndEventId = function(tableNumber, eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/sittingTables/search/findByNumberAndEventEventId?number=' + tableNumber + '&event=' + eventId
+		});
+	}
 }]);
