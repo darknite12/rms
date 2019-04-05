@@ -258,6 +258,7 @@ CREATE TABLE IF NOT EXISTS `event` (
   `address` VARCHAR(255) NULL,
   `masters_of_ceremony` VARCHAR(255) NULL,
   `ticket_price_id` INT(11) NOT NULL,
+  `is_active` tinyint(1) DEFAULT 1 NOT NULL,
   PRIMARY KEY (`event_id`),
   KEY `event_ticket_price_fk` (`ticket_price_id`),
   CONSTRAINT `event_ticket_price_fk` FOREIGN KEY (`ticket_price_id`) REFERENCES `ticket_price` (`ticket_price_id`))
