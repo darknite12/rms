@@ -48,6 +48,9 @@ public class Event implements Serializable {
 	@JoinColumn(name = "ticket_price_id")
 	private TicketPrice ticketPrice;
 
+	@Column(name = "is_active")
+	private byte isActive;
+
 	public Event() {
 	}
 
@@ -121,6 +124,14 @@ public class Event implements Serializable {
 
 	public void setTicketPrice(TicketPrice ticketPrice) {
 		this.ticketPrice = ticketPrice;
+	}
+
+	public byte getIsActive() {
+		return this.isActive;
+	}
+
+	public void setIsActive(byte isActive) {
+		this.isActive = isActive;
 	}
 
 }
