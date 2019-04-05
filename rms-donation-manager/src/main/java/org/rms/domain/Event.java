@@ -49,7 +49,7 @@ public class Event implements Serializable {
 	private TicketPrice ticketPrice;
 
 	@Column(name = "is_active")
-	private byte isActive;
+	private boolean isActive;
 
 	public Event() {
 	}
@@ -126,11 +126,11 @@ public class Event implements Serializable {
 		this.ticketPrice = ticketPrice;
 	}
 
-	public byte getIsActive() {
+	public boolean getIsActive() {
 		return this.isActive;
 	}
 
-	public void setIsActive(byte isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
 
