@@ -1,0 +1,30 @@
+node {
+   def mvnHome
+   stage('Preparation') { // for display purposes
+      git branch: 'develop', credentialsId: '86a41f53-e4e7-4da3-a69a-6015f228baeb', url: 'https://github.com/darknite12/rms.git'
+      mvnHome = tool 'm3'
+      env.JAVA_HOME="${tool 'java8'}"
+      env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+       
+   }
+   
+   stage('Build') {
+       dir('rms-donation-manager') {
+           if (isUnix()) {
+               sh "'${mvnHome}/bin/mvn' clean install -DskipTests"
+           } else {
+               bat(/"${mvnHome}\bin\mvn" clean install -DskipTests/)
+           }
+       }
+   }
+   
+   stage('Test') {
+       dir('rms-donation-manager') {
+           if (isUnix()) {
+               sh "'${mvnHome}/bin/mvn' test"
+           } else {
+               bat(/"${mvnHome}\bin\mvn" test/)
+           }
+       }
+    }
+}
