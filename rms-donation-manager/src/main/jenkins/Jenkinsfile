@@ -4,27 +4,33 @@ node {
       git branch: 'develop', credentialsId: '86a41f53-e4e7-4da3-a69a-6015f228baeb', url: 'https://github.com/darknite12/rms.git'
       mvnHome = tool 'm3'
       env.JAVA_HOME="${tool 'java8'}"
+      env.DOCKER_HOST="unix://var/run/docker.sock"
       env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
-       
    }
    
-   stage('Build') {
+   stage('Unit Test') {
        dir('rms-donation-manager') {
            if (isUnix()) {
-               sh "'${mvnHome}/bin/mvn' clean install -DskipTests"
+               sh "'${mvnHome}/bin/mvn' clean install"
            } else {
-               bat(/"${mvnHome}\bin\mvn" clean install -DskipTests/)
+               bat(/"${mvnHome}\bin\mvn" clean install/)
            }
        }
    }
    
-   stage('Test') {
+   stage('Build Docker Image') {
        dir('rms-donation-manager') {
            if (isUnix()) {
-               sh "'${mvnHome}/bin/mvn' test"
+               sh "'${mvnHome}/bin/mvn' docker:build"
            } else {
-               bat(/"${mvnHome}\bin\mvn" test/)
+               bat(/"${mvnHome}\bin\mvn" docker:build/)
            }
+       }
+    }
+    
+    stage('Integration Test') {
+       dir('rms-donation-manager') {
+           
        }
     }
 }
