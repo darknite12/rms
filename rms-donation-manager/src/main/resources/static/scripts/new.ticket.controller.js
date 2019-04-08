@@ -111,25 +111,31 @@ app.controller('NewTicketController',
 	}
 	
 	$scope.setPaginatedTables = function (page) {
-		$scope.addTableElem = true;
-		$scope.tables = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
-		var columns = 15;
-		var itemsPerColumn = 5;
-		var counter = 0;
-		TableService.getPaginatedTable(75, (page - 1))
-		.then(function success(response) {
-			for(var i = 0; i <= (columns - 1); i++) {
-				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
-					$scope.tables[j].push(response.data._embedded.sittingTables[counter]);
-					counter++;
+		if(eventId == null) {
+			$scope.alertKind = 'info';
+			$scope.message = 'Please select an event.';
+			$scope.showAlert = true;
+		} else {
+			$scope.addTableElem = true;
+			$scope.tables = [c1 = [], c2 = [], c3 = [], c4 = [], c5 = []];
+			var columns = 15;
+			var itemsPerColumn = 5;
+			var counter = 0;
+			TableService.getPaginatedTablesOfEvent(eventId, 75, (page - 1))
+			.then(function success(response) {
+				for(var i = 0; i <= (columns - 1); i++) {
+					for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+						$scope.tables[j].push(response.data._embedded.sittingTables[counter]);
+						counter++;
+					}
 				}
-			}
-			$scope.tablePager.currentPage = response.data.page.number + 1;
-			$scope.tablePager.totalPages = response.data.page.totalPages;
-			$scope.tablePager.pages = PagerService.createSlideRange($scope.tablePager.currentPage, $scope.tablePager.totalPages);
-		}, function error(response) {
-			
-		});
+				$scope.tablePager.currentPage = response.data.page.number + 1;
+				$scope.tablePager.totalPages = response.data.page.totalPages;
+				$scope.tablePager.pages = PagerService.createSlideRange($scope.tablePager.currentPage, $scope.tablePager.totalPages);
+			}, function error(response) {
+				
+			});
+		}
 	}
 	
 	$scope.selectTable = function (table) {
@@ -171,7 +177,21 @@ app.controller('NewTicketController',
 		var columns = 4;
 		var itemsPerColumn = 5;
 		var counter = 0;
-		EventService.getPaginatedEvent(20, (page - 1))
+		
+		EventService.getActiveEvents()
+		.then(function success(response) {
+			for(var i = 0; i <= (columns - 1); i++) {
+				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+					$scope.events[j].push(response.data._embedded.events[counter]);
+					counter++;
+				}
+			}
+		}, function error(response) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error getting events.';
+			$scope.showAlert = true;
+		});
+		/*EventService.getPaginatedEvent(20, (page - 1))
 		.then(function success(response) {
 			for(var i = 0; i <= (columns - 1); i++) {
 				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
@@ -184,7 +204,7 @@ app.controller('NewTicketController',
 			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
 		}, function error(response) {
 			
-		});
+		});*/
 	}
 	
 	$scope.selectEvent = function (event) {

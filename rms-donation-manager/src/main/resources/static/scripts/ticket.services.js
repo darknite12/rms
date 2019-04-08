@@ -9,6 +9,13 @@ app.service('TicketService', [ '$http', function($http) {
 		});
 	}
 	
+	this.getPaginatedTicketsOfEvent = function (eventId, size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByEventEventId?event=' + eventId + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+		});
+	}
+	
 	this.getAllTickets = function() {
 		return $http({
 			method : 'GET',

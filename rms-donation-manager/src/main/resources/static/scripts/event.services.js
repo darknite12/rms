@@ -2,6 +2,20 @@ var app = angular.module('rmsdmgui.event.services', []);
 
 app.service('EventService', [ '$http', function($http) {
 	
+	this.getEvents = function() {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/events'
+		});
+	}
+	
+	this.getActiveEvents = function() {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/events/search/findByIsActiveTrue'
+		});
+	}
+	
 	this.getPaginatedEvent = function(size, page) {
 		return $http({
 			method : 'GET',
@@ -50,6 +64,14 @@ app.service('EventService', [ '$http', function($http) {
 	        method : 'PATCH',
 	        url : 'http://' + location.host + '/events/' + id,
 	        data : event
+	    });
+	}
+	
+	this.updateIsActive = function(id, isActive) {
+		return $http({
+	        method : 'PATCH',
+	        url : 'http://' + location.host + '/events/' + id,
+	        data : {'isActive' : isActive}
 	    });
 	}
 	

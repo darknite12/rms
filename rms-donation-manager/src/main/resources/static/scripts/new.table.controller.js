@@ -61,7 +61,20 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 		var columns = 4;
 		var itemsPerColumn = 5;
 		var counter = 0;
-		EventService.getPaginatedEvent(20, (page - 1))
+		EventService.getActiveEvents()
+		.then(function success(response) {
+			for(var i = 0; i <= (columns - 1); i++) {
+				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
+					$scope.events[j].push(response.data._embedded.events[counter]);
+					counter++;
+				}
+			}
+		}, function error(response) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error getting events.';
+			$scope.showAlert = true;
+		});
+		/*EventService.getPaginatedEvent(20, (page - 1))
 		.then(function success(response) {
 			for(var i = 0; i <= (columns - 1); i++) {
 				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
@@ -76,7 +89,7 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 			$scope.alertKind = 'danger';
 			$scope.message = 'Error getting events.';
 			$scope.showAlert = true;
-		});
+		});*/
 	}
 	
 	$scope.selectEvent = function (event) {

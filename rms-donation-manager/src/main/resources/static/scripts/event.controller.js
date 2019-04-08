@@ -39,6 +39,22 @@ app.controller('EventsController', ['$scope', 'EventService', 'PagerService', '$
 			}
 		}
 	}
+	
+	$scope.updateIsActive = function(eventUrl, isActive) {
+		var eventId = eventUrl.split('http://' + location.host + '/events/')[1];
+		
+		EventService.updateIsActive(eventId, isActive)
+		.then(function success(response) {
+			$scope.alertKind = 'success';
+			$scope.message = 'Event ' + response.data.name + ' ' + response.data.year + ((response.data.isActive) ? ' now is Active' : ' now is Not Active');
+			$scope.showAlert = true;
+		}, function error(response) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error updating Active field in event ' + response.data.name;
+			$scope.showAlert = true;
+		});
+	}
+	
 	$scope.setPage(1);
 	
 	$scope.deleteEvent = function(eventUrl) {
