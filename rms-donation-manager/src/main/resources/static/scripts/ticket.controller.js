@@ -110,7 +110,6 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 						$scope.showAlert = true;
 						$scope.pager.totalPages = 2;
 						$scope.searchValue = "";
-						$scope.getTicketsOfEvent(event, 1);
 					}
 				}, function error(response) {
 					
