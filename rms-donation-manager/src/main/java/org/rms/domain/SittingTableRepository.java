@@ -14,9 +14,12 @@ public interface SittingTableRepository extends PagingAndSortingRepository<Sitti
 
 	Page<SittingTable> findByEventEventId(@Param("event") Integer event, Pageable page);
 
-	@Query("select st from SittingTable st where cast(st.number as string) like %:searchParameter% or "
-			+ "st.name like %:searchParameter% or cast(st.year as string) like %:searchParameter% or "
-			+ "st.event.name like %:searchParameter%")
-	Page<SittingTable> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
+	@Query("select st from SittingTable st where st.event.eventId = :event "
+			+ "and (cast(st.number as string) like %:searchParameter% "
+			+ "or st.name like %:searchParameter% "
+			+ "or cast(st.year as string) like %:searchParameter% "
+			+ "or st.event.name like %:searchParameter%)")
+	Page<SittingTable> findBySearchStringAndEvent(@Param("searchParameter") String searchParameter, 
+			@Param("event") Integer event, Pageable page);
 
 }
