@@ -8,6 +8,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 	$scope.pager = {};
 	$scope.pager.totalPages = 2;
 	$scope.searchValue = "";
+	var eventId = null;
 	var pageSize = 15;
 	
 	EventService.getActiveEvents()
@@ -20,7 +21,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 	});
 	
 	$scope.getTablesOfEvent = function(event, page) {
-		var eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
+		eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
 		$scope.selectedEvent = event;
 		//if(page <= $scope.pager.totalPages) {
 			//var added = false;
@@ -60,8 +61,8 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 				}, function error(response) {
 					
 				});
-			} /*else {
-				TableService.searchTable($scope.searchValue, pageSize, (page - 1))
+			} else {
+				TableService.searchTable($scope.searchValue, eventId, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tables = response.data._embedded.sittingTables;
 					$scope.tables.forEach(function(element){
@@ -78,13 +79,17 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 								}
 							}
 						}, function error(response) {
-							alert("Error Error");
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error.';
+							$scope.showAlert = true;
 						});
 						TableService.getEvent(tableId)
 						.then(function sucess(response) {
 							element.event = response.data.name + ' ' + response.data.year;
 						}, function error(response) {
-							alert("Error Getting Event for Table");
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error Getting Event for Table.';
+							$scope.showAlert = true;
 						});
 					});
 					$scope.pager.currentPage = response.data.page.number + 1;
@@ -93,10 +98,12 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 					$scope.message='';
 					$scope.errorMessage = '';
 					if($scope.pager.totalPages <= 0) {
-						alert("No tables found");
+						$scope.alertKind = 'danger';
+						$scope.message = 'No tables found.';
+						$scope.showAlert = true;
 						$scope.pager.totalPages = 2;
 						$scope.searchValue = "";
-						$scope.setPage(1);
+						$scope.getTablesOfEvent(eventId, 1);
 					}
 				}, function error(response) {
 					switch(response.status) {
@@ -106,9 +113,14 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 					case 500:
 						alert("Error searching table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
 						break;
+					case 404:
+						$scope.alertKind = 'danger';
+						$scope.message = 'No tables found.';
+						$scope.showAlert = true;
+						break;
 					}
 				});
-			}*/
+			}
 		//}
 			
 		$scope.eventSelected = true;
@@ -117,7 +129,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 	$scope.deleteTable = function(tableUrl) {
 		TableService.deleteTable(tableUrl.split('http://' + location.host + '/sittingTables/')[1])
 		.then(function success(response) {
-			$scope.setPage($scope.pager.currentPage);
+			$scope.getTablesOfEvent(eventId, $scope.pager.currentPage);
 		}, function error(response) {
 			switch(response.status) {
 			case 409:

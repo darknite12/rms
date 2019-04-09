@@ -74,11 +74,10 @@ app.service('TableService', ['$http', function($http) {
 	    });
 	}
 	
-	this.searchTable = function(searchValue, size, page) {
-		//There is an error here
+	this.searchTable = function(searchValue, eventId, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=number'
+			url : 'http://' + location.host + '/sittingTables/search/findBySearchStringAndEvent?searchParameter=' + searchValue + '&event=' + eventId + '&size=' + size + '&page=' + page + '&sort=number'
 		});
 	}
 	

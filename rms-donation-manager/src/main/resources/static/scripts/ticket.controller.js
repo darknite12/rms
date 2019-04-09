@@ -109,7 +109,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 						$scope.showAlert = true;
 						$scope.pager.totalPages = 2;
 						$scope.searchValue = "";
-						$scope.setPage(1);
+						$scope.getTicketsOfEvent(eventId, 1);
 					}
 				}, function error(response) {
 					
@@ -161,7 +161,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.deleteTicket = function(ticketUrl) {
 		TicketService.deleteTicket(ticketUrl.split('http://' + location.host + '/tickets/')[1])
 		.then(function success(response) {
-			$scope.setPage($scope.pager.currentPage);
+			$scope.getTicketsOfEvent(eventId, $scope.pager.currentPage);
 		}, function error(response) {
 			switch(response.status) {
 			case 409:
