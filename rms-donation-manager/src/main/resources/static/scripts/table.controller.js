@@ -103,7 +103,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 						$scope.showAlert = true;
 						$scope.pager.totalPages = 2;
 						$scope.searchValue = "";
-						$scope.getTablesOfEvent(eventId, 1);
+						$scope.getTablesOfEvent(event, 1);
 					}
 				}, function error(response) {
 					switch(response.status) {

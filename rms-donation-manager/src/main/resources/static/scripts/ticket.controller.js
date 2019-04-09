@@ -9,6 +9,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.eventSelected = false;
 	$scope.pager.totalPages = 2;
 	$scope.searchValue = "";
+	var eventId = null;
 	var pageSize = 15;
 
 	EventService.getActiveEvents()
@@ -21,7 +22,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	});
 	
 	$scope.getTicketsOfEvent = function(event, page) {
-		var eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
+		eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
 		$scope.selectedEvent = event;
 		
 		//if(page <= $scope.pager.totalPages) {
@@ -109,7 +110,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 						$scope.showAlert = true;
 						$scope.pager.totalPages = 2;
 						$scope.searchValue = "";
-						$scope.getTicketsOfEvent(eventId, 1);
+						$scope.getTicketsOfEvent(event, 1);
 					}
 				}, function error(response) {
 					
