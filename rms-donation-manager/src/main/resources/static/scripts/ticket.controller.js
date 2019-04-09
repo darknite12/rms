@@ -62,8 +62,8 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 					$scope.message = 'Error getting paginated tickets of the event ' + event.name + ' ' + event.year;
 					$scope.showAlert = true;
 				});
-			} /*else {
-				TicketService.searchTicket($scope.searchValue, pageSize, (page - 1))
+			} else {
+				TicketService.searchTicket($scope.searchValue, eventId, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tickets = response.data._embedded.tickets;
 					$scope.tickets.forEach(function(element) {
@@ -114,7 +114,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 				}, function error(response) {
 					
 				});
-			}*/
+			}
 		//}
 		
 		$scope.eventSelected = true;

@@ -170,10 +170,10 @@ app.service('TicketService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.searchTicket = function(searchValue, size, page) {
+	this.searchTicket = function(searchValue, eventId, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/tickets/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+			url : 'http://' + location.host + '/tickets/search/findBySearchStringAndEvent?searchParameter=' + searchValue + '&event=' + eventId + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
 		});
 	}
 	
