@@ -238,25 +238,14 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 					counter++;
 				}
 			}
+			$scope.eventPager.currentPage = response.data.page.number + 1;
+			$scope.eventPager.totalPages = response.data.page.totalPages;
+			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
 		}, function error(response) {
 			$scope.alertKind = 'danger';
 			$scope.message = 'Error getting events.';
 			$scope.showAlert = true;
 		});
-		/*EventService.getPaginatedEvent(20, (page - 1))
-		.then(function success(response) {
-			for(var i = 0; i <= (columns - 1); i++) {
-				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
-					$scope.events[j].push(response.data._embedded.events[counter]);
-					counter++;
-				}
-			}
-			$scope.eventPager.currentPage = response.data.page.number + 1;
-			$scope.eventPager.totalPages = response.data.page.totalPages;
-			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
-		}, function error(response) {
-			
-		});*/
 	}
 	
 	$scope.selectEvent = function (event) {
@@ -299,8 +288,8 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 				}, function error(response) {
 					
 				});
-			} /*else {
-				TicketService.searchTicket($scope.searchValue, pageSize, (page - 1))
+			} else {
+				TicketService.searchTicket($scope.searchValue, eventId, pageSize, (page - 1))
 				.then(function success(response) {
 					for(var i = 0; i <= (columns - 1); i++) {
 						for(var j = 0; j <= (itemsPerColumn - 1); j++) {
@@ -311,12 +300,19 @@ app.controller('TableController', ['$scope', 'TableService', 'TicketService', 'P
 					$scope.ticketPager.currentPage = response.data.page.number + 1;
 					$scope.ticketPager.totalPages = response.data.page.totalPages;
 					$scope.ticketPager.pages = PagerService.createSlideRange($scope.ticketPager.currentPage, $scope.ticketPager.totalPages);
+					if($scope.pager.totalPages <= 0) {
+						$scope.alertKind = 'danger';
+						$scope.message = 'No tickets found.';
+						$scope.showAlert = true;
+						$scope.pager.totalPages = 2;
+						$scope.searchValue = "";
+					}
 				}, function error(response) {
 					$scope.alertKind = 'info';
 					$scope.message = 'Error getting ticket.';
 					$scope.showAlert = true;
 				});
-			}*/
+			}
 		}
 	}
 	

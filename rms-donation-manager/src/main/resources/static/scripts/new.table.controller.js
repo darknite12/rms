@@ -69,19 +69,6 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 					counter++;
 				}
 			}
-		}, function error(response) {
-			$scope.alertKind = 'danger';
-			$scope.message = 'Error getting events.';
-			$scope.showAlert = true;
-		});
-		/*EventService.getPaginatedEvent(20, (page - 1))
-		.then(function success(response) {
-			for(var i = 0; i <= (columns - 1); i++) {
-				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
-					$scope.events[j].push(response.data._embedded.events[counter]);
-					counter++;
-				}
-			}
 			$scope.eventPager.currentPage = response.data.page.number + 1;
 			$scope.eventPager.totalPages = response.data.page.totalPages;
 			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
@@ -89,7 +76,7 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 			$scope.alertKind = 'danger';
 			$scope.message = 'Error getting events.';
 			$scope.showAlert = true;
-		});*/
+		});
 	}
 	
 	$scope.selectEvent = function (event) {
