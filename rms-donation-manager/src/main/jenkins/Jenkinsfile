@@ -1,36 +1,38 @@
 node {
-   def mvnHome
-   stage('Preparation') { // for display purposes
-      git branch: 'develop', credentialsId: '86a41f53-e4e7-4da3-a69a-6015f228baeb', url: 'https://github.com/darknite12/rms.git'
-      mvnHome = tool 'm3'
-      env.JAVA_HOME="${tool 'java8'}"
-      env.DOCKER_HOST="unix://var/run/docker.sock"
-      env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
-   }
-   
-   stage('Unit Test') {
-       dir('rms-donation-manager') {
-           if (isUnix()) {
-               sh "'${mvnHome}/bin/mvn' clean install"
-           } else {
-               bat(/"${mvnHome}\bin\mvn" clean install/)
-           }
-       }
-   }
-   
-   stage('Build Docker Image') {
-       dir('rms-donation-manager') {
-           if (isUnix()) {
-               sh "'${mvnHome}/bin/mvn' docker:build"
-           } else {
-               bat(/"${mvnHome}\bin\mvn" docker:build/)
-           }
-       }
+    def mvnHome
+    stage('Preparation') {
+        git branch: 'RMS_v1.0.3', credentialsId: '86a41f53-e4e7-4da3-a69a-6015f228baeb', url: 'https://github.com/darknite12/rms.git'
+        mvnHome = tool 'm3'
+        env.JAVA_HOME="${tool 'java8'}"
+        env.DOCKER_HOST="unix:///var/run/docker.sock"
+        env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+    }
+    
+    stage('Unit Test') {
+        dir('rms-donation-manager') {
+            sh "'${mvnHome}/bin/mvn' clean install"
+        }
+    }
+    
+    stage('Build Docker Image') {
+        dir('rms-donation-manager') {
+            withCredentials([usernamePassword(credentialsId: '1267e48d-4109-46c6-b4de-8063ba64e7d0', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_USR')]) {
+                sh "'${mvnHome}/bin/mvn' clean install -Ddocker.image.prefix=$DOCKER_HUB_USR docker:build"
+            }
+        }
     }
     
     stage('Integration Test') {
-       dir('rms-donation-manager') {
-           
-       }
+        dir('rms-donation-manager') {
+            
+        }
+    }
+    
+    stage('Push Docker Image') {
+        dir('rms-donation-manager') {
+            withCredentials([usernamePassword(credentialsId: '1267e48d-4109-46c6-b4de-8063ba64e7d0', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_USR')]) {
+                sh "'${mvnHome}/bin/mvn' -Ddocker.username=$DOCKER_HUB_USR -Ddocker.password=$DOCKER_HUB_PWD -Ddocker.image.prefix=$DOCKER_HUB_USR docker:push"
+            }
+        }
     }
 }
