@@ -8,7 +8,8 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 	$scope.selectedEvent = {};
 	$scope.eventSelected = false;
 	$scope.pager.totalPages = 2;
-	$scope.searchValue = "";
+	$scope.isSearch = false;
+	$scope.searchValue = '';
 	var eventId = null;
 	var pageSize = 15;
 
@@ -21,12 +22,14 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 		$scope.showAlert = true;
 	});
 	
-	$scope.getTicketsOfEvent = function(event, page) {
+	$scope.getTicketsOfEvent = function(isSearch, event, page) {
 		eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
 		$scope.selectedEvent = event;
+		$scope.isSearch = isSearch;
 		
 		//if(page <= $scope.pager.totalPages) {
-			if($scope.searchValue == "") {
+			if(!isSearch) {
+				$scope.searchValue = '';
 				TicketService.getPaginatedTicketsOfEvent(eventId, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tickets = response.data._embedded.tickets;
@@ -35,7 +38,7 @@ app.controller('TicketsController', ['$scope','TicketService', 'PagerService', '
 						element.event = event.name + ' ' + event.year;
 						TicketService.getPerson(ticketId)
 						.then(function success(response) {
-							element.buyer = response.data.firstName + " " + response.data.lastName;
+							element.buyer = response.data.firstName + ' ' + response.data.lastName;
 						}, function error(response) {
 							switch(response.status) {
 							case 404:

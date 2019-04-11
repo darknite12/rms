@@ -7,6 +7,7 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 	
 	$scope.pager = {};
 	$scope.pager.totalPages = 2;
+	$scope.isSearch = false;
 	$scope.searchValue = "";
 	var eventId = null;
 	var pageSize = 15;
@@ -20,12 +21,14 @@ app.controller('TablesController', ['$scope', 'TableService', 'PagerService', 'E
 		$scope.showAlert = true;
 	});
 	
-	$scope.getTablesOfEvent = function(event, page) {
+	$scope.getTablesOfEvent = function(isSearch, event, page) {
 		eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
 		$scope.selectedEvent = event;
+		$scope.isSearch = isSearch;
 		//if(page <= $scope.pager.totalPages) {
 			//var added = false;
-			if($scope.searchValue == "") {
+			if(!isSearch) {
+				$scope.searchValue = '';
 				TableService.getPaginatedTablesOfEvent(eventId, pageSize, (page - 1))
 				.then(function success(response) {
 					$scope.tables = response.data._embedded.sittingTables;

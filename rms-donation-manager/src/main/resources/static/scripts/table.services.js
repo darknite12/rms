@@ -12,7 +12,7 @@ app.service('TableService', ['$http', function($http) {
 	this.getPaginatedTablesOfEvent = function (eventId, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/search/findByEventEventId?event=' + eventId + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+			url : 'http://' + location.host + '/sittingTables/search/findByEventEventId?event=' + eventId + '&size=' + size + '&page=' + page + '&sort=number'
 		});
 	}
 	
