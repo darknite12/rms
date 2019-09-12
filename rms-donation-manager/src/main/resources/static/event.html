@@ -1,18 +1,23 @@
 <div class="container-fluid">
 	<h1 ng-hide="newEventView">{{event.name}} {{event.year}}</h1>
+	<h2 ng-show="newEventView">New Event</h2>
+	<div ng-show="showAlert" class="alert alert-{{alertKind}} alert-dismissible fade in">
+		<a ng-click="showAlert=false" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		{{message}}
+	</div>
 	<div class="panel panel-default">
 		<div class='well'>
 			<form name="eventForm">
 				<div class='row'>
 					<div class='col-sm-4'>
 						<div class='form-group'>
-							<label for="eventName">Event Name</label>
+							<label for="eventName">Event Name <b>*</b></label>
 							<input type="text" id="eventName" class='form-control' ng-model="event.name" placeholder="Event Name"/>
 						</div>
 					</div>
 					<div class='col-sm-2'>
 						<div class='form-group'>
-							<label for="year">Year</label>
+							<label for="year">Year <b>*</b></label>
 							<input type="text" id="year" class='form-control' ng-model="event.year" placeholder="Year"/>
 						</div>
 					</div>
@@ -38,16 +43,31 @@
 					</div>
 				</div>
 				<div class='row'>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<label for="ticketPrice">Ticket Price <b>*</b></label>
+							<input type="text" id="ticketPrice" class='form-control' ng-model="ticketPrice.price" placeholder="Ticket Price"/>
+						</div>
+					</div>
+					<div class='col-sm-2'>
+						<div class='form-group'>
+							<label for="cost">Cost <b>*</b></label>
+							<input type="text" id="cost" class='form-control' ng-model="ticketPrice.cost" placeholder="Cost"/>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
 					<div class='col-sm-12'>
-						<div ng-hide="newEventView" class='text-right'>
+						<div class='text-right'>
 							<a ng-click="cancel()" class="btn btn-small">cancel</a>
-							<a ng-click="updateEvent()" class="btn btn-small btn-primary">update</a>
+							<a ng-hide="newEventView" ng-click="updateEvent()" class="btn btn-small btn-primary">Update</a>
+							<a ng-show="newEventView" ng-click="addEvent()" class="btn btn-small btn-primary">Add</a>
 						</div>
 					</div>
 				</div>
 			</form>
 		</div>
-		<div class="well">
+		<div class="well" ng-hide="newEventView">
 			<h2>Event Statistics</h2>
 			<div class="row">
 				<div class="col-sm-1">

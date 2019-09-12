@@ -53,7 +53,7 @@ public class ReceiptIntegrationTest {
 	@Before
 	public void setup() {
 		if (ticketPrice == null) {
-			ticketPrice = em.createTicketPrice(2018, 55.00, 120.00, null);
+			ticketPrice = em.createTicketPrice(55.00, 120.00, null);
 		}
 
 		if (event == null) {

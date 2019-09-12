@@ -1,34 +1,43 @@
 package org.rms.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the ticket_price database table.
  * 
  */
 @Entity
-@Table(name="ticket_price")
-@NamedQuery(name="TicketPrice.findAll", query="SELECT t FROM TicketPrice t")
+@Table(name = "ticket_price")
+@NamedQuery(name = "TicketPrice.findAll", query = "SELECT t FROM TicketPrice t")
 public class TicketPrice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="ticket_price_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ticket_price_id")
 	private int ticketPriceId;
 
 	private double cost;
 
 	private double price;
 
-	private int year;
-
-	//bi-directional many-to-one association to Ticket
-	@OneToMany(mappedBy="ticketPrice")
+	// bi-directional many-to-one association to Ticket
+	@OneToMany(mappedBy = "ticketPrice")
 	private List<Ticket> tickets;
+
+	// bi-directional many-to-one association to Event
+	@OneToMany(mappedBy = "ticketPrice")
+	private List<Event> events;
 
 	public TicketPrice() {
 	}
@@ -57,14 +66,6 @@ public class TicketPrice implements Serializable {
 		this.price = price;
 	}
 
-	public int getYear() {
-		return this.year;
-	}
-
-	public void setYear(int year) {
-		this.year = year;
-	}
-
 	public List<Ticket> getTickets() {
 		return this.tickets;
 	}
@@ -85,6 +86,28 @@ public class TicketPrice implements Serializable {
 		ticket.setTicketPrice(null);
 
 		return ticket;
+	}
+
+	public List<Event> getEvents() {
+		return this.events;
+	}
+
+	public void setEvents(List<Event> events) {
+		this.events = events;
+	}
+
+	public Event addEvent(Event event) {
+		getEvents().add(event);
+		event.setTicketPrice(this);
+
+		return event;
+	}
+
+	public Event removeEvent(Event event) {
+		getEvents().remove(event);
+		event.setTicketPrice(null);
+
+		return event;
 	}
 
 }

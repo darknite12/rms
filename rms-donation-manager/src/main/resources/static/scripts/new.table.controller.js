@@ -14,13 +14,20 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 		var table = $scope.sittingTable;
 		var event = $scope.event;
 		if (table.number == "") {
-			alert("Please insert a table number");
+			$scope.alertKind = 'warning';
+			$scope.message = 'Please insert a table number.';
+			$scope.showAlert = true;
 		} else if (event.name == "") {
-			alert("Please select an event");
+			$scope.alertKind = 'warning';
+			$scope.message = 'Please select an event.';
+			$scope.showAlert = true;
 		}else {
-			TableService.searchTableByNumber(table.number)
+			var eventId = event._links.self.href.split('http://' + location.host + '/events/')[1];
+			TableService.searchTableByNumberAndEventId(table.number, eventId)
 			.then(function success(response) {
-				alert("Table number: " + response.data.number + " already exists");
+				$scope.alertKind = 'danger';
+				$scope.message = 'Table number: ' + response.data.number + ' already exists.';
+				$scope.showAlert = true;
 			}, function error(response) {
 				switch(response.status){
 				case 404:
@@ -31,16 +38,20 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 					}, function error(response) {
 						switch(response.status) {
 						case 409:
-							alert("Error adding table: \nStatus: " + response.status + "\nMessage: " + response.data.cause.cause.message);
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding table: \nStatus: ' + response.status + '\nMessage: ' + response.data.cause.cause.message;
+							$scope.showAlert = true;
 							break;
 						case 500:
-							alert("Error adding table: \nStatus: " + response.status + "\nMessage: " + response.data.message);
+							$scope.alertKind = 'danger';
+							$scope.message = 'Error adding table: \nStatus: ' + response.status + '\nMessage: ' + response.data.message;
+							$scope.showAlert = true;
 							break;
 						}
 					});
 					break;
 				}
-			});
+			});			
 		}
 	}
 	
@@ -50,7 +61,7 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 		var columns = 4;
 		var itemsPerColumn = 5;
 		var counter = 0;
-		EventService.getPaginatedEvent(20, (page - 1))
+		EventService.getActiveEvents()
 		.then(function success(response) {
 			for(var i = 0; i <= (columns - 1); i++) {
 				for(var j = 0; j <= (itemsPerColumn - 1); j++) {
@@ -62,7 +73,9 @@ app.controller('NewTableController', ['$scope', 'TableService', 'PagerService', 
 			$scope.eventPager.totalPages = response.data.page.totalPages;
 			$scope.eventPager.pages = PagerService.createSlideRange($scope.eventPager.currentPage, $scope.eventPager.totalPages);
 		}, function error(response) {
-			
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error getting events.';
+			$scope.showAlert = true;
 		});
 	}
 	

@@ -39,6 +39,22 @@ app.controller('EventsController', ['$scope', 'EventService', 'PagerService', '$
 			}
 		}
 	}
+	
+	$scope.updateIsActive = function(eventUrl, isActive) {
+		var eventId = eventUrl.split('http://' + location.host + '/events/')[1];
+		
+		EventService.updateIsActive(eventId, isActive)
+		.then(function success(response) {
+			$scope.alertKind = 'success';
+			$scope.message = 'Event ' + response.data.name + ' ' + response.data.year + ((response.data.isActive) ? ' now is Active' : ' now is Not Active');
+			$scope.showAlert = true;
+		}, function error(response) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Error updating Active field in event ' + response.data.name;
+			$scope.showAlert = true;
+		});
+	}
+	
 	$scope.setPage(1);
 	
 	$scope.deleteEvent = function(eventUrl) {
@@ -50,10 +66,11 @@ app.controller('EventsController', ['$scope', 'EventService', 'PagerService', '$
 	}
 }]);
 
-app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'TableService', '$location', '$routeParams',
-	function($scope, EventService, TicketService, TableService, $location, $routeParams) {
+app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'TableService', '$location', '$routeParams', 'PriceService',
+	function($scope, EventService, TicketService, TableService, $location, $routeParams, PriceService) {
 	
 	var eventId = $routeParams.id;
+	var ticketPriceId = '';
 	
 	$scope.event = {};
 	$scope.eventStats = {};
@@ -67,6 +84,15 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 			alert("No event found");
 			break;
 		}
+	});
+	
+	EventService.getEventTicketPrice(eventId)
+	.then(function success(response) {
+		ticketPriceId = response.data._links.self.href.split('http://' + location.host + '/ticketPrices/')[1];
+		$scope.ticketPrice = response.data;
+	}, function error(response) {
+		$scope.message = '';
+		$scope.errorMessage = 'error getting the ticket price for this event';
 	});
 	
 	TicketService.getTicketsAtEvent(eventId)
@@ -139,15 +165,55 @@ app.controller('EventController', ['$scope', 'EventService', 'TicketService', 'T
 	});
 	
 	$scope.updateEvent = function() {
-		EventService.updateEvent(eventId, $scope.event)
-		.then(function success(response) {
-			$scope.message = 'Person data updated!';
-			$scope.errorMessage = '';
-			$location.path('/events');
-		}, function error(response) {
-			$scope.message = 'Person data updated!';
-			$scope.errorMessage = '';
-		});
+		if(($scope.event.name == null) || ($scope.event.name == "") 
+				|| ($scope.event.year == null)
+				|| ($scope.event.year == "")
+				|| ($scope.ticketPrice.price == null)
+				|| ($scope.ticketPrice.price == "")
+				|| ($scope.ticketPrice.cost == null)
+				|| ($scope.ticketPrice.cost == "")) {
+			$scope.alertKind = 'danger';
+			$scope.message = 'Fields marked with * are obligatory: please fill them in.';
+			$scope.showAlert = true;
+		} else {
+			PriceService.getPriceByCostAndPrice($scope.ticketPrice.cost, $scope.ticketPrice.price)
+			.then(function success(response) {
+				var priceUrl = response.data._links.self.href;
+				$scope.event.ticketPrice = priceUrl;
+				EventService.updateEvent(eventId, $scope.event)
+				.then(function success(response) {
+					$scope.message = 'Event data updated!';
+					$scope.errorMessage = '';
+					$location.path('/events');
+				}, function error(response) {
+					$scope.message = 'Event data update error!';
+					$scope.errorMessage = '';
+				});
+			}, function error(response) {
+				switch(response.status) {
+				case 404:
+					PriceService.addPrice($scope.ticketPrice)
+					.then(function success(response) {
+						var priceUrl = response.data._links.self.href;
+						$scope.event.ticketPrice = priceUrl;
+						EventService.updateEvent(eventId, $scope.event)
+						.then(function success(response) {
+							$scope.message = 'Event data updated!';
+							$scope.errorMessage = '';
+							$location.path('/events');
+						}, function error(response) {
+							$scope.message = 'Event data update error!';
+							$scope.errorMessage = '';
+						});
+					}, function error(response) {
+						$scope.alertKind = 'danger';
+						$scope.message = 'Error adding new Ticket Price';
+						$scope.showAlert = true;
+					});
+					break;
+				}
+			});
+		}
 	}
 	
 	$scope.cancel = function () {

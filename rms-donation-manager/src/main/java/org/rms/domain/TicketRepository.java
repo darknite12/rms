@@ -12,6 +12,9 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
 
 	Ticket findByTicketNumber(@Param("ticketNumber") String ticketNumber);
 
+	// Ask permission to modify this file
+	Ticket findByTicketNumberAndEventEventId(@Param("ticketNumber") String ticketNumber, @Param("event") Integer event);
+
 	Page<Ticket> findByYear(@Param("year") Integer year, Pageable page);
 
 	Page<Ticket> findByEventEventId(@Param("event") Integer event, Pageable page);
@@ -27,10 +30,14 @@ public interface TicketRepository extends PagingAndSortingRepository<Ticket, Int
 	Page<Ticket> findByIsPaidTrueAndEventEventIdAndFormOfPaymentContaining(@Param("event") Integer event,
 			@Param("formOfPayment") String formOfPayment, Pageable page);
 
-	@Query("select t from Ticket t where cast(t.ticketNumber as string) like %:searchParameter% or t.soldBy like %:searchParameter% or "
-			+ "t.formOfPayment like %:searchParameter% or t.event.name like %:searchParameter% or t.info like %:searchParameter% "
-			+ "or CONCAT(t.person.firstName, ' ', t.person.lastName) like %:searchParameter%")
-	Page<Ticket> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
+	@Query("select t from Ticket t where t.event.eventId = :event "
+			+ "and (cast(t.ticketNumber as string) like %:searchParameter% " + "or t.soldBy like %:searchParameter% "
+			+ "or t.formOfPayment like %:searchParameter% " + "or t.event.name like %:searchParameter% "
+			+ "or t.info like %:searchParameter% "
+			+ "or t.person in (from Person p where concat(p.firstName, ' ', p.lastName) like %:searchParameter%)"
+			+ "or t.organization in (from Organization o where o.name like %:searchParameter%))")
+	Page<Ticket> findBySearchStringAndEvent(@Param("searchParameter") String searchParameter,
+			@Param("event") Integer event, Pageable page);
 
 	/*
 	 * select t.ticket_id, first_name, p.last_name, a.address, a.address2, a.city,

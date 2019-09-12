@@ -8,13 +8,18 @@ import org.springframework.data.repository.query.Param;
 
 public interface SittingTableRepository extends PagingAndSortingRepository<SittingTable, Integer> {
 
-	SittingTable findByNumber(@Param("number") int number);
+	SittingTable findByNumber(@Param("number") Integer number);
+	
+	SittingTable findByNumberAndEventEventId(@Param("number") Integer number, @Param("event") Integer event);
 
 	Page<SittingTable> findByEventEventId(@Param("event") Integer event, Pageable page);
 
-	@Query("select st from SittingTable st where cast(st.number as string) like %:searchParameter% or "
-			+ "st.name like %:searchParameter% or cast(st.year as string) like %:searchParameter% or "
-			+ "st.event.name like %:searchParameter%")
-	Page<SittingTable> findBySearchString(@Param("searchParameter") String searchParameter, Pageable page);
+	@Query("select st from SittingTable st where st.event.eventId = :event "
+			+ "and (cast(st.number as string) like %:searchParameter% "
+			+ "or st.name like %:searchParameter% "
+			+ "or cast(st.year as string) like %:searchParameter% "
+			+ "or st.event.name like %:searchParameter%)")
+	Page<SittingTable> findBySearchStringAndEvent(@Param("searchParameter") String searchParameter, 
+			@Param("event") Integer event, Pageable page);
 
 }

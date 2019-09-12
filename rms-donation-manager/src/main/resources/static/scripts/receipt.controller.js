@@ -234,7 +234,7 @@ app.controller('ReceiptsController', ['$scope', '$location', 'ReceiptService', '
 		console.log($scope.pager);
 		var receiptsArray = {receipt : [], address : []}; //This array contains the receipts with their corresponding addresses
 		var notAddedElements = 0; //This can be use for information in the future
-		ReceiptService.getPaginatedReceipt($scope.pager.totalElements, 0)
+		ReceiptService.getPaginatedReceiptByYear($scope.selectedYear, $scope.pager.totalElements, 0)
 		.then(function success(response) {
 			var totalElements = response.data.page.totalElements;
 			var elementCounter = 0;

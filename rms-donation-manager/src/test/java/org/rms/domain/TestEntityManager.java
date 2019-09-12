@@ -103,12 +103,11 @@ public class TestEntityManager {
 
 	}
 
-	public TicketPrice createTicketPrice(int year, double cost, double price, List<Ticket> tickets) {
+	public TicketPrice createTicketPrice(double cost, double price, List<Ticket> tickets) {
 		TicketPrice ticketPrice = new TicketPrice();
 		ticketPrice.setCost(cost);
 		ticketPrice.setPrice(price);
 		ticketPrice.setTickets(tickets);
-		ticketPrice.setYear(year);
 		return ticketPriceRepository.save(ticketPrice);
 	}
 

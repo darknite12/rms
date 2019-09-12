@@ -9,6 +9,13 @@ app.service('TableService', ['$http', function($http) {
 		});
 	}
 	
+	this.getPaginatedTablesOfEvent = function (eventId, size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/sittingTables/search/findByEventEventId?event=' + eventId + '&size=' + size + '&page=' + page + '&sort=number'
+		});
+	}
+	
 	this.getAllTables = function() {
 		return $http({
 			method : 'GET',
@@ -67,11 +74,10 @@ app.service('TableService', ['$http', function($http) {
 	    });
 	}
 	
-	this.searchTable = function(searchValue, size, page) {
-		//There is an error here
+	this.searchTable = function(searchValue, eventId, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/sittingTables/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=number'
+			url : 'http://' + location.host + '/sittingTables/search/findBySearchStringAndEvent?searchParameter=' + searchValue + '&event=' + eventId + '&size=' + size + '&page=' + page + '&sort=number'
 		});
 	}
 	
@@ -79,6 +85,13 @@ app.service('TableService', ['$http', function($http) {
 		return $http({
 			method : 'GET',
 			url : 'http://' + location.host + '/sittingTables/search/findByNumber?number=' + tableNumber
+		});
+	}
+	
+	this.searchTableByNumberAndEventId = function(tableNumber, eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/sittingTables/search/findByNumberAndEventEventId?number=' + tableNumber + '&event=' + eventId
 		});
 	}
 }]);

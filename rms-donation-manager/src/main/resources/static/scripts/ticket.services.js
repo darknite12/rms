@@ -9,6 +9,13 @@ app.service('TicketService', [ '$http', function($http) {
 		});
 	}
 	
+	this.getPaginatedTicketsOfEvent = function (eventId, size, page) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByEventEventId?event=' + eventId + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+		});
+	}
+	
 	this.getAllTickets = function() {
 		return $http({
 			method : 'GET',
@@ -127,6 +134,14 @@ app.service('TicketService', [ '$http', function($http) {
 	    });
 	}
 	
+	this.updateValue = function(id, data) {
+		return $http({
+	        method : 'PATCH',
+	        url : 'http://' + location.host + '/tickets/' + id,
+	        data : data
+	    });
+	}
+	
 	this.deleteTicket = function(id) {
 		return $http({
 			method: 'DELETE',
@@ -155,10 +170,10 @@ app.service('TicketService', [ '$http', function($http) {
 	    });
 	}
 	
-	this.searchTicket = function(searchValue, size, page) {
+	this.searchTicket = function(searchValue, eventId, size, page) {
 		return $http({
 			method : 'GET',
-			url : 'http://' + location.host + '/tickets/search/findBySearchString?searchParameter=' + searchValue + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
+			url : 'http://' + location.host + '/tickets/search/findBySearchStringAndEvent?searchParameter=' + searchValue + '&event=' + eventId + '&size=' + size + '&page=' + page + '&sort=ticketNumber'
 		});
 	}
 	
@@ -166,6 +181,13 @@ app.service('TicketService', [ '$http', function($http) {
 		return $http({
 			method : 'GET',
 			url : 'http://' + location.host + '/tickets/search/findByTicketNumber?ticketNumber=' + ticketNumber
+		});
+	}
+	
+	this.searchTicketByNumberAndEventId = function(ticketNumber, eventId) {
+		return $http({
+			method : 'GET',
+			url : 'http://' + location.host + '/tickets/search/findByTicketNumberAndEventEventId?ticketNumber=' + ticketNumber + '&event=' + eventId
 		});
 	}
 }]);

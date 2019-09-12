@@ -4,7 +4,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface TicketPriceRepository extends PagingAndSortingRepository<TicketPrice, Integer> {
-	
-	TicketPrice findByYear(@Param("year") int year);
+
+	TicketPrice findByCostAndPrice(@Param("cost") double cost, @Param("price") double price);
 
 }
