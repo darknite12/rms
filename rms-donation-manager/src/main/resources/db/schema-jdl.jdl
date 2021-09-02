@@ -1,0 +1,61 @@
+entity Address {
+	address String,
+    address2 String,
+    poBox String,
+    city String,
+    province String,
+    postalCode String
+    country String
+}
+
+entity Receipt {
+	receiptNumber String unique,
+    amount Float,
+    year Integer,
+    taxReceiptName String,
+    numberOfTickets Integer,
+    firstOfYear Integer,
+    info TextBlob   
+}
+
+entity Organization {
+	name String required
+}
+
+entity Person {
+	title String,
+    firstName String required,
+    lastName String required,
+    spouse String,
+    contactPerson String,
+    homePhoneNumber String,
+    cellPhoneNumber String,
+    workPhoneNumber String,
+    faxNumber String,
+    email String,
+    language String,
+    parish String,
+    community String,
+    benefactorStatus String,
+    info TextBlob
+}
+
+entity Donation {
+	amount Float required,
+    year Integer required,
+    formOfPayment String,
+    donationInKind Boolean,
+    info TextBlob
+}
+
+relationship ManyToOne {
+    Donation{person(firstName)} to Person,
+    Donation{organization(name)} to Organization,
+    Donation{receipt(receiptNumber)} to Receipt
+}
+
+relationship ManyToMany {
+    Person{organization(name)} to Organization{person}
+    Organization{address(address)} to Address{organization}
+    Person{address(address)} to Address{Person}
+}
