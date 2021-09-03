@@ -48,14 +48,36 @@ entity Donation {
     info TextBlob
 }
 
+entity TicketPrice {
+    price Float required,
+    cost Float required,
+    year Integer required
+}
+
+entity Event {
+    name String required,
+    year Integer required,
+    venue String,
+    address String,
+    mastersOfCeremony String
+}
+
+entity SittingTable {
+    name String,
+    number String,
+    year Integer,
+    peoplePerTable Integer
+}
+
 relationship ManyToOne {
     Donation{person(firstName)} to Person,
     Donation{organization(name)} to Organization,
-    Donation{receipt(receiptNumber)} to Receipt
+    Donation{receipt(receiptNumber)} to Receipt,
+    SittingTable{event(name)} to Event
 }
 
 relationship ManyToMany {
-    Person{organization(name)} to Organization{person}
+	Person{organization(name)} to Organization{person}
     Organization{address(address)} to Address{organization}
     Person{address(address)} to Address{Person}
 }
