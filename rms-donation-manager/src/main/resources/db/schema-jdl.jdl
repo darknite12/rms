@@ -69,11 +69,34 @@ entity SittingTable {
     peoplePerTable Integer
 }
 
+entity Ticket {
+    ticketNumber String required,
+    year Integer required,
+    soldBy String,
+    formOfPayment FormOfPayment,
+    isPaid Boolean,
+    isAtEvent Boolean,
+    info TextBlob
+}
+
+enum FormOfPayment {
+    CASH,
+    CHEQUE,
+    CREDIT,
+    FREE
+}
+
 relationship ManyToOne {
     Donation{person(firstName)} to Person,
     Donation{organization(name)} to Organization,
     Donation{receipt(receiptNumber)} to Receipt,
-    SittingTable{event(name)} to Event
+    SittingTable{event(name)} to Event,
+    Ticket{person(firstName)} to Person,
+    Ticket{organization(name)} to Organization,
+    Ticket{receipt(receiptNumber)} to Receipt,
+    Ticket{sittingTable(name)} to SittingTable,
+    Ticket{event(name)} to Event,
+    Ticket{ticketPrice(price)} to TicketPrice
 }
 
 relationship ManyToMany {
