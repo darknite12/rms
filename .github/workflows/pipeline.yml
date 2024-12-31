@@ -1,0 +1,29 @@
+name: Hello World
+
+on:
+  workflow_dispatch:
+    inputs:
+      name: 
+        description: 'Your name'
+        required: true
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '21'
+      
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.9.9
+
+      - name: Run Unit Test
+        run: mvn clean install
